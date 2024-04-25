@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  body {
+    --grsc-000: #ffffff;
+    --grsc-100: #eef1f3;
+    --grsc-200: #d8dfe3;
+    --grsc-300: #a9b5bc;
+    --grsc-400: #94a1a8;
+    --grsc-500: #727e84;
+    --grsc-600: #54595b;
+    --grsc-700: #323539;
+    --grsc-800: #232629;
+    --grsc-900: #131517;
+  }
+
+  .App {
+    cursor: pointer;
+    font-family: 'Pretendard-Regular', 'sans-serif';
+  }
+}
