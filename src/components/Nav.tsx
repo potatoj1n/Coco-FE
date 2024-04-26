@@ -18,15 +18,26 @@ const Container = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.borderColor};
 `;
 
+const MenuContainer = styled.div`
+  border: 1px solid ${({ theme }) => theme.borderColor};
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  position: absolute;
+  top: 4rem;
+  right: 0.25rem;
+`;
+
 export default function Header() {
   const { themeColor, toggleTheme } = useTheme();
   const [menu, setMenu] = useState(false);
 
   return (
     <Container>
-      <Link to="/">
-        <LightLogo />
-      </Link>
+      <Link to="/">{themeColor === 'light' ? <LightLogo /> : <DarkLogo />}</Link>
       <span>
         <IconButton onClick={toggleTheme}>
           {themeColor === 'light' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
@@ -39,11 +50,11 @@ export default function Header() {
           <UserIcon />
         </IconButton>
         {menu === true ? (
-          <div className="border flex flex-col gap-2 rounded-lg px-5 py-6 text-center absolute top-16 right-1 ">
+          <MenuContainer>
             <p>Logout</p>
             <hr></hr>
             <Link to="/myPage">my Page</Link>
-          </div>
+          </MenuContainer>
         ) : null}
       </span>
     </Container>
