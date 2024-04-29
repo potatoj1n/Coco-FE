@@ -9,12 +9,12 @@ import { ReactComponent as FolderIcon } from '../../assets/folder.svg';
 import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { useTheme } from '../../components/Theme';
+import { useTheTheme } from '../../components/Theme';
 import Console from '../../components/Console';
 import { ButtonContainer, Container, CustomButton, FileListContainer } from './IdeStyles';
 
 export default function IDE() {
-  const { themeColor } = useTheme();
+  const { themeColor } = useTheTheme();
   const themeObject = {
     buttonBackground: themeColor === 'light' ? '#f4f4f4' : '#18293D',
     fileListBackground: themeColor === 'light' ? '#fffff' : '#243B56',
