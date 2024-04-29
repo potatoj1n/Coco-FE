@@ -1,12 +1,9 @@
 import styled from 'styled-components';
-import { useTheTheme } from '../../components/Theme';
 
 export const MainWrapper = styled.div`
   width: 100%;
   display: flex;
-  /* margin-top: 5%; */
   height: 100%;
-  /* border: 1px solid yellow; */
 `;
 
 export const MainLogo = styled.div`
@@ -29,17 +26,19 @@ export const MainImg = styled.div`
 export const Phrases = styled.div`
   margin-top: 5%;
   font-family: 'Jura'; //폰트 뭐지??
-  font-size: 45px;
+  font-size: 50px;
+  font-weight: 300;
   display: flex;
   flex-direction: column;
   line-height: 60px;
-  letter-spacing: 6px;
+  letter-spacing: 10px;
 `;
 export const Text = styled.span`
   color: ${({ theme }) => (theme.themeColor === 'dark' ? '#ffffff' : '#000000')};
 `;
 export const Highlight = styled.span`
   color: #23be87;
+  letter-spacing: 2px;
 `;
 export const LoginBtn = styled.button`
   margin-top: 5%;

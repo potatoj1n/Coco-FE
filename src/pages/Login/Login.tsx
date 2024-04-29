@@ -1,7 +1,7 @@
-import { LoginWrapper, LoginLogo, LoginPart, Input, Logindiv, Switcher } from './LoginStyles';
+import { LoginWrapper, LoginLogo, LoginPart, Input, Logindiv, Switcher, Explain } from './LoginStyles';
 import { ReactComponent as DarkLogo } from '../../assets/logo-light.svg';
 import { ReactComponent as LightLogo } from '../../assets/logo-dark.svg';
-import { Highlight, Phrases } from '../FirstMain/FirstMainStyles';
+import { Highlight, Phrases, Text } from '../FirstMain/FirstMainStyles';
 import { useTheTheme } from '../../components/Theme';
 import { Link } from 'react-router-dom';
 
@@ -10,9 +10,9 @@ const Login = () => {
   return (
     <LoginWrapper>
       <LoginLogo>
-        {themeColor === 'light' ? <LightLogo /> : <DarkLogo />}
         <Phrases>
-          <span>
+          <div className="flex justify-center mb-8">{themeColor === 'light' ? <LightLogo /> : <DarkLogo />}</div>
+          <span className="" style={{ border: '1px solid black' }}>
             <Highlight>C</Highlight>ollaborative
           </span>
           <span>
@@ -24,7 +24,18 @@ const Login = () => {
           <span>
             <Highlight>O</Highlight>rganize
           </span>
-          <span style={{ fontSize: '18px' }}> &quot;커뮤니티를 잇다,코딩을 넘어.&quot;</span>
+          <Highlight className="text-2xl mt-4">
+            <Text>&quot;</Text>커뮤니티를 잇다<Text>,</Text>코딩을 넘어<Text>&quot;</Text>
+          </Highlight>
+          <Explain className="text-sm mt-4">
+            <span>
+              COCO는 소통을 중시하는 사용자들을 위한
+              <br /> 온라인 코딩의 미래를 모색합니다.
+              <br />
+              함께하는 코딩이 새로운 차원으로 확장되며,
+              <br /> 사용자들 간의 연결을 위한 새로운 시작을 제공합니다.
+            </span>
+          </Explain>
         </Phrases>
       </LoginLogo>
       <LoginPart>
@@ -33,6 +44,7 @@ const Login = () => {
           <Input name="email" placeholder="Email" type="email" required className="mb-14 text-black" />
           <span className="mb-4 text-lg text-black">비밀번호</span>
           <Input name="password" placeholder="Password" type="password" required className="mb-14 text-black" />
+          <Input type="submit" value="로그인" />
           <div
             style={{
               display: 'flex',
@@ -41,7 +53,6 @@ const Login = () => {
               flexDirection: 'column',
             }}
           >
-            <Input type="submit" value="로그인" />
             <Switcher className="text-black">
               아직 회원이 아니라면?{' '}
               <Link to="/signup" className="underline">

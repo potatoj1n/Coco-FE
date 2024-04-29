@@ -12,6 +12,12 @@ export const LoginLogo = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border: 1px solid blue;
+`;
+
+export const Explain = styled.div`
+  text-align: center;
+  letter-spacing: 1px;
 `;
 export const LoginPart = styled.form`
   width: 50%;
@@ -19,7 +25,7 @@ export const LoginPart = styled.form`
   height: 100%;
   align-items: center;
   justify-content: center;
-  background-color: ${({ theme }) => (theme.themeColor === 'dark' ? 'transparent' : theme.lightColor)};
+  background-color: ${({ theme }) => (theme.themeColor === 'dark' ? theme.lightColor : 'transparent')};
 `;
 
 export const Logindiv = styled.div`
@@ -38,8 +44,7 @@ export const Input = styled.input`
     cursor: pointer;
     border: none;
     background-color: #28b381;
-    width: 40%;
-    height: 50px;
+    height: 45px;
     color: white;
     font-weight: 600;
     &:hover {
@@ -47,7 +52,6 @@ export const Input = styled.input`
     }
   }
 `;
-
 export const Switcher = styled.span`
   margin-top: 30px;
   font-size: 16px;

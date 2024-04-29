@@ -10,8 +10,8 @@ const FirstMain = () => {
   return (
     <MainWrapper>
       <MainLogo>
-        {themeColor === 'light' ? <LightLogo /> : <DarkLogo />}
         <Phrases>
+          <div className="flex justify-center mb-8">{themeColor === 'light' ? <LightLogo /> : <DarkLogo />}</div>
           <span>
             <Highlight>C</Highlight>ollaborative
           </span>
@@ -24,9 +24,11 @@ const FirstMain = () => {
           <span>
             <Highlight>O</Highlight>rganize
           </span>
-          <Highlight className="text-xl mt-4">
-            <Text>&quot;</Text>커뮤니티를 잇다<Text>,</Text>코딩을 넘어<Text>&quot;</Text>
-          </Highlight>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Highlight className="text-2xl mt-4">
+              <Text>&quot;</Text>커뮤니티를 잇다<Text>,</Text>코딩을 넘어<Text>&quot;</Text>
+            </Highlight>
+          </div>
         </Phrases>
         <Link to="/login" className="mt-8">
           <LoginBtn>로그인</LoginBtn>
