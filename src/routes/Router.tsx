@@ -4,7 +4,7 @@ import Login from '../pages/Login/Login';
 import SignUp from '../pages/SignUp';
 import MyPage from '../pages/MyPage';
 import Chat from '../pages/Chat';
-import IDE from '../pages/IDE';
+import IDE from '../pages/IDE/IDE';
 import React from 'react';
 import { Layout } from './Layout';
 import FirstMain from '../pages/FirstMain/FirstMain';
