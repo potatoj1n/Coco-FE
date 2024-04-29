@@ -46,7 +46,7 @@ export const Highlight = styled.span`
 export const LoginBtn = styled.button`
   margin-top: 5%;
   color: ${({ theme }) => (theme.themeColor === 'dark' ? theme.darkColor : theme.lightColor)};
-  border-radius: 20px;
+  border-radius: 5px;
   font-weight: 600;
   letter-spacing: 2px;
   background-color: #23be87;
