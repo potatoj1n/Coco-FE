@@ -24,7 +24,7 @@ const FirstMain = () => {
           <span>
             <Highlight>O</Highlight>rganize
           </span>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className="flex justify-center">
             <Highlight className="text-2xl mt-4">
               <Text>&quot;</Text>커뮤니티를 잇다<Text>,</Text>코딩을 넘어<Text>&quot;</Text>
             </Highlight>
