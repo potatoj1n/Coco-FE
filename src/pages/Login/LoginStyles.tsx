@@ -12,12 +12,12 @@ export const LoginLogo = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid blue;
 `;
 
 export const Explain = styled.div`
   text-align: center;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  font-weight: 500;
 `;
 export const LoginPart = styled.form`
   width: 50%;

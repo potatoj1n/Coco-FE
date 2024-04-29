@@ -12,7 +12,7 @@ const Login = () => {
       <LoginLogo>
         <Phrases>
           <div className="flex justify-center mb-8">{themeColor === 'light' ? <LightLogo /> : <DarkLogo />}</div>
-          <span className="" style={{ border: '1px solid black' }}>
+          <span>
             <Highlight>C</Highlight>ollaborative
           </span>
           <span>
@@ -24,9 +24,11 @@ const Login = () => {
           <span>
             <Highlight>O</Highlight>rganize
           </span>
-          <Highlight className="text-2xl mt-4">
-            <Text>&quot;</Text>커뮤니티를 잇다<Text>,</Text>코딩을 넘어<Text>&quot;</Text>
-          </Highlight>
+          <div className="flex justify-center">
+            <Highlight className="text-2xl mt-4">
+              <Text>&quot;</Text>커뮤니티를 잇다<Text>,</Text>코딩을 넘어<Text>&quot;</Text>
+            </Highlight>
+          </div>
           <Explain className="text-sm mt-4">
             <span>
               COCO는 소통을 중시하는 사용자들을 위한
