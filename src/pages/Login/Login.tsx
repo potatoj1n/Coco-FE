@@ -1,7 +1,7 @@
 import { LoginWrapper, LoginLogo, LoginPart, Input, Logindiv, Switcher, Explain } from './LoginStyles';
 import { ReactComponent as DarkLogo } from '../../assets/logo-light.svg';
 import { ReactComponent as LightLogo } from '../../assets/logo-dark.svg';
-import { Highlight, Phrases, Text } from '../FirstMain/FirstMainStyles';
+import { FontColor, Highlight, Phrases, Text } from '../FirstMain/FirstMainStyles';
 import { useTheTheme } from '../../components/Theme';
 import { Link } from 'react-router-dom';
 
@@ -25,9 +25,9 @@ const Login = () => {
             <Highlight>O</Highlight>rganize
           </span>
           <div className="flex justify-center">
-            <Highlight className="text-2xl mt-4">
+            <FontColor className="text-2xl mt-4">
               <Text>&quot;</Text>커뮤니티를 잇다<Text>,</Text>코딩을 넘어<Text>&quot;</Text>
-            </Highlight>
+            </FontColor>
           </div>
           <Explain className="text-sm mt-4">
             <span>

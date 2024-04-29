@@ -36,9 +36,12 @@ export const Phrases = styled.div`
 export const Text = styled.span`
   color: ${({ theme }) => (theme.themeColor === 'dark' ? '#ffffff' : '#000000')};
 `;
-export const Highlight = styled.span`
+export const FontColor = styled.span`
   color: #23be87;
   letter-spacing: 2px;
+`;
+export const Highlight = styled.span`
+  color: #23be87;
 `;
 export const LoginBtn = styled.button`
   margin-top: 5%;
