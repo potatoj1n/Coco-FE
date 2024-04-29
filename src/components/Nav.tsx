@@ -58,6 +58,7 @@ export default function Header() {
   const { themeColor, toggleTheme } = useTheTheme();
   const [menu, setMenu] = useState(false);
   const location = useLocation();
+  const showIcons = location.pathname !== '/' && location.pathname !== '/signup';
 
   return (
     <Container>
@@ -66,10 +67,12 @@ export default function Header() {
       </Half>
       <Half2>
         <span style={{ marginLeft: 'auto' }}>
-          <IconButton onClick={toggleTheme}>
-            {themeColor === 'light' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
-          </IconButton>
-          {location.pathname !== '/' && (
+          {location.pathname !== '/signup' && (
+            <IconButton onClick={toggleTheme}>
+              {themeColor === 'light' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
+            </IconButton>
+          )}
+          {showIcons && (
             <IconButton
               onClick={() => {
                 setMenu(!menu);
