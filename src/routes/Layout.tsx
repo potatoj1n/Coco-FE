@@ -1,18 +1,20 @@
-import { useTheme } from '../components/Theme';
-import { Outlet } from 'react-router-dom';
+import { useTheTheme } from '../components/Theme';
+import { Outlet, useLocation } from 'react-router-dom';
 import Nav from '../components/Nav';
 
 export const Layout = () => {
-  const { themeColor } = useTheme();
+  const { themeColor } = useTheTheme();
+  const location = useLocation();
 
   const style = {
-    backgroundColor: themeColor === 'light' ? '#ffffff' : '#1C2631',
     color: themeColor === 'light' ? '#000000' : '#ffffff',
+    height: '100vh',
+    overflow: 'hidden',
   };
-
+  const showNav = location.pathname !== '/login';
   return (
     <div style={style}>
-      <Nav />
+      {showNav && <Nav />}
       <Outlet />
     </div>
   );
