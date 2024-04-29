@@ -1,19 +1,21 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Main from '../pages/Main';
-import Login from '../pages/Login';
+import Login from '../pages/Login/Login';
 import SignUp from '../pages/SignUp';
 import MyPage from '../pages/MyPage';
 import Chat from '../pages/Chat';
 import IDE from '../pages/IDE';
 import React from 'react';
 import { Layout } from './Layout';
+import FirstMain from '../pages/FirstMain/FirstMain';
 
 const Routers = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
     children: [
-      { path: '/', element: <Main /> },
+      { path: '/', element: <FirstMain /> },
+      { path: '/main', element: <Main /> },
       { path: '/login', element: <Login /> },
       { path: '/signup', element: <SignUp /> },
       { path: '/mypage', element: <MyPage /> },

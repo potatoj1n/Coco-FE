@@ -8,13 +8,16 @@ const ThemeContext = createContext({
   }, // 기본 동작
 });
 
-export const useTheme = () => useContext(ThemeContext);
+export const useTheTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [themeColor, setTheme] = useState('light');
   const themeObject = {
     backgroundColor: themeColor === 'light' ? '#ffffff' : '#1C2631',
     borderColor: themeColor === 'light' ? '#D8DFE3' : '#ffffff',
+    lightColor: '#ffffff', // 밝은 배경색
+    darkColor: '#1C2631', // 어두운 배경색
+    themeColor: themeColor, //현재 배경색 light 또는 dark
   };
   const toggleTheme = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
