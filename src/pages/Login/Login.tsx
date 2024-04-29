@@ -11,7 +11,9 @@ const Login = () => {
     <LoginWrapper>
       <LoginLogo>
         <Phrases>
-          <div className="flex justify-center mb-8">{themeColor === 'light' ? <LightLogo /> : <DarkLogo />}</div>
+          <div className="flex justify-center mb-8">
+            <Link to="/">{themeColor === 'light' ? <LightLogo /> : <DarkLogo />}</Link>
+          </div>
           <span>
             <Highlight>C</Highlight>ollaborative
           </span>
@@ -42,10 +44,10 @@ const Login = () => {
       </LoginLogo>
       <LoginPart>
         <Logindiv>
-          <span className="mb-4 text-lg text-black">이메일</span>
-          <Input name="email" placeholder="Email" type="email" required className="mb-14 text-black" />
-          <span className="mb-4 text-lg text-black">비밀번호</span>
-          <Input name="password" placeholder="Password" type="password" required className="mb-14 text-black" />
+          <span className="mb-5 text-lg text-black">이메일</span>
+          <Input name="email" placeholder="이메일" type="email" required className="mb-14 text-black" />
+          <span className="mb-5 text-lg text-black">비밀번호</span>
+          <Input name="password" placeholder="비밀번호" type="password" required className="mb-14 text-black" />
           <Input type="submit" value="로그인" />
           <div
             style={{
@@ -55,7 +57,7 @@ const Login = () => {
               flexDirection: 'column',
             }}
           >
-            <Switcher className="text-black">
+            <Switcher className="text-black mt-8">
               아직 회원이 아니라면?{' '}
               <Link to="/signup" className="underline">
                 회원가입 하러 가기 &rarr;
