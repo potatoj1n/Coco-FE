@@ -15,6 +15,7 @@ const AppStyles = createGlobalStyle`
     background-color: ${({ theme }) => theme.backgroundColor};
   }
 `;
+
 export default function App() {
   return (
     <ThemeProvider>

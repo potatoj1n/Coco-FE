@@ -14,7 +14,12 @@ const Container = styled.nav`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid ${({ theme }) => theme.borderColor};
+  border-bottom: 1px solid
+    ${({ theme }) => {
+      const isMainPage = location.pathname === '/';
+      const isSignupPage = location.pathname === '/signup';
+      return isMainPage || isSignupPage ? 'none' : theme.borderColor;
+    }};
 `;
 
 const Half = styled.div`
@@ -32,7 +37,7 @@ const Half2 = styled.div`
   padding: 10px 40px;
   background-color: ${({ theme }) => {
     const isMainPage = location.pathname === '/';
-    return isMainPage && theme.themeColor === 'dark' ? 'transparent' : theme.lightBackground;
+    return isMainPage && theme.themeColor === 'dark' ? theme.lightColor : 'transparent';
   }};
 `;
 
@@ -50,7 +55,6 @@ const MenuContainer = styled.div`
 `;
 
 export default function Header() {
-  // const theme = useTheme();
   const { themeColor, toggleTheme } = useTheTheme();
   const [menu, setMenu] = useState(false);
   const location = useLocation();

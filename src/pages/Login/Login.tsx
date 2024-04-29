@@ -29,10 +29,10 @@ const Login = () => {
       </LoginLogo>
       <LoginPart>
         <Logindiv>
-          <span className="mb-4 text-lg">이메일</span>
-          <Input name="email" placeholder="Email" type="email" required className="mb-14" />
-          <span className="mb-4 text-lg">비밀번호</span>
-          <Input name="password" placeholder="Password" type="password" required className="mb-14" />
+          <span className="mb-4 text-lg text-black">이메일</span>
+          <Input name="email" placeholder="Email" type="email" required className="mb-14 text-black" />
+          <span className="mb-4 text-lg text-black">비밀번호</span>
+          <Input name="password" placeholder="Password" type="password" required className="mb-14 text-black" />
           <div
             style={{
               display: 'flex',
@@ -42,8 +42,11 @@ const Login = () => {
             }}
           >
             <Input type="submit" value="로그인" />
-            <Switcher>
-              아직 회원이 아니라면? <Link to="/signup">회원가입 하러 가기 &rarr;</Link>
+            <Switcher className="text-black">
+              아직 회원이 아니라면?{' '}
+              <Link to="/signup" className="underline">
+                회원가입 하러 가기 &rarr;
+              </Link>
             </Switcher>
           </div>
         </Logindiv>

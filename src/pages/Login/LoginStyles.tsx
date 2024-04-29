@@ -17,9 +17,9 @@ export const LoginPart = styled.form`
   width: 50%;
   display: flex;
   height: 100%;
-  /* flex-direction: column; */
   align-items: center;
   justify-content: center;
+  background-color: ${({ theme }) => (theme.themeColor === 'dark' ? 'transparent' : theme.lightColor)};
 `;
 
 export const Logindiv = styled.div`

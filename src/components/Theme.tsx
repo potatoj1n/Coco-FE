@@ -15,8 +15,9 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const themeObject = {
     backgroundColor: themeColor === 'light' ? '#ffffff' : '#1C2631',
     borderColor: themeColor === 'light' ? '#D8DFE3' : '#ffffff',
-    lightBackground: '#ffffff', // 밝은 배경색
-    darkBackground: '#1C2631', // 어두운 배경색
+    lightColor: '#ffffff', // 밝은 배경색
+    darkColor: '#1C2631', // 어두운 배경색
+    themeColor: themeColor, //현재 배경색 light 또는 dark
   };
   const toggleTheme = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));

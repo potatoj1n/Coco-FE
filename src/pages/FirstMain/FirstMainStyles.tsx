@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useTheTheme } from '../../components/Theme';
 
 export const MainWrapper = styled.div`
   width: 100%;
@@ -11,7 +12,7 @@ export const MainWrapper = styled.div`
 export const MainLogo = styled.div`
   width: 40%;
   display: flex;
-  height: 100%;
+  height: 90%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -22,29 +23,31 @@ export const MainImg = styled.div`
   height: 100%;
   img {
     object-fit: contain;
-    /* height: 100px; */
   }
-  background-color: ${({ theme }) => (theme.themeColor === 'dark' ? 'transparent' : theme.lightBackground)};
-  /* border: 1px solid black; */
+  background-color: ${({ theme }) => (theme.themeColor === 'dark' ? theme.lightColor : 'transparent')};
 `;
 export const Phrases = styled.div`
   margin-top: 5%;
-  font-family: 'Jura';
+  font-family: 'Jura'; //폰트 뭐지??
   font-size: 45px;
   display: flex;
   flex-direction: column;
-  /* border: 1px solid blue; */
   line-height: 60px;
-  letter-spacing: 3px;
+  letter-spacing: 6px;
+`;
+export const Text = styled.span`
+  color: ${({ theme }) => (theme.themeColor === 'dark' ? '#ffffff' : '#000000')};
 `;
 export const Highlight = styled.span`
   color: #23be87;
 `;
 export const LoginBtn = styled.button`
   margin-top: 5%;
-  color: white;
+  color: ${({ theme }) => (theme.themeColor === 'dark' ? theme.darkColor : theme.lightColor)};
   border-radius: 20px;
+  font-weight: 600;
+  letter-spacing: 2px;
   background-color: #23be87;
   height: 50px;
-  width: 130px;
+  width: 140px;
 `;
