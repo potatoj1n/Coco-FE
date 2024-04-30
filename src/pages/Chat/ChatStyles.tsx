@@ -60,6 +60,7 @@ export const UserIcon = styled.img`
 export const MyMessageTrash = styled.img`
   width: 15px;
   height: 15px;
+  margin: 0 -10px 4px 0;
 `;
 
 export const MessageOther = styled.div`

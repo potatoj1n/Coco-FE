@@ -4,7 +4,7 @@ import profileOther from '../../assets/profileOther.svg';
 import profileMine from '../../assets/profileMine.svg';
 import Chatsend from '../../assets/chatsend.svg';
 import Chatsearch from '../../assets/chatsearch.svg';
-//import MessageTrash from '../../assets/messageTrash.svg';
+import MessageTrash from '../../assets/messageTrash.svg';
 import { useTheTheme } from '../../components/Theme';
 import { Link } from 'react-router-dom';
 import { IconButton } from '@mui/material';
@@ -144,6 +144,7 @@ const Chat = () => {
           ) : (
             <MessageMine key={message.id}>
               <MessageMinetext>{message.text}</MessageMinetext>
+              <MyMessageTrash src={MessageTrash} />
               <UserContainer>
                 <UserIcon src={profileMine} />
               </UserContainer>
