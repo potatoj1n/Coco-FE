@@ -3,7 +3,6 @@ import Main from '../pages/Main';
 import Login from '../pages/Login/Login';
 import SignUp from '../pages/SignUp/SignUp';
 import MyPage from '../pages/MyPage';
-import Chat from '../pages/Chat';
 import IDE from '../pages/IDE';
 import { Layout } from './Layout';
 import FirstMain from '../pages/FirstMain/FirstMain';
@@ -18,7 +17,7 @@ const Routers = createBrowserRouter([
       { path: '/login', element: <Login /> },
       { path: '/signup', element: <SignUp /> },
       { path: '/mypage', element: <MyPage /> },
-      { path: '/chat', element: <Chat /> },
+      // { path: '/chat', element: <Chat /> },
       { path: '/ide', element: <IDE /> },
     ],
   },
