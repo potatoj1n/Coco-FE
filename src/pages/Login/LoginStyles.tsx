@@ -53,9 +53,8 @@ export const Input = styled.input`
   }
 `;
 export const Switcher = styled.span`
-  margin-top: 30px;
   font-size: 16px;
   a {
-    color: #54595b;
+    color: #a9b5bc;
   }
 `;
