@@ -25,3 +25,8 @@ export const FileListContainer = styled.div`
   border-left: 0.5px solid ${props => props.theme.border};
   border-right: 0.5px solid ${props => props.theme.border};
 `;
+export const IDEContainer = styled.div`
+  background-color: ${props => props.theme.ideBackground};
+  display: flex;
+  flex-direction: column;
+`;

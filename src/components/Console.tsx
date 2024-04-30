@@ -43,18 +43,21 @@ const Console: React.FC<Props> = ({ editorRef, language }) => {
       <Button variant="outlined" color="success" disabled={isLoading} onClick={runCode}>
         Run Code
       </Button>
-      <Box
-        p={2}
-        color={isError ? 'error.main' : ''}
-        border="1px solid"
-        borderRadius={4}
-        borderColor={isError ? 'error.main' : 'text.primary'}
-        overflow="auto"
+      <div
+        style={{
+          height: '20%',
+          width: 'auto',
+          padding: '8px',
+          color: isError ? 'error.main' : '',
+          border: '0.5px solid',
+          borderColor: isError ? 'error.main' : 'text.primary',
+          overflow: 'auto',
+        }}
       >
         {output
           ? output.map((line, i) => <Typography key={i}>{line}</Typography>)
           : 'Click "Run Code" to see the output here'}
-      </Box>
+      </div>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
