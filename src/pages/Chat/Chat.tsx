@@ -15,6 +15,7 @@ import {
   lightTheme,
   darkTheme,
   MessageContainer,
+  MessageFlexContainer,
   UserContainer,
   MessageOther,
   UserIcon,
@@ -143,8 +144,10 @@ const Chat = () => {
             </MessageOther>
           ) : (
             <MessageMine key={message.id}>
-              <MessageMinetext>{message.text}</MessageMinetext>
-              <MyMessageTrash src={MessageTrash} />
+              <MessageFlexContainer>
+                <MessageMinetext>{message.text}</MessageMinetext>
+                <MyMessageTrash src={MessageTrash} />
+              </MessageFlexContainer>
               <UserContainer>
                 <UserIcon src={profileMine} />
               </UserContainer>

@@ -44,7 +44,7 @@ export const UserContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px;
+  margin: 0px 10px 20px 10px;
 `;
 
 export const UserName = styled.h1`
@@ -57,16 +57,23 @@ export const UserIcon = styled.img`
   height: 40px;
   border-radius: 50%;
 `;
+
+export const MessageFlexContainer = styled.div`
+  display: flex;
+  flex-direction: row; // 아이템을 가로로 배열
+  align-items: flex-end; // 아이템을 컨테이너의 하단에 정렬
+  width: 100%;
+`;
 export const MyMessageTrash = styled.img`
   width: 15px;
   height: 15px;
-  margin: 0 -10px 4px 0;
+  margin: 0px -12px 0px 0;
+  cursor: pointer;
 `;
 
 export const MessageOther = styled.div`
   align-self: flex-start;
   display: flex;
-  align-items: flex-end;
   margin: 9px 0px;
 `;
 
@@ -83,12 +90,11 @@ export const MessageMinetext = styled.div`
   background-color: #9be9a8;
   padding: 15px 20px;
   margin: 5px;
-  align-items: flex-start;
-  color: black;
-  font-size: 16px;
-  max-width: 60vw;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  font-size: 16px;
+  color: black;
+  max-width: 60vw;
 `;
 export const MessageOthertext = styled(MessageMinetext)`
   background-color: #fff;
