@@ -5,6 +5,11 @@ import profileMine from '../../assets/profileMine.svg';
 import Chatsend from '../../assets/chatsend.svg';
 import Chatsearch from '../../assets/chatsearch.svg';
 import { useTheTheme } from '../../components/Theme';
+import { Link } from 'react-router-dom';
+import { IconButton } from '@mui/material';
+import { ReactComponent as ChatIcon } from '../../assets/chat.svg';
+import { ReactComponent as FolderIcon } from '../../assets/folder.svg';
+
 import {
   lightTheme,
   darkTheme,
@@ -22,6 +27,7 @@ import {
   SendButton,
   SearchButton,
   SearchInput,
+  StyledDiv,
 } from './ChatStyles';
 
 const Chat = () => {
@@ -110,6 +116,18 @@ const Chat = () => {
   };
   return (
     <ThemeProvider theme={currentTheme}>
+      <StyledDiv>
+        <Link to="/ide">
+          <IconButton>
+            <FolderIcon />
+          </IconButton>
+        </Link>
+        <Link to="/chat">
+          <IconButton>
+            <ChatIcon />
+          </IconButton>
+        </Link>
+      </StyledDiv>
       <MessageContainer>
         <div style={{ flexGrow: 1 }}></div>
         {messages.map(message =>

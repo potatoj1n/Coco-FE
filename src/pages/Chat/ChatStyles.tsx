@@ -17,12 +17,22 @@ export const darkTheme = {
   background: '#243B56',
 };
 
+export const StyledDiv = styled.div`
+  background: ${({ theme }) => theme.background};
+  border-right: 1px solid ${({ theme }) => theme.borderColor};
+
+  height: 100vh; // 'h-screen' 대응
+  max-width: max-content; // 'w-max' 대응
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 export const MessageContainer = styled.div`
   display: flex;
   position: fixed;
   top: 64px;
   bottom: 64px;
-  left: 0;
+  left: 20px;
   right: 0;
   flex-direction: column;
   padding: 5px 7vw;
@@ -57,6 +67,7 @@ export const MessageOther = styled.div`
 
 export const MessageMine = styled(MessageOther)`
   align-self: flex-end;
+  margin-right: -5px;
 `;
 
 export const MessageMinetext = styled.div`
@@ -95,7 +106,7 @@ export const ChatInputContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  width: 95%;
   max-width: 600px;
   padding: 10px;
   border-radius: 20px;
