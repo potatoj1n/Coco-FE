@@ -1,7 +1,8 @@
 import Editor, { EditorProps } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-import { useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { CODE_SNIPPETS } from '../const/LanguageOption';
+import useLanguageStore from '../store/IdeStore';
 
 const MONACO_OPTIONS: monaco.editor.IEditorConstructionOptions = {
   autoIndent: 'full',
@@ -24,8 +25,12 @@ const MONACO_OPTIONS: monaco.editor.IEditorConstructionOptions = {
 
 export const IdeEditor: React.FC = () => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-  const [value] = useState<string>('');
-  const [language] = useState<string>('javascript');
+  const language = useLanguageStore(state => state.language);
+  const setLanguage = useLanguageStore(state => state.setLanguage);
+
+  useEffect(() => {
+    setLanguage(language);
+  }, [language, setLanguage]);
 
   const onMount: EditorProps['onMount'] = editor => {
     editorRef.current = editor;
@@ -33,13 +38,12 @@ export const IdeEditor: React.FC = () => {
   };
 
   return (
-    <div className="h-auto w-screen">
+    <div className="h-3/5 w-screen overflow-scroll">
       <Editor
         language={language || 'javascript'}
         theme={'vs-dark'}
-        value={value}
+        value={CODE_SNIPPETS[language] || ''}
         onMount={onMount}
-        defaultValue={CODE_SNIPPETS[language] || ''}
         options={MONACO_OPTIONS}
       />
     </div>
