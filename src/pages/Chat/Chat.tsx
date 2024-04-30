@@ -4,6 +4,7 @@ import profileOther from '../../assets/profileOther.svg';
 import profileMine from '../../assets/profileMine.svg';
 import Chatsend from '../../assets/chatsend.svg';
 import Chatsearch from '../../assets/chatsearch.svg';
+//import MessageTrash from '../../assets/messageTrash.svg';
 import { useTheTheme } from '../../components/Theme';
 import { Link } from 'react-router-dom';
 import { IconButton } from '@mui/material';
@@ -23,6 +24,7 @@ import {
   MessageMinetext,
   ChatContainer,
   ChatInputContainer,
+  MyMessageTrash,
   ChatInput,
   SendButton,
   SearchButton,
@@ -65,7 +67,7 @@ const Chat = () => {
     {
       id: 2,
       username: '상대방 이름',
-      text: '안녕하세요, 어떻게 지내세요?',
+      text: '코코다스팀의 코코 웹프로젝트 채팅방입니다. 다 같이 화이팅합시다! 프로젝트 잘 마무리해봐요. 오늘도 출석체크 잊지마시고 exp도 잊지마세요~ 입퇴실 체크는 필수~~',
       owner: 'other',
     }, // ... 퍼블리싱만
   ]);

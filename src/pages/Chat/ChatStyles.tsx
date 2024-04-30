@@ -57,11 +57,15 @@ export const UserIcon = styled.img`
   height: 40px;
   border-radius: 50%;
 `;
+export const MyMessageTrash = styled.img`
+  width: 15px;
+  height: 15px;
+`;
 
 export const MessageOther = styled.div`
   align-self: flex-start;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   margin: 9px 0px;
 `;
 
@@ -74,14 +78,16 @@ export const MessageMinetext = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 15px;
-  border: 1px solid #666666;
+  border: 1px solid rgba(102, 102, 102, 0.6);
   background-color: #9be9a8;
   padding: 15px 20px;
   margin: 5px;
-  display: flex;
-  align-items: center;
+  align-items: flex-start;
   color: black;
   font-size: 16px;
+  max-width: 60vw;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 `;
 export const MessageOthertext = styled(MessageMinetext)`
   background-color: #fff;
