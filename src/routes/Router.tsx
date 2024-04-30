@@ -3,7 +3,6 @@ import Main from '../pages/Main';
 import Login from '../pages/Login/Login';
 import SignUp from '../pages/SignUp/SignUp';
 import MyPage from '../pages/MyPage';
-import IDE from '../pages/IDE';
 import { Layout } from './Layout';
 import FirstMain from '../pages/FirstMain/FirstMain';
 
