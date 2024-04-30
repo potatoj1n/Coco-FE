@@ -18,7 +18,7 @@ export const SignUpPart = styled.div`
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: auto;
   align-items: center;
   width: 75%;
   span {
@@ -29,7 +29,7 @@ export const Form = styled.form`
     width: 100%;
     flex-direction: column;
     padding-left: 15%;
-    height: 7%;
+    height: 9%;
     position: relative;
     justify-content: center;
   }
@@ -50,7 +50,7 @@ export const SignUpInput = styled.input`
   font-size: 18px;
   width: 70%;
   border-radius: 5px;
-  height: 7%;
+  height: 9%;
   padding: 10px 20px;
   &::placeholder {
     background-image: url('../../assets/signUp_user.png');
@@ -59,11 +59,16 @@ export const SignUpInput = styled.input`
     cursor: pointer;
     border: none;
     background-color: #28b381;
-    height: 7%;
+    height: 9%;
     color: white;
     font-weight: 600;
     &:hover {
       opacity: 0.8;
     }
   }
+`;
+export const Error = styled.span`
+  color: red;
+  font-size: 14px;
+  width: auto;
 `;
