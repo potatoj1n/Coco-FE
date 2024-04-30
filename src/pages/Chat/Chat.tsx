@@ -70,18 +70,13 @@ const Chat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // 메시지 리스트의 끝을 가리킬 ref 생성
 
+  // 메시지 배열이 변경될 때마다 실행되어 스크롤을 맨 아래로 이동
   useEffect(() => {
-    // 스크롤을 맨 아래로 이동
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
-  useEffect(() => {
-    const container = document.getElementById('message-container');
-    if (container) {
-      container.scrollTop = container.scrollHeight; // 스크롤을 컨테이너의 끝으로 이동
-    }
-  }, [messages]); // 메시지가 변경될 때마다 실행
+
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
 
   const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,6 +111,7 @@ const Chat = () => {
   return (
     <ThemeProvider theme={currentTheme}>
       <MessageContainer>
+        <div style={{ flexGrow: 1 }}></div>
         {messages.map(message =>
           message.owner === 'other' ? (
             <MessageOther key={message.id}>

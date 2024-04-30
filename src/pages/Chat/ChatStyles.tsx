@@ -24,10 +24,9 @@ export const MessageContainer = styled.div`
   bottom: 64px;
   left: 0;
   right: 0;
-  justify-content: flex-end; // 콘텐츠를 아래쪽에 정렬합니다.
   flex-direction: column;
-  padding: 5px 70px;
-  overflow-y: auto;
+  padding: 5px 7vw;
+  overflow-y: scroll;
   height: calc(100% - 128px);
 `;
 
@@ -126,7 +125,7 @@ export const SearchButton = styled.button`
   cursor: pointer;
   position: fixed;
   bottom: 100px;
-  right: 30px;
+  right: 4vw;
   width: 35px;
   height: 35px;
 `;
