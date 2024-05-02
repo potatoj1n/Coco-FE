@@ -20,6 +20,7 @@ const ConsoleButton = styled.div`
   color: black;
   padding: 8px;
   font-size: 16px;
+  z-index: -1;
 `;
 
 const Console: React.FC<Props> = () => {
