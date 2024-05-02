@@ -66,20 +66,16 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange }) => {
         value={language}
         onChange={handleChange}
         placeholder={`Filter By Category`}
-        label="Language"
         size="small"
         sx={{
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              color: '#28b381',
-            },
-            '&:hover fieldset': {
-              color: '#28b381',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#28b381',
-            },
+          '& .MuiSelect-select': {
+            backgroundColor: themeColor === 'light' ? '#ffffff' : '#ffffff',
+            color: themeColor === 'light' ? 'black' : 'black',
           },
+          '& .MuiOutlinedInput-root': {
+            borderColor: '#28b381',
+          },
+          maxWidth: 'max-content',
         }}
       >
         {LanguageOptions.map(option => (

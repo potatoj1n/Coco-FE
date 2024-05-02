@@ -1,57 +1,49 @@
 import React, { useState } from 'react';
-import { Box, Button, Snackbar, Typography } from '@mui/material';
-import { executeCode } from './api';
+import { IconButton, Snackbar, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { styled } from 'styled-components';
 
 interface Props {
   editorRef: React.MutableRefObject<any>;
   language: string;
 }
+const ConsoleButton = styled.div`
+  width: max-content;
+  height: auto;
+  background-color: #28b381;
+  color: black;
+  padding: 8px;
+  font-size: 16px;
+`;
 
-const Console: React.FC<Props> = ({ editorRef, language }) => {
-  const [output, setOutput] = useState<string[] | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
+const Console: React.FC<Props> = () => {
+  const [output] = useState<string[] | null>(null);
+  const [isError] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarMessage] = useState<string>('');
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
 
-  const runCode = async () => {
-    if (!editorRef.current) return;
-
-    const sourceCode = editorRef.current.getValue();
-    if (!sourceCode) return;
-
-    try {
-      setIsLoading(true);
-      const { run: result } = await executeCode(language, sourceCode);
-      setOutput(result.output.split('\n'));
-      result.stderr ? setIsError(true) : setIsError(false);
-    } catch (error) {
-      console.log(error);
-      setSnackbarMessage('Unable to run code');
-      setOpenSnackbar(true);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div>
-      <Button variant="outlined" color="success" disabled={isLoading} onClick={runCode}>
-        Run Code
-      </Button>
+      <ConsoleButton>
+        console
+        <IconButton size="small">
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </ConsoleButton>
       <div
         style={{
-          height: '20%',
           width: 'auto',
+          height: '200px',
           padding: '8px',
           color: isError ? 'error.main' : '',
           border: '0.5px solid',
           borderColor: isError ? 'error.main' : 'text.primary',
           overflow: 'auto',
+          fontSize: '18px',
         }}
       >
         {output
