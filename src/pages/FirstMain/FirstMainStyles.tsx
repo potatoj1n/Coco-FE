@@ -25,13 +25,13 @@ export const MainImg = styled.div`
 `;
 export const Phrases = styled.div`
   margin-top: 5%;
-  font-family: 'Jura'; //폰트 뭐지??
+  font-family: 'Jura';
+  font-weight: 400;
   font-size: 50px;
-  font-weight: 300;
   display: flex;
   flex-direction: column;
   line-height: 60px;
-  letter-spacing: 10px;
+  letter-spacing: 6px;
 `;
 export const Text = styled.span`
   color: ${({ theme }) => (theme.themeColor === 'dark' ? '#ffffff' : '#000000')};

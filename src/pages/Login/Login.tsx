@@ -3,10 +3,52 @@ import { ReactComponent as DarkLogo } from '../../assets/logo-light.svg';
 import { ReactComponent as LightLogo } from '../../assets/logo-dark.svg';
 import { FontColor, Highlight, Phrases, Text } from '../FirstMain/FirstMainStyles';
 import { useTheTheme } from '../../components/Theme';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Error } from '../SignUp/SignUpStyles';
 
 const Login = () => {
+  const navigate = useNavigate();
   const { themeColor } = useTheTheme();
+  const [isLoading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { name, value },
+    } = e;
+    if (name === 'email') {
+      setEmail(value);
+    } else if (name === 'password') {
+      setPassword(value);
+    }
+  };
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+    if (isLoading || password === '' || email === '') return;
+    //백엔드로 보낼 객체
+    const user = {
+      email: email,
+      password: password,
+    };
+    console.log(user);
+    try {
+      setLoading(true);
+      //axios써서 post로 보내기
+      //유저 정보 받아오고 업데이트해주기
+      //유저정보에 없거나 비밀번호,아이디 틀리면 에러바로 뜨게
+      navigate('/main');
+    } catch (e) {
+      //에러 캐치
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+    console.log(email, password);
+  };
   return (
     <LoginWrapper>
       <LoginLogo>
@@ -43,28 +85,34 @@ const Login = () => {
         </Phrases>
       </LoginLogo>
       <LoginPart>
-        <Logindiv>
+        <Logindiv onSubmit={onSubmit}>
           <span className="mb-5 text-lg text-black">이메일</span>
-          <Input name="email" placeholder="이메일" type="email" required className="mb-14 text-black" />
+          <Input
+            onChange={onChange}
+            name="email"
+            placeholder="이메일"
+            type="email"
+            required
+            className="mb-14 text-black"
+          />
           <span className="mb-5 text-lg text-black">비밀번호</span>
-          <Input name="password" placeholder="비밀번호" type="password" required className="mb-14 text-black" />
+          <Input
+            onChange={onChange}
+            name="password"
+            placeholder="비밀번호"
+            type="password"
+            required
+            className="mb-14 text-black"
+          />
           <Input type="submit" value="로그인" />
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              flexDirection: 'column',
-            }}
-          >
-            <Switcher className="text-black mt-8">
-              아직 회원이 아니라면?{' '}
-              <Link to="/signup" className="underline">
-                회원가입 하러 가기 &rarr;
-              </Link>
-            </Switcher>
-          </div>
         </Logindiv>
+        {error !== '' ? <Error>{error}</Error> : null}
+        <Switcher className="text-black mt-7">
+          아직 회원이 아니라면?{' '}
+          <Link to="/signup" className="underline">
+            회원가입 하러 가기 &rarr;
+          </Link>
+        </Switcher>
       </LoginPart>
     </LoginWrapper>
   );

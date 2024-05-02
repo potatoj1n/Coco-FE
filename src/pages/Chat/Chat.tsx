@@ -8,8 +8,10 @@ import MessageTrash from '../../assets/messageTrash.svg';
 import { useTheTheme } from '../../components/Theme';
 import { Link } from 'react-router-dom';
 import { IconButton } from '@mui/material';
-import { ReactComponent as ChatIcon } from '../../assets/chat.svg';
-import { ReactComponent as FolderIcon } from '../../assets/folder.svg';
+import { ReactComponent as ChatLightIcon } from '../../assets/chatlight.svg';
+import { ReactComponent as FolderLightIcon } from '../../assets/folderlight.svg';
+import { ReactComponent as FolderDarkIcon } from '../../assets/folderdark.svg';
+import { ReactComponent as ChatDarkIcon } from '../../assets/chatdark.svg';
 
 import {
   lightTheme,
@@ -120,16 +122,10 @@ const Chat = () => {
   return (
     <ThemeProvider theme={currentTheme}>
       <StyledDiv>
-        <Link to="/ide">
-          <IconButton>
-            <FolderIcon />
-          </IconButton>
-        </Link>
-        <Link to="/chat">
-          <IconButton>
-            <ChatIcon />
-          </IconButton>
-        </Link>
+        <IconButton>{themeColor === 'light' ? <FolderLightIcon /> : <FolderDarkIcon />}</IconButton>
+        <IconButton>
+          <Link to="/chat">{themeColor === 'light' ? <ChatLightIcon /> : <ChatDarkIcon />}</Link>
+        </IconButton>
       </StyledDiv>
       <MessageContainer>
         <div style={{ flexGrow: 1 }}></div>
