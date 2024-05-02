@@ -117,7 +117,7 @@ export const Hicontainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: left;
-  padding: 30px;
+  padding: 50px 30px 30px 30px;
   border-radius: 16px;
   margin: 10px;
 `;
@@ -165,8 +165,8 @@ export const AttendButton = styled.button`
 `;
 export const Date = styled.div`
   background-color: white;
-  height: 100px;
-  width: 100px;
+  height: 160px;
+  width: 160px;
   border-radius: 50%;
 `;
 export const Month = styled.p`
@@ -174,14 +174,15 @@ export const Month = styled.p`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 5px;
+  margin-top: 45px;
 `;
 export const Day = styled.p`
   color: black;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 25px;
+  margin-bottom: -30px;
+  margin-top: 50px;
 `;
 
 export const Pjcontainer = styled.div`
@@ -262,9 +263,9 @@ export const Chatmain = styled.div`
 
 export const AttendanceImage = styled.img<{ show: boolean }>`
   display: ${({ show }) => (show ? 'block' : 'none')};
-  height: 100px;
-  width: 100px;
+  height: 160px;
+  width: 160px;
   position: fixed;
-  margin-top: -160px;
-  margin-left: 50px;
+  margin-top: -220px;
+  margin-left: 20px;
 `;
