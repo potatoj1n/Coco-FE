@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import LanguageSelector from '../../components/LanguageSelect';
-
-import useLanguageStore from '../../store/IdeStore';
 import { lightTheme, darkTheme, FolderButton, Icon, ChatButton, Sidecontainer, PjButton, Plus } from './MainStyles';
 import { ThemeProvider } from 'styled-components';
 import useLanguageStore from '../../store/IDE/IdeStore';
@@ -10,7 +8,6 @@ import folderLight from '../../assets/folderlight.svg';
 import folderDark from '../../assets/folderdark.svg';
 import chatLight from '../../assets/chatlight.svg';
 import chatDark from '../../assets/chatdark.svg';
-
 import { Link } from 'react-router-dom';
 
 const Main = () => {
@@ -19,14 +16,10 @@ const Main = () => {
   const { themeColor } = useTheTheme();
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
 
-
   const onSelect = (selectedLanguage: string) => {
     setLanguage(selectedLanguage);
   };
 
-  const handleButtonClick = () => {
-    setLanguageSelector(!languageSelector);
-  };
   const onClose = () => {
     setLanguageSelector(false);
   };
@@ -38,8 +31,8 @@ const Main = () => {
             <Plus>+</Plus> 프로젝트 생성
           </PjButton>
           {languageSelector && <LanguageSelector onSelectChange={onSelect} onClose={onClose} />}
-      </div>
         </div>
+
         <FolderButton to="/ide">
           <Icon src={themeColor === 'light' ? folderLight : folderDark} />
           프로젝트
@@ -50,7 +43,6 @@ const Main = () => {
         </ChatButton>
       </Sidecontainer>
     </ThemeProvider>
-
   );
 };
 
