@@ -29,7 +29,7 @@ export const Sidecontainer = styled.div`
   display: flex;
   left: 0;
   width: 12vw;
-  min-width: 120px;
+  min-width: 130px;
   border-right: 1px solid #d8dfe3;
   flex-direction: column;
   align-items: center;
@@ -39,12 +39,13 @@ export const Sidecontainer = styled.div`
 export const Plus = styled.span`
   display: inline-block;
   transition: transform 0.3s;
+  transform: translateY(-1px);
 `;
 
 export const StyledButton = styled.button`
   background-color: ${({ theme }) => theme.buttonColor};
   color: ${({ theme }) => theme.text};
-  padding: 10px 5px;
+  padding: 10px;
   font-size: 15px;
 
   font-style: normal;
@@ -55,7 +56,7 @@ export const StyledButton = styled.button`
   margin-top: 10px;
   transition: background-color 0.3s;
   width: 11vw;
-  min-width: 110px;
+  min-width: 120px;
   &:hover {
     background-color: #76c1af; /* 호버 시 배경색 변경 */
 
