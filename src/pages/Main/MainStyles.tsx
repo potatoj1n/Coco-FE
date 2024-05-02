@@ -58,7 +58,9 @@ export const PjButton = styled.button`
   font-size: 15px;
   font-style: normal;
   font-weight: 600;
-
+  align-items: center;
+  justify-content: center;
+  display: flex;
   border: 1px solid ${({ theme }) => theme.borderColor};
   border-radius: 5px;
   margin-top: 10px;
@@ -73,7 +75,7 @@ export const PjButton = styled.button`
     }
   }
 `;
-export const ChatButton = styled(Link)`
+export const FolderButton = styled(Link)`
 color: ${({ theme }) => theme.text};
 padding: 10px;
 font-size: 15px;
@@ -85,15 +87,26 @@ transition: background-color 0.3s;
 width: 11vw;
 flex-direction: raw;
 min-width: 120px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+
 &:hover {
   background-color: #d8dfe3;`;
-export const FolderButton = styled(ChatButton)``;
+export const ChatButton = styled(FolderButton)``;
 
 export const Icon = styled.img`
   width: 20px;
   height: 20px;
 `;
-
+export const Menuname = styled.p`
+  color: ${({ theme }) => theme.text};
+  font-style: normal;
+  font-weight: 600;
+  display: flex;
+  flex-grow: 1;
+  margin-left: 10px;
+`;
 export const Maincontainer = styled.div`
   width: calc(100vw - max(12vw, 130px));
   border-left: 1px solid #d8dfe3;
@@ -105,7 +118,7 @@ export const Maincontainer = styled.div`
   grid-template-columns: repeat(2, 1fr); /* 두 개의 열을 동일한 비율로 설정 */
   grid-template-rows: repeat(2, 1fr); /* 두 개의 행을 동일한 비율로 설정 */
   gap: 25px; /* 그리드 간격 설정 */
-  padding: 20px 20px 20px 90px; /* 내부 여백 */
+  padding: 40px 20px 40px 90px; /* 내부 여백 */
   height: 100vh; /* 부모 컨테이너 높이 설정 */
 `;
 export const Hicontainer = styled.div`

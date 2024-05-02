@@ -8,6 +8,7 @@ import {
   Icon,
   ChatButton,
   Sidecontainer,
+  Menuname,
   Maincontainer,
   Hicontainer,
   Attendancecontainer,
@@ -80,11 +81,11 @@ const Main = () => {
 
           <FolderButton to="/ide">
             <Icon src={themeColor === 'light' ? folderLight : folderDark} />
-            프로젝트
+            <Menuname>프로젝트</Menuname>
           </FolderButton>
           <ChatButton to="/chat">
             <Icon src={themeColor === 'light' ? chatLight : chatDark} />
-            chat
+            <Menuname>chat</Menuname>
           </ChatButton>
         </Sidecontainer>
         <Maincontainer>
