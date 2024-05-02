@@ -103,12 +103,12 @@ export const Maincontainer = styled.div`
   grid-template-columns: repeat(2, 1fr); /* 두 개의 열을 동일한 비율로 설정 */
   grid-template-rows: repeat(2, 1fr); /* 두 개의 행을 동일한 비율로 설정 */
   gap: 20px; /* 그리드 간격 설정 */
-  padding: 20px; /* 내부 여백 */
+  padding: 20px 20px 20px 60px; /* 내부 여백 */
   height: 100vh; /* 부모 컨테이너 높이 설정 */
 `;
 export const Hicontainer = styled.div`
   background-color: ${({ theme }) => theme.HiColor};
-  height: max(26vw, 250px);
+  height: max(22vw, 250px);
   display: flex;
   width: max(40vw, 350px);
   min-width: 130px;
@@ -125,13 +125,13 @@ export const MainImg = styled.img`
   margin-top: 10px;
 `;
 export const Hione = styled.p`
-  font-size: max(2.1vw, 16px);
+  font-size: max(2vw, 16px);
   font-style: normal;
   font-weight: 600;
   color: black;
 `;
 export const Hitwo = styled.p`
-  font-size: max(2vw, 14px);
+  font-size: max(1.9vw, 14px);
   margin-top: 10px;
   font-style: normal;
   font-weight: 600;
@@ -141,7 +141,7 @@ export const Hitwo = styled.p`
 export const Attendancecontainer = styled.div`
   background-color: ${({ theme }) => theme.buttonColor};
 
-  height: max(26vw, 250px);
+  height: max(22vw, 250px);
   display: flex;
   width: max(30vw, 100px);
   flex-direction: column;
@@ -185,13 +185,15 @@ export const Day = styled.p`
 export const Pjcontainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin: -50px 20px 0 20px;
+  height: max(28vw, 250px);
+  width: max(30vw, 100px);
+  margin: 10px;
 `;
 export const ModifyPj = styled.p`
-  color: black;
+  color: ${({ theme }) => theme.text};
   margin-top: 25px;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
   margin-top: -20px;
   margin-left: 30px;
 `;
@@ -216,4 +218,41 @@ export const ModifyIcon = styled.img`
   height: 60px;
 `;
 
-export const ChatContainer = styled.div``;
+export const ChatContainer = styled.div`
+  flex-direction: column;
+  height: max(28vw, 250px);
+  width: max(35vw, 100px);
+  margin: 10px;
+  margin-left: -4.3vw;
+`;
+export const Chatnav = styled.div`
+  flex-direction: raw;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 10px;
+`;
+
+export const Chatname = styled.p`
+  color: ${({ theme }) => theme.text};
+  font-style: normal;
+  font-weight: 600;
+  display: flex;
+  margin: 0 10px;
+  flex-grow: 1;
+`;
+export const Chatmore = styled(Link)`
+  color: ${({ theme }) => theme.text};
+  font-style: normal;
+  font-weight: 500;
+  margin-top: 10px;
+  margin-right: 10px;
+  font-size: 8px;
+`;
+
+export const Chatmain = styled.div`
+  border-top: 1px solid rgba(102, 102, 102, 0.6);
+  border-bottom: 1px solid rgba(102, 102, 102, 0.6);
+  height: max(17vw, 20px);
+  width: max(35vw, 100px);
+`;

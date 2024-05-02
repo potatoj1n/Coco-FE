@@ -25,6 +25,10 @@ import {
   ModifyPj,
   ModifyPjBtn,
   ModifyIcon,
+  Chatnav,
+  Chatmain,
+  Chatname,
+  Chatmore,
 } from './MainStyles';
 import { ThemeProvider } from 'styled-components';
 import useLanguageStore from '../../store/IDE/IdeStore';
@@ -88,7 +92,14 @@ const Main = () => {
               <ModifyIcon src={modifypj} />
             </ModifyPjBtn>
           </Pjcontainer>
-          <ChatContainer></ChatContainer>
+          <ChatContainer>
+            <Chatnav>
+              <Icon src={themeColor === 'light' ? chatLight : chatDark} />
+              <Chatname> Chat </Chatname>
+              <Chatmore to="/chat"> 더보기... </Chatmore>
+            </Chatnav>
+            <Chatmain></Chatmain>
+          </ChatContainer>
         </Maincontainer>
       </Container>
     </ThemeProvider>
