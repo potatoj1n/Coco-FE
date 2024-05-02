@@ -4,11 +4,18 @@ import profileOther from '../../assets/profileOther.svg';
 import profileMine from '../../assets/profileMine.svg';
 import Chatsend from '../../assets/chatsend.svg';
 import Chatsearch from '../../assets/chatsearch.svg';
+import MessageTrash from '../../assets/messageTrash.svg';
 import { useTheTheme } from '../../components/Theme';
+import { Link } from 'react-router-dom';
+import { IconButton } from '@mui/material';
+import { ReactComponent as ChatIcon } from '../../assets/chat.svg';
+import { ReactComponent as FolderIcon } from '../../assets/folder.svg';
+
 import {
   lightTheme,
   darkTheme,
   MessageContainer,
+  MessageFlexContainer,
   UserContainer,
   MessageOther,
   UserIcon,
@@ -18,10 +25,12 @@ import {
   MessageMinetext,
   ChatContainer,
   ChatInputContainer,
+  MyMessageTrash,
   ChatInput,
   SendButton,
   SearchButton,
   SearchInput,
+  StyledDiv,
 } from './ChatStyles';
 
 const Chat = () => {
@@ -59,7 +68,7 @@ const Chat = () => {
     {
       id: 2,
       username: '상대방 이름',
-      text: '안녕하세요, 어떻게 지내세요?',
+      text: '코코다스팀의 코코 웹프로젝트 채팅방입니다. 다 같이 화이팅합시다! 프로젝트 잘 마무리해봐요. 오늘도 출석체크 잊지마시고 exp도 잊지마세요~ 입퇴실 체크는 필수~~',
       owner: 'other',
     }, // ... 퍼블리싱만
   ]);
@@ -110,6 +119,18 @@ const Chat = () => {
   };
   return (
     <ThemeProvider theme={currentTheme}>
+      <StyledDiv>
+        <Link to="/ide">
+          <IconButton>
+            <FolderIcon />
+          </IconButton>
+        </Link>
+        <Link to="/chat">
+          <IconButton>
+            <ChatIcon />
+          </IconButton>
+        </Link>
+      </StyledDiv>
       <MessageContainer>
         <div style={{ flexGrow: 1 }}></div>
         {messages.map(message =>
@@ -123,7 +144,10 @@ const Chat = () => {
             </MessageOther>
           ) : (
             <MessageMine key={message.id}>
-              <MessageMinetext>{message.text}</MessageMinetext>
+              <MessageFlexContainer>
+                <MessageMinetext>{message.text}</MessageMinetext>
+                <MyMessageTrash src={MessageTrash} />
+              </MessageFlexContainer>
               <UserContainer>
                 <UserIcon src={profileMine} />
               </UserContainer>
