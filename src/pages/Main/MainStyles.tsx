@@ -91,14 +91,20 @@ export const Icon = styled.img`
 `;
 
 export const Maincontainer = styled.div`
-  height: 100vh;
-  display: flex;
   width: calc(100vw - max(12vw, 130px));
-  flex-direction: raw;
-  align-items: center;
   border-left: 1px solid #d8dfe3;
   margin-top: -158px;
   margin-left: max(12vw, 130px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 두 개의 열을 동일한 비율로 설정 */
+  grid-template-rows: repeat(2, 1fr); /* 두 개의 행을 동일한 비율로 설정 */
+  gap: 20px; /* 그리드 간격 설정 */
+  padding: 20px; /* 내부 여백 */
+  height: 100vh; /* 부모 컨테이너 높이 설정 */
 `;
 export const Hicontainer = styled.div`
   background-color: ${({ theme }) => theme.HiColor};
