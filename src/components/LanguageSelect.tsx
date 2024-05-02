@@ -20,6 +20,7 @@ const Container = styled.div`
   height: 400px;
   padding: 30px;
   background-color: ${props => props.theme.backgroundColor};
+  position: fixed;
 `;
 const CustomButton = styled.div`
   border: 1px solid #28b381;
