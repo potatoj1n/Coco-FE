@@ -1,6 +1,10 @@
 import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
 
+export interface SearchInputProps {
+  show?: boolean;
+}
+
 export const lightTheme = {
   text: '#000000', // 라이트 모드 폰트 색상
   borderColor: '#eef1f3', // 라이트 모드 보더 색상
@@ -95,15 +99,13 @@ export const Maincontainer = styled.div`
   border-left: 1px solid #d8dfe3;
   margin-top: -158px;
   margin-left: max(12vw, 130px);
-
-  display: flex;
   justify-content: center;
   align-items: center;
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 두 개의 열을 동일한 비율로 설정 */
   grid-template-rows: repeat(2, 1fr); /* 두 개의 행을 동일한 비율로 설정 */
-  gap: 20px; /* 그리드 간격 설정 */
-  padding: 20px 20px 20px 60px; /* 내부 여백 */
+  gap: 25px; /* 그리드 간격 설정 */
+  padding: 20px 20px 20px 90px; /* 내부 여백 */
   height: 100vh; /* 부모 컨테이너 높이 설정 */
 `;
 export const Hicontainer = styled.div`
@@ -113,6 +115,7 @@ export const Hicontainer = styled.div`
   width: max(40vw, 350px);
   min-width: 130px;
   flex-direction: column;
+  justify-content: center;
   align-items: left;
   padding: 30px;
   border-radius: 16px;
@@ -145,7 +148,6 @@ export const Attendancecontainer = styled.div`
   display: flex;
   width: max(30vw, 100px);
   flex-direction: column;
-  display: flex;
   justify-content: center;
   padding: 30px;
   border-radius: 16px;
@@ -224,6 +226,7 @@ export const ChatContainer = styled.div`
   width: max(35vw, 100px);
   margin: 10px;
   margin-left: -4.3vw;
+  align-items: left;
 `;
 export const Chatnav = styled.div`
   flex-direction: raw;
@@ -255,4 +258,13 @@ export const Chatmain = styled.div`
   border-bottom: 1px solid rgba(102, 102, 102, 0.6);
   height: max(17vw, 20px);
   width: max(35vw, 100px);
+`;
+
+export const AttendanceImage = styled.img<{ show: boolean }>`
+  display: ${({ show }) => (show ? 'block' : 'none')};
+  height: 100px;
+  width: 100px;
+  position: fixed;
+  margin-top: -160px;
+  margin-left: 50px;
 `;

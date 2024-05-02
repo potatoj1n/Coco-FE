@@ -22,6 +22,7 @@ import {
   Day,
   Month,
   AttendButton,
+  AttendanceImage,
   ModifyPj,
   ModifyPjBtn,
   ModifyIcon,
@@ -39,11 +40,24 @@ import chatLight from '../../assets/chatlight.svg';
 import chatDark from '../../assets/chatdark.svg';
 import mainimg from '../../assets/mainimg.svg';
 import modifypj from '../../assets/modifypj.svg';
+import attend from '../../assets/attend.svg';
+
 const Main = () => {
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [languageSelector, setLanguageSelector] = useState(false);
   const { themeColor } = useTheTheme();
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
+  const [showImage, setShowImage] = useState(false);
+  const [clicked, setClicked] = useState(false); // 버튼 클릭 상태 추가
+
+  const handleButtonClick = () => {
+    if (!clicked) {
+      setShowImage(true); // 이미지 표시 상태를 true로 설정
+      setClicked(true); // 버튼이 클릭되었다고 상태 업데이트
+      alert('출석하였습니다.'); // 사용자에게 알림 표시
+      console.log('attend success');
+    }
+  };
 
   const onSelect = (selectedLanguage: string) => {
     setLanguage(selectedLanguage);
@@ -52,6 +66,7 @@ const Main = () => {
   const onClose = () => {
     setLanguageSelector(false);
   };
+
   return (
     <ThemeProvider theme={currentTheme}>
       <Container>
@@ -83,7 +98,12 @@ const Main = () => {
               <Day>24</Day>
               <Month>|5|</Month>
             </Date>
-            <AttendButton>출석하기</AttendButton>
+            <div>
+              <AttendButton onClick={handleButtonClick} disabled={clicked}>
+                {clicked ? '출석 완료' : '출석하기'}
+              </AttendButton>
+              {showImage && <AttendanceImage src={attend} show={showImage} />}
+            </div>
           </Attendancecontainer>
           <Pjcontainer>
             <Icon src={themeColor === 'light' ? folderLight : folderDark} />
