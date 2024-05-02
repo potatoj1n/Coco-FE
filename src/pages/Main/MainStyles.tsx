@@ -7,6 +7,8 @@ export const lightTheme = {
   background: '#fff',
   buttonColor: '#AAEAD3',
   HiColor: '#23BE87',
+  attend: '#ffffff',
+  attendbutton: '#28B381',
 };
 
 export const darkTheme = {
@@ -15,6 +17,8 @@ export const darkTheme = {
   background: '#243B56',
   buttonColor: '#23BE87',
   HiColor: '#AAEAD3',
+  attend: '#23BE87',
+  attendbutton: '#ffffff',
 };
 
 // 회전 애니메이션 정의
@@ -33,7 +37,6 @@ export const Sidecontainer = styled.div`
   left: 0;
   width: 12vw;
   min-width: 130px;
-  border-right: 1px solid #d8dfe3;
   flex-direction: column;
   align-items: center;
 `;
@@ -91,42 +94,87 @@ export const Maincontainer = styled.div`
   height: 100vh;
   display: flex;
   width: calc(100vw - max(12vw, 130px));
-  flex-direction: column;
+  flex-direction: raw;
   align-items: center;
-  border: 1px solid black;
+  border-left: 1px solid #d8dfe3;
   margin-top: -158px;
   margin-left: max(12vw, 130px);
 `;
 export const Hicontainer = styled.div`
   background-color: ${({ theme }) => theme.HiColor};
-  height: 280px;
+  height: max(26vw, 250px);
   display: flex;
-  width: max(40vw, 130px);
+  width: max(40vw, 350px);
   min-width: 130px;
   flex-direction: column;
   align-items: left;
-  padding: 25px;
+  padding: 30px;
   border-radius: 16px;
   margin: 10px;
 `;
 
 export const MainImg = styled.img`
-  width: 300px;
+  width: max(25vw, 200px);
   height: 170px;
   margin-top: 10px;
 `;
 export const Hione = styled.p`
-  font-size: 30px;
+  font-size: max(2.1vw, 16px);
   font-style: normal;
   font-weight: 600;
+  color: black;
 `;
 export const Hitwo = styled.p`
-  font-size: 25px;
-  margin-top: 5px;
+  font-size: max(2vw, 14px);
+  margin-top: 10px;
   font-style: normal;
   font-weight: 600;
+  color: black;
 `;
 
-export const Attendancecontainer = styled.div``;
+export const Attendancecontainer = styled.div`
+  background-color: ${({ theme }) => theme.buttonColor};
+
+  height: max(26vw, 250px);
+  display: flex;
+  width: max(30vw, 100px);
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  border-radius: 16px;
+  margin: 10px;
+  align-items: center;
+`;
+export const AttendButton = styled.button`
+  background-color: ${({ theme }) => theme.attendbutton};
+  color: ${({ theme }) => theme.attend};
+  width: 200px;
+  height: 40px;
+  font-size: 14px;
+  border-radius: 5px;
+  margin: 20px 0 0 0;
+`;
+export const Date = styled.div`
+  background-color: white;
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+`;
+export const Month = styled.p`
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
+`;
+export const Day = styled.p`
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 25px;
+`;
+
 export const Pjcontainer = styled.div``;
 export const ChatContainer = styled.div``;

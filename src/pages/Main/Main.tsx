@@ -18,6 +18,10 @@ import {
   Hione,
   Hitwo,
   MainImg,
+  Date,
+  Day,
+  Month,
+  AttendButton,
 } from './MainStyles';
 import { ThemeProvider } from 'styled-components';
 import useLanguageStore from '../../store/IDE/IdeStore';
@@ -67,7 +71,13 @@ const Main = () => {
             <Hitwo>오늘 하루도 힘내세요!</Hitwo>
             <MainImg src={mainimg} />
           </Hicontainer>
-          <Attendancecontainer></Attendancecontainer>
+          <Attendancecontainer>
+            <Date>
+              <Day>24</Day>
+              <Month>|5|</Month>
+            </Date>
+            <AttendButton>출석하기</AttendButton>
+          </Attendancecontainer>
           <Pjcontainer></Pjcontainer>
           <ChatContainer></ChatContainer>
         </Maincontainer>
