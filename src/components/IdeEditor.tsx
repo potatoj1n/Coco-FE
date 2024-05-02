@@ -2,7 +2,7 @@ import Editor, { EditorProps, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { useEffect, useRef } from 'react';
 import { CODE_SNIPPETS } from '../const/LanguageOption';
-import useLanguageStore from '../store/IdeStore';
+import useLanguageStore from '../store/IDE/IdeStore';
 import { useTheTheme } from './Theme';
 
 loader.config({

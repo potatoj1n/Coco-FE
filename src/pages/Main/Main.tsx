@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import LanguageSelector from '../../components/LanguageSelect';
-import useLanguageStore from '../../store/IdeStore';
+import useLanguageStore from '../../store/IDE/IdeStore';
 import { Sidecontainer } from './MainStyles';
 const Main = () => {
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);

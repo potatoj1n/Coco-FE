@@ -3,7 +3,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { LanguageOptions } from '../const/LanguageOption';
 import { styled } from 'styled-components';
-import useLanguageStore from '../store/IdeStore';
+import useLanguageStore from '../store/IDE/IdeStore';
 import { Link } from 'react-router-dom';
 import { TextField } from '@mui/material';
 import { useTheTheme } from './Theme';
