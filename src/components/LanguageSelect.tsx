@@ -10,6 +10,7 @@ import { useTheTheme } from './Theme';
 
 interface Props {
   onSelectChange: (language: string) => void;
+  onClose: () => void;
 }
 const Container = styled.div`
   display: flex;
@@ -29,10 +30,9 @@ const CustomButton = styled.div`
   margin-top: 20px;
 `;
 
-const LanguageSelector: React.FC<Props> = ({ onSelectChange }) => {
+const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const { themeColor } = useTheTheme();
-  const language = useLanguageStore(state => state.language);
-  const setLanguage = useLanguageStore(state => state.setLanguage);
+  const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const selectedLanguage = event.target.value;
@@ -88,7 +88,9 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange }) => {
         <Link to="/ide">
           <CustomButton className="bg-green-500">생성 하기</CustomButton>
         </Link>
-        <CustomButton className="text-green-500">취소 하기</CustomButton>
+        <CustomButton className="text-green-500" onClick={onClose}>
+          취소 하기
+        </CustomButton>
       </span>
     </Container>
   );
