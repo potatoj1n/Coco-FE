@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { IconButton, Snackbar, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from 'styled-components';
+import useConsoleStore from '../store/IDE/ConsoleStore';
 
 interface Props {
   editorRef: React.MutableRefObject<any>;
   language: string;
+  output: string[] | null;
+  isLoading: boolean;
+  isError: boolean;
+  openSnackbar: boolean;
+  snackbarMessage: string;
 }
 const ConsoleButton = styled.div`
   width: max-content;
@@ -14,13 +20,11 @@ const ConsoleButton = styled.div`
   color: black;
   padding: 8px;
   font-size: 16px;
+  z-index: -1;
 `;
 
 const Console: React.FC<Props> = () => {
-  const [output] = useState<string[] | null>(null);
-  const [isError] = useState<boolean>(false);
-  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
-  const [snackbarMessage] = useState<string>('');
+  const { output, isError, openSnackbar, snackbarMessage, setOpenSnackbar } = useConsoleStore();
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);

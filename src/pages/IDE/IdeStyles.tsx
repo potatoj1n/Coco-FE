@@ -19,6 +19,14 @@ export const ButtonContainer = styled.div`
   padding: 5px;
   border-bottom: 0.5px solid #d8dfe3;
 `;
+export const IconContainer = styled.div`
+  border: 0.5px solid #d8dfe3;
+  height: 100vh;
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  align-itmens: center;
+`;
 export const FileListContainer = styled.div`
   background-color: ${props => props.theme.fileListBackground};
   padding: 10px;
