@@ -22,6 +22,9 @@ import {
   Day,
   Month,
   AttendButton,
+  ModifyPj,
+  ModifyPjBtn,
+  ModifyIcon,
 } from './MainStyles';
 import { ThemeProvider } from 'styled-components';
 import useLanguageStore from '../../store/IDE/IdeStore';
@@ -31,7 +34,7 @@ import folderDark from '../../assets/folderdark.svg';
 import chatLight from '../../assets/chatlight.svg';
 import chatDark from '../../assets/chatdark.svg';
 import mainimg from '../../assets/mainimg.svg';
-
+import modifypj from '../../assets/modifypj.svg';
 const Main = () => {
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [languageSelector, setLanguageSelector] = useState(false);
@@ -78,7 +81,13 @@ const Main = () => {
             </Date>
             <AttendButton>출석하기</AttendButton>
           </Attendancecontainer>
-          <Pjcontainer></Pjcontainer>
+          <Pjcontainer>
+            <Icon src={themeColor === 'light' ? folderLight : folderDark} />
+            <ModifyPj>수정 중인 프로젝트</ModifyPj>
+            <ModifyPjBtn to="/ide">
+              <ModifyIcon src={modifypj} />
+            </ModifyPjBtn>
+          </Pjcontainer>
           <ChatContainer></ChatContainer>
         </Maincontainer>
       </Container>

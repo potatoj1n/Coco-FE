@@ -182,5 +182,38 @@ export const Day = styled.p`
   margin-top: 25px;
 `;
 
-export const Pjcontainer = styled.div``;
+export const Pjcontainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: -50px 20px 0 20px;
+`;
+export const ModifyPj = styled.p`
+  color: black;
+  margin-top: 25px;
+  font-style: normal;
+  font-weight: 500;
+  margin-top: -20px;
+  margin-left: 30px;
+`;
+
+export const ModifyPjBtn = styled(Link)`
+background-color: white;
+padding: 20px;
+border-radius: 5px;
+transition: background-color 0.3s;
+border: 1px solid #A9B5BC;
+margin-top: 10px;
+display: flex;
+justify-content: center;
+align-items: center;
+width: 130px;
+height: 160px;
+&:hover {
+  background-color: #d8dfe3;`;
+
+export const ModifyIcon = styled.img`
+  width: 60px;
+  height: 60px;
+`;
+
 export const ChatContainer = styled.div``;
