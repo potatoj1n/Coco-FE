@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { ThemeProvider } from 'styled-components';
 import * as monaco from 'monaco-editor';
 import { IdeEditor } from '../../components/IdeEditor';
@@ -12,8 +12,9 @@ import { Link } from 'react-router-dom';
 import { useTheTheme } from '../../components/Theme';
 import Console from '../../components/Console';
 import { ButtonContainer, Container, CustomButton, FileListContainer, IDEContainer } from './IdeStyles';
-import useLanguageStore from '../../store/IdeStore';
+import useLanguageStore from '../../store/IDE/IdeStore';
 import { executeCode } from '../../components/api';
+import useConsoleStore from '../../store/IDE/ConsoleStore';
 
 export default function IDE() {
   const { themeColor } = useTheTheme();
@@ -25,12 +26,7 @@ export default function IDE() {
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const language = useLanguageStore(state => state.language);
-
-  const [output, setOutput] = useState<string[] | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
-  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const { output, isLoading, isError, openSnackbar, snackbarMessage } = useConsoleStore();
 
   const runCode = async () => {
     if (!editorRef.current) return;
@@ -39,16 +35,19 @@ export default function IDE() {
     if (!sourceCode) return;
 
     try {
-      setIsLoading(true);
+      useConsoleStore.setState({ isLoading: true });
       const { run: result } = await executeCode(language, sourceCode);
-      setOutput(result.output.split('\n'));
-      result.stderr ? setIsError(true) : setIsError(false);
+      useConsoleStore.setState({
+        output: result.output.split('\n'),
+        isError: !!result.stderr,
+        snackbarMessage: '',
+        openSnackbar: false,
+      });
     } catch (error) {
       console.log(error);
-      setSnackbarMessage('Unable to run code');
-      setOpenSnackbar(true);
+      useConsoleStore.setState({ snackbarMessage: 'Unable to run code', openSnackbar: true });
     } finally {
-      setIsLoading(false);
+      useConsoleStore.setState({ isLoading: false });
     }
   };
 
@@ -73,7 +72,15 @@ export default function IDE() {
           <FileListContainer>파일 목록</FileListContainer>
           <IDEContainer>
             <IdeEditor />
-            <Console editorRef={editorRef} language={language} />
+            <Console
+              editorRef={editorRef}
+              language={language}
+              output={output}
+              isLoading={isLoading}
+              isError={isError}
+              openSnackbar={openSnackbar}
+              snackbarMessage={snackbarMessage}
+            />
           </IDEContainer>
         </div>
       </Container>
