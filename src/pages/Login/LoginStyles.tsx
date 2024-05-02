@@ -19,16 +19,17 @@ export const Explain = styled.div`
   letter-spacing: 2px;
   font-weight: 500;
 `;
-export const LoginPart = styled.form`
+export const LoginPart = styled.div`
   width: 50%;
   display: flex;
+  flex-direction: column;
   height: 100%;
   align-items: center;
   justify-content: center;
   background-color: ${({ theme }) => (theme.themeColor === 'dark' ? theme.lightColor : 'transparent')};
 `;
 
-export const Logindiv = styled.div`
+export const Logindiv = styled.form`
   display: flex;
   flex-direction: column;
   width: 50%;
