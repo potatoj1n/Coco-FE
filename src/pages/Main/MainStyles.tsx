@@ -6,6 +6,7 @@ export const lightTheme = {
   borderColor: '#eef1f3', // 라이트 모드 보더 색상
   background: '#fff',
   buttonColor: '#AAEAD3',
+  HiColor: '#23BE87',
 };
 
 export const darkTheme = {
@@ -13,6 +14,7 @@ export const darkTheme = {
   borderColor: '#54595b', // 다크 모드 보더 색상
   background: '#243B56',
   buttonColor: '#23BE87',
+  HiColor: '#AAEAD3',
 };
 
 // 회전 애니메이션 정의
@@ -24,7 +26,7 @@ const rotateAnimation = keyframes`
     transform: rotate(360deg);
   }
 `;
-
+export const Container = styled.div``;
 export const Sidecontainer = styled.div`
   height: 100%;
   display: flex;
@@ -84,3 +86,47 @@ export const Icon = styled.img`
   width: 20px;
   height: 20px;
 `;
+
+export const Maincontainer = styled.div`
+  height: 100vh;
+  display: flex;
+  width: calc(100vw - max(12vw, 130px));
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid black;
+  margin-top: -158px;
+  margin-left: max(12vw, 130px);
+`;
+export const Hicontainer = styled.div`
+  background-color: ${({ theme }) => theme.HiColor};
+  height: 280px;
+  display: flex;
+  width: max(40vw, 130px);
+  min-width: 130px;
+  flex-direction: column;
+  align-items: left;
+  padding: 25px;
+  border-radius: 16px;
+  margin: 10px;
+`;
+
+export const MainImg = styled.img`
+  width: 300px;
+  height: 170px;
+  margin-top: 10px;
+`;
+export const Hione = styled.p`
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+`;
+export const Hitwo = styled.p`
+  font-size: 25px;
+  margin-top: 5px;
+  font-style: normal;
+  font-weight: 600;
+`;
+
+export const Attendancecontainer = styled.div``;
+export const Pjcontainer = styled.div``;
+export const ChatContainer = styled.div``;
