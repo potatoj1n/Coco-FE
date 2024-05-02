@@ -7,10 +7,6 @@ import { ThemeProvider } from './components/Theme';
 
 const AppStyles = createGlobalStyle`
   ${reset};
-  /* *{
-    padding: 0;
-    margin: 0;
-  } */
   body {
     background-color: ${({ theme }) => theme.backgroundColor};
   }

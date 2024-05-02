@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Main from '../pages/Main/Main';
 import Login from '../pages/Login/Login';
 import SignUp from '../pages/SignUp/SignUp';
-import MyPage from '../pages/MyPage';
+import MyPage from '../pages/Mypage/MyPage';
 import IDE from '../pages/IDE/IDE';
 import Chat from '../pages/Chat/Chat';
 import { Layout } from './Layout';
