@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const lightTheme = {
   text: '#000000', // 라이트 모드 폰트 색상
@@ -39,15 +40,13 @@ export const Sidecontainer = styled.div`
 export const Plus = styled.span`
   display: inline-block;
   transition: transform 0.3s;
-  transform: translateY(-1px);
 `;
 
-export const StyledButton = styled.button`
+export const PjButton = styled.button`
   background-color: ${({ theme }) => theme.buttonColor};
   color: ${({ theme }) => theme.text};
   padding: 10px;
   font-size: 15px;
-
   font-style: normal;
   font-weight: 600;
 
@@ -64,4 +63,24 @@ export const StyledButton = styled.button`
       animation: ${rotateAnimation} 0.3s linear forwards;
     }
   }
+`;
+export const ChatButton = styled(Link)`
+color: ${({ theme }) => theme.text};
+padding: 10px;
+font-size: 15px;
+font-style: normal;
+font-weight: 600;
+border: none;
+border-radius: 5px;
+transition: background-color 0.3s;
+width: 11vw;
+flex-direction: raw;
+min-width: 120px;
+&:hover {
+  background-color: #d8dfe3;`;
+export const FolderButton = styled(ChatButton)``;
+
+export const Icon = styled.img`
+  width: 20px;
+  height: 20px;
 `;
