@@ -75,7 +75,7 @@ export const PjButton = styled.button`
     }
   }
 `;
-export const FolderButton = styled(Link)`
+export const FolderButton = styled.button`
 color: ${({ theme }) => theme.text};
 padding: 10px;
 font-size: 15px;
@@ -93,7 +93,25 @@ justify-content: space-between;
 
 &:hover {
   background-color: #d8dfe3;`;
-export const ChatButton = styled(FolderButton)``;
+export const ChatButton = styled(Link)`
+  color: ${({ theme }) => theme.text};
+  padding: 10px;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  width: 11vw;
+  flex-direction: raw;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:hover {
+  background-color: #d8dfe3;
+`;
 
 export const Icon = styled.img`
   width: 20px;

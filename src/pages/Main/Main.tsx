@@ -51,7 +51,28 @@ import modifypj from '../../assets/modifypj.svg';
 import attend from '../../assets/attend.svg';
 import profileOther from '../../assets/profileOther.svg';
 import profileMine from '../../assets/profileMine.svg';
-
+interface ProjectInfoModalProps {
+  onClose: () => void; // onClose는 함수이며 반환 값이 없다.
+}
+const ProjectInfoModal: React.FC<ProjectInfoModalProps> = ({ onClose }) => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        backgroundColor: 'white',
+        padding: '20px',
+        zIndex: 10,
+      }}
+    >
+      <h1>내프로젝트</h1>
+      <p>프로젝트의 세부 정보를 여기에 표시합니다.</p>
+      <button onClick={onClose}>X</button>
+    </div>
+  );
+};
 const Main = () => {
   const [messages, setMessages] = useState([
     {
@@ -95,6 +116,8 @@ const Main = () => {
 
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [languageSelector, setLanguageSelector] = useState(false);
+  const [showProjectInfoModal, setShowProjectInfoModal] = useState(false);
+
   const { themeColor } = useTheTheme();
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
   const [showImage, setShowImage] = useState(false);
@@ -120,6 +143,9 @@ const Main = () => {
   const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(e.target.value);
   };
+  const toggleProjectInfoModal = () => {
+    setShowProjectInfoModal(!showProjectInfoModal);
+  };
 
   const onSelect = (selectedLanguage: string) => {
     setLanguage(selectedLanguage);
@@ -139,11 +165,14 @@ const Main = () => {
             </PjButton>
             {languageSelector && <LanguageSelector onSelectChange={onSelect} onClose={onClose} />}
           </div>
+          <div>
+            <FolderButton onClick={toggleProjectInfoModal}>
+              <Icon src={themeColor === 'light' ? folderLight : folderDark} />
+              <Menuname>프로젝트</Menuname>
+            </FolderButton>
+            {showProjectInfoModal && <ProjectInfoModal onClose={() => setShowProjectInfoModal(false)} />}
+          </div>
 
-          <FolderButton to="/ide">
-            <Icon src={themeColor === 'light' ? folderLight : folderDark} />
-            <Menuname>프로젝트</Menuname>
-          </FolderButton>
           <ChatButton to="/chat">
             <Icon src={themeColor === 'light' ? chatLight : chatDark} />
             <Menuname>chat</Menuname>
