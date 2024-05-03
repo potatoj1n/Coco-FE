@@ -48,7 +48,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
       alert('프로젝트명을 입력하세요.');
       return;
     }
-    // 새 프로젝트 객체 생성
+
     const newProject = {
       id: Math.random().toString(), // 임의의 고유 ID 생성
       name: newProjectName,
