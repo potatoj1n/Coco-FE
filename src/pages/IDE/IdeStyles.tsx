@@ -29,7 +29,6 @@ export const IconContainer = styled.div`
 `;
 export const FileListContainer = styled.div`
   background-color: ${props => props.theme.fileListBackground};
-  border-left: 0.5px solid #d8dfe3;
   border-right: 0.5px solid #d8dfe3;
 `;
 export const IDEContainer = styled.div`

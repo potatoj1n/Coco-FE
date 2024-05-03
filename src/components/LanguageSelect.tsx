@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { LanguageOptions } from '../const/LanguageOption';
 import { styled } from 'styled-components';
-import useLanguageStore from '../store/IDE/IdeStore';
+import useLanguageStore from '../state/IDE/IdeStore';
 import { Link } from 'react-router-dom';
 import { TextField } from '@mui/material';
 import { useTheTheme } from './Theme';
+import useProjectStore from '../state/IDE/ProjectState';
 
 interface Props {
   onSelectChange: (language: string) => void;
@@ -34,12 +35,32 @@ const CustomButton = styled.div`
 const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const { themeColor } = useTheTheme();
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
+  const [projects, addProject] = useProjectStore(state => [state.projects, state.addProject]);
+  const [newProjectName, setNewProjectName] = useState('');
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const selectedLanguage = event.target.value;
     setLanguage(selectedLanguage);
     onSelectChange(selectedLanguage);
   };
+  const handleCreateProject = () => {
+    if (newProjectName.trim() === '') {
+      alert('프로젝트명을 입력하세요.');
+      return;
+    }
+
+    const newProject = {
+      id: Math.random().toString(), // 임의의 고유 ID 생성
+      name: newProjectName,
+      language: language,
+      folders: [], // 일단 빈 배열로 초기화
+    };
+
+    addProject(newProject);
+    setNewProjectName('');
+    onClose();
+  };
+
   return (
     <Container>
       <h1 className="text-2xl">새 프로젝트 생성하기 </h1>
@@ -61,6 +82,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
             color: themeColor === 'light' ? 'black' : '#76ECC2',
           },
         }}
+        onChange={e => setNewProjectName(e.target.value)}
       ></TextField>
       <h2 className="text-lg">언어 선택</h2>
       <Select
@@ -87,7 +109,9 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
       </Select>
       <span className="flex justify-end gap-3">
         <Link to="/ide">
-          <CustomButton className="bg-green-500">생성 하기</CustomButton>
+          <CustomButton className="bg-green-500" onClick={handleCreateProject}>
+            생성 하기
+          </CustomButton>
         </Link>
         <CustomButton className="text-green-500" onClick={onClose}>
           취소 하기
