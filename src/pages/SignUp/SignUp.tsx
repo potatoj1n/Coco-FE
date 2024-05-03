@@ -101,20 +101,8 @@ const SignUp = () => {
             </Check>
           </div>
           <span className="mt-6 text-lg">닉네임</span>
-          <div>
-            <SignUpInput
-              onChange={onChange}
-              name="nickname"
-              value={nickname}
-              type="text"
-              placeholder="닉네임"
-              style={{ height: '100%', width: '82%' }}
-              required
-            />
-            <Check onClick={onNickNameCheck} className="text-sm">
-              중복확인
-            </Check>
-          </div>
+
+          <SignUpInput onChange={onChange} name="nickname" value={nickname} type="text" placeholder="닉네임" required />
           <span className="mt-6 text-lg">비밀번호</span>
           <SignUpInput
             onChange={onChange}

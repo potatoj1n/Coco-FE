@@ -17,23 +17,26 @@ export const AttendanceDiv = styled.div`
   padding: 30px 50px;
 `;
 
-export const EditUserInfo = styled.div`
+export const UserInfo = styled.div`
   margin-top: 30px;
   border: 1px solid ${({ theme }) => theme.borderColor};
   height: 40%;
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+  flex-direction: column;
 `;
-export const Span = styled.span`
-  position: absolute;
-  /* margin-top: 20px; */
-  font-size: 18px;
+export const EditUser = styled.div`
+  border: 1px solid blue;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  gap: 30px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 export const UserInput = styled.input`
   width: 80%;
-  height: 9%;
+  height: 15%;
   border: 1px solid blue;
 `;
