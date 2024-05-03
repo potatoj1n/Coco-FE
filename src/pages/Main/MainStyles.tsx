@@ -110,7 +110,7 @@ export const Menuname = styled.p`
 export const Maincontainer = styled.div`
   width: calc(100vw - max(12vw, 130px));
   border-left: 1px solid #d8dfe3;
-  margin-top: -158px;
+  margin-top: -192px;
   margin-left: max(12vw, 130px);
   justify-content: center;
   align-items: center;
@@ -118,7 +118,7 @@ export const Maincontainer = styled.div`
   grid-template-columns: repeat(2, 1fr); /* 두 개의 열을 동일한 비율로 설정 */
   grid-template-rows: repeat(2, 1fr); /* 두 개의 행을 동일한 비율로 설정 */
   gap: 25px; /* 그리드 간격 설정 */
-  padding: 40px 20px 40px 90px; /* 내부 여백 */
+  padding: 85px 20px 40px 90px; /* 내부 여백 */
   height: 100vh; /* 부모 컨테이너 높이 설정 */
 `;
 export const Hicontainer = styled.div`
@@ -198,6 +198,15 @@ export const Day = styled.p`
   margin-top: 50px;
 `;
 
+export const AttendanceImage = styled.img<{ show: boolean }>`
+  display: ${({ show }) => (show ? 'block' : 'none')};
+  height: 160px;
+  width: 160px;
+  position: fixed;
+  margin-top: -220px;
+  margin-left: 20px;
+`;
+
 export const Pjcontainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -270,15 +279,63 @@ export const Chatmore = styled(Link)`
 export const Chatmain = styled.div`
   border-top: 1px solid rgba(102, 102, 102, 0.6);
   border-bottom: 1px solid rgba(102, 102, 102, 0.6);
-  height: max(17vw, 20px);
+  height: max(18vw, 20px);
   width: max(35vw, 100px);
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
 `;
 
-export const AttendanceImage = styled.img<{ show: boolean }>`
-  display: ${({ show }) => (show ? 'block' : 'none')};
-  height: 160px;
-  width: 160px;
-  position: fixed;
-  margin-top: -220px;
-  margin-left: 20px;
+export const UserContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0px 10px 0px 10px;
+`;
+
+export const UserName = styled.h1`
+  font-size: 9px;
+  margin-top: 0.6rem;
+`;
+
+export const UserIcon = styled.img`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+`;
+
+export const MessageFlexContainer = styled.div`
+  display: flex;
+  flex-direction: row; // 아이템을 가로로 배열
+  align-items: flex-end; // 아이템을 컨테이너의 하단에 정렬
+  width: 100%;
+`;
+
+export const MessageOther = styled.div`
+  align-self: flex-start;
+  display: flex;
+  margin: 4px 0px;
+`;
+
+export const MessageMine = styled(MessageOther)`
+  align-self: flex-end;
+`;
+
+export const MessageMinetext = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  border: 1px solid rgba(102, 102, 102, 0.6);
+  background-color: #9be9a8;
+  padding: 15px 20px;
+  margin: 5px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  font-size: 13px;
+  color: black;
+  max-width: 26vw;
+`;
+export const MessageOthertext = styled(MessageMinetext)`
+  background-color: #fff;
+  margin-bottom: 28px;
 `;
