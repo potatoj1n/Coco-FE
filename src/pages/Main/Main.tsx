@@ -40,7 +40,7 @@ import {
   MessageMinetext,
 } from './MainStyles';
 import { ThemeProvider } from 'styled-components';
-import useLanguageStore from '../../store/IDE/IdeStore';
+import useLanguageStore from '../../state/IDE/IdeStore';
 import { useTheTheme } from '../../components/Theme';
 import folderLight from '../../assets/folderlight.svg';
 import folderDark from '../../assets/folderdark.svg';
