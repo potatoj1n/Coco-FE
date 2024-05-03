@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import LanguageSelector from '../../components/LanguageSelect';
+import PjList from '../../components/PjList';
 import {
   lightTheme,
   darkTheme,
@@ -54,6 +55,7 @@ import profileMine from '../../assets/profileMine.svg';
 interface ProjectInfoModalProps {
   onClose: () => void; // onClose는 함수이며 반환 값이 없다.
 }
+
 const ProjectInfoModal: React.FC<ProjectInfoModalProps> = ({ onClose }) => {
   return (
     <div
@@ -116,7 +118,7 @@ const Main = () => {
 
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [languageSelector, setLanguageSelector] = useState(false);
-  const [showProjectInfoModal, setShowProjectInfoModal] = useState(false);
+  const [showPjList, setshowPjList] = useState(false);
 
   const { themeColor } = useTheTheme();
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
@@ -143,8 +145,9 @@ const Main = () => {
   const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(e.target.value);
   };
-  const toggleProjectInfoModal = () => {
-    setShowProjectInfoModal(!showProjectInfoModal);
+  const togglePJList = () => {
+    setshowPjList(!showPjList);
+    console.log('Current showPjList before toggle:', showPjList);
   };
 
   const onSelect = (selectedLanguage: string) => {
@@ -166,11 +169,11 @@ const Main = () => {
             {languageSelector && <LanguageSelector onSelectChange={onSelect} onClose={onClose} />}
           </div>
           <div>
-            <FolderButton onClick={toggleProjectInfoModal}>
+            <FolderButton onClick={togglePJList}>
               <Icon src={themeColor === 'light' ? folderLight : folderDark} />
               <Menuname>프로젝트</Menuname>
             </FolderButton>
-            {showProjectInfoModal && <ProjectInfoModal onClose={() => setShowProjectInfoModal(false)} />}
+            {showPjList && <PjList onClose={() => setshowPjList(false)} />}
           </div>
 
           <ChatButton to="/chat">
