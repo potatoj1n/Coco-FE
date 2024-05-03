@@ -1,19 +1,20 @@
 import React, { useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import * as monaco from 'monaco-editor';
 import { IdeEditor } from '../../components/IdeEditor';
+import { useTheTheme } from '../../components/Theme';
+import Console from '../../components/Console';
+import FileList from '../../components/FileList';
 import { ReactComponent as ChatlightIcon } from '../../assets/chatlight.svg';
 import { ReactComponent as FolderlightIcon } from '../../assets/folderlight.svg';
 import { ReactComponent as FolderDarkIcon } from '../../assets/folderdark.svg';
 import { ReactComponent as ChatDarkIcon } from '../../assets/chatdark.svg';
 import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 import { Button, IconButton } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useTheTheme } from '../../components/Theme';
-import Console from '../../components/Console';
 import { ButtonContainer, Container, CustomButton, IconContainer, FileListContainer, IDEContainer } from './IdeStyles';
 import useLanguageStore from '../../store/IDE/IdeStore';
-import { executeCode } from '../../components/api';
+import { executeCode } from '../../components/CodeApi';
 import useConsoleStore from '../../store/IDE/ConsoleStore';
 
 export default function IDE() {
@@ -26,9 +27,10 @@ export default function IDE() {
 
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const language = useLanguageStore(state => state.language);
-  const { output, isLoading, isError, openSnackbar, snackbarMessage } = useConsoleStore();
+  const { output, isLoading, isError, openSnackbar, snackbarMessage, consoleOpen, setConsoleOpen } = useConsoleStore();
 
   const runCode = async () => {
+    setConsoleOpen(true);
     if (!editorRef.current) return;
 
     const sourceCode = editorRef.current.getValue();
@@ -81,7 +83,9 @@ export default function IDE() {
               <Link to="/chat">{themeColor === 'light' ? <ChatlightIcon /> : <ChatDarkIcon />}</Link>
             </IconButton>
           </IconContainer>
-          <FileListContainer>파일 목록</FileListContainer>
+          <FileListContainer>
+            <FileList />
+          </FileListContainer>
           <IDEContainer>
             <IdeEditor />
             <Console
@@ -92,6 +96,8 @@ export default function IDE() {
               isError={isError}
               openSnackbar={openSnackbar}
               snackbarMessage={snackbarMessage}
+              consoleOpen={consoleOpen}
+              setConsoleOpen={setConsoleOpen}
             />
           </IDEContainer>
         </div>
