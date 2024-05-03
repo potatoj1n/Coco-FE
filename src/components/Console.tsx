@@ -2,7 +2,7 @@ import React from 'react';
 import { IconButton, Snackbar, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from 'styled-components';
-import useConsoleStore from '../store/IDE/ConsoleStore';
+import useConsoleStore from '../state/IDE/ConsoleStore';
 
 interface Props {
   editorRef: React.MutableRefObject<any>;
