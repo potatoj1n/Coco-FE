@@ -14,7 +14,7 @@ import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 import { Button, IconButton } from '@mui/material';
 import { ButtonContainer, Container, CustomButton, IconContainer, FileListContainer, IDEContainer } from './IdeStyles';
 import useLanguageStore from '../../store/IDE/IdeStore';
-import { executeCode } from '../../components/api';
+import { executeCode } from '../../components/CodeApi';
 import useConsoleStore from '../../store/IDE/ConsoleStore';
 
 export default function IDE() {
