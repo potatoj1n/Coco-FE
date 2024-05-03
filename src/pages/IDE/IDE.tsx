@@ -13,9 +13,9 @@ import { ReactComponent as ChatDarkIcon } from '../../assets/chatdark.svg';
 import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 import { Button, IconButton } from '@mui/material';
 import { ButtonContainer, Container, CustomButton, IconContainer, FileListContainer, IDEContainer } from './IdeStyles';
-import useLanguageStore from '../../store/IDE/IdeStore';
+import useLanguageStore from '../../state/IDE/IdeStore';
 import { executeCode } from '../../components/CodeApi';
-import useConsoleStore from '../../store/IDE/ConsoleStore';
+import useConsoleStore from '../../state/IDE/ConsoleStore';
 
 export default function IDE() {
   const { themeColor } = useTheTheme();
