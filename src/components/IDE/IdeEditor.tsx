@@ -33,6 +33,7 @@ export const IdeEditor: React.FC = () => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const language = useLanguageStore(state => state.language);
   const setLanguage = useLanguageStore(state => state.setLanguage);
+
   const { themeColor } = useTheTheme();
 
   useEffect(() => {

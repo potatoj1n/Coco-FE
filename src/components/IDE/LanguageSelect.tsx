@@ -18,8 +18,9 @@ interface Props {
 const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const { themeColor } = useTheTheme();
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
-  const [projects, addProject] = useProjectStore(state => [state.projects, state.addProject]);
   const [newProjectName, setNewProjectName] = useState('');
+  const { addProject } = useProjectStore();
+
   //언어 선택 이벤트
   const handleChange = (event: SelectChangeEvent<string>) => {
     const selectedLanguage = event.target.value;
