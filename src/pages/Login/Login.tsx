@@ -6,6 +6,7 @@ import { useTheTheme } from '../../components/Theme';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Error } from '../SignUp/SignUpStyles';
+import axios from 'axios';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -39,10 +40,15 @@ const Login = () => {
       setLoading(true);
       //axios써서 post로 보내기
       //유저 정보 받아오고 업데이트해주기
+      const response = await axios.post('http://localhost:3000/login', user);
+      localStorage.setItem('accessToken', response.data.accessToken);
+      localStorage.setItem('refreshToken', response.data.refreshToken);
+      alert('Login successful!');
       //유저정보에 없거나 비밀번호,아이디 틀리면 에러바로 뜨게
       navigate('/main');
     } catch (e) {
       //에러 캐치
+      alert('Login failed!');
       console.log(e);
     } finally {
       setLoading(false);

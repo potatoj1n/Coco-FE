@@ -36,18 +36,18 @@ const SignUp = () => {
     //이메일 백엔드로 보내서 이미 있는 이메일인지 확인하기
   };
 
-  const onNickNameCheck = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (email == '') {
-      setError('이메일을 입력해주세요.');
-      return;
-    }
-    const NickNameCheck = {
-      nickname: nickname,
-    };
-    console.log(NickNameCheck);
-    //이메일 백엔드로 보내서 이미 있는 닉네임있는지 확인하기
-  };
+  // const onNickNameCheck = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   if (email == '') {
+  //     setError('이메일을 입력해주세요.');
+  //     return;
+  //   }
+  //   const NickNameCheck = {
+  //     nickname: nickname,
+  //   };
+  //   console.log(NickNameCheck);
+  //   //이메일 백엔드로 보내서 이미 있는 닉네임있는지 확인하기
+  // };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
