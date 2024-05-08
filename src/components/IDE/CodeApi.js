@@ -29,6 +29,29 @@ export const executeCode = async (language, sourceCode) => {
     throw error;
   }
 };
+export const saveCode = async (language, sourceCode, fileId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/save-code`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        language: language,
+        sourceCode: sourceCode,
+        fileId: fileId,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to save code');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
 export const createProject = async projectData => {
   try {

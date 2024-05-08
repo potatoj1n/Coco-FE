@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import * as monaco from 'monaco-editor';
@@ -14,8 +14,9 @@ import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 import { Button, IconButton } from '@mui/material';
 import { ButtonContainer, Container, CustomButton, IconContainer, FileListContainer, IDEContainer } from './IdeStyles';
 import useLanguageStore from '../../state/IDE/IdeStore';
-import { executeCode } from '../../components/IDE/CodeApi';
+import { executeCode, saveCode } from '../../components/IDE/CodeApi';
 import useConsoleStore from '../../state/IDE/ConsoleStore';
+import useProjectStore, { useFolderStore } from '../../state/IDE/ProjectState';
 
 export default function IDE() {
   const { themeColor } = useTheTheme();
@@ -29,6 +30,33 @@ export default function IDE() {
   const language = useLanguageStore(state => state.language);
   const { output, isLoading, isError, openSnackbar, snackbarMessage, consoleOpen, setConsoleOpen } = useConsoleStore();
 
+  //save 버튼
+  const handleSave = () => {
+    if (!editorRef.current) return;
+
+    const sourceCode = editorRef.current.getValue();
+    if (!sourceCode) return;
+
+    saveCode(language, sourceCode)
+      .then(() => console.log('저장되었습니다.'))
+      .catch(error => console.error('저장에 실패했습니다.', error));
+  };
+  //단축키 이벤트 핸들러
+  useEffect(() => {
+    const handleSaveShortcut = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+        event.preventDefault();
+        handleSave();
+      }
+    };
+
+    document.addEventListener('keydown', handleSaveShortcut);
+
+    return () => {
+      document.removeEventListener('keydown', handleSaveShortcut);
+    };
+  }, []);
+  //Run 버튼
   const runCode = async () => {
     setConsoleOpen(true);
     if (!editorRef.current) return;
@@ -47,7 +75,7 @@ export default function IDE() {
       });
     } catch (error) {
       console.log(error);
-      useConsoleStore.setState({ snackbarMessage: 'Unable to run code', openSnackbar: true });
+      useConsoleStore.setState({ snackbarMessage: '코드 실행에 실패했습니다.', openSnackbar: true });
     } finally {
       useConsoleStore.setState({ isLoading: false });
     }
@@ -73,8 +101,21 @@ export default function IDE() {
             <PlayArrowOutlinedIcon />
             RUN
           </Button>
-          <CustomButton className="bg-green-100 text-black mr-2">{language}</CustomButton>
-          <CustomButton className="bg-green-500 text-white ">저장</CustomButton>
+          <CustomButton>{language}</CustomButton>
+          <Button
+            color="success"
+            variant="contained"
+            sx={{
+              backgroundColor: '#23BE87',
+              '&:hover': {
+                backgroundColor: '#5BC48E',
+                color: '#11724F',
+              },
+            }}
+            onClick={handleSave}
+          >
+            SAVE
+          </Button>
         </ButtonContainer>
         <div className="flex ">
           <IconContainer>
