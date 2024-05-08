@@ -2,10 +2,10 @@ import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import * as monaco from 'monaco-editor';
-import { IdeEditor } from '../../components/IdeEditor';
+import { IdeEditor } from '../../components/IDE/IdeEditor';
 import { useTheTheme } from '../../components/Theme';
-import Console from '../../components/Console';
-import FileList from '../../components/FileList';
+import Console from '../../components/IDE/Console';
+import FileList from '../../components/IDE/FileList';
 import { ReactComponent as ChatlightIcon } from '../../assets/chatlight.svg';
 import { ReactComponent as FolderlightIcon } from '../../assets/folderlight.svg';
 import { ReactComponent as FolderDarkIcon } from '../../assets/folderdark.svg';
@@ -14,7 +14,7 @@ import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 import { Button, IconButton } from '@mui/material';
 import { ButtonContainer, Container, CustomButton, IconContainer, FileListContainer, IDEContainer } from './IdeStyles';
 import useLanguageStore from '../../state/IDE/IdeStore';
-import { executeCode } from '../../components/CodeApi';
+import { executeCode } from '../../components/IDE/CodeApi';
 import useConsoleStore from '../../state/IDE/ConsoleStore';
 
 export default function IDE() {

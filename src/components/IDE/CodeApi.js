@@ -1,4 +1,4 @@
-import { LanguageOptions } from '../const/LanguageOption';
+import { LanguageOptions } from '../../const/LanguageOption';
 
 const API_BASE_URL = 'https://emkc.org/api/v2/piston';
 

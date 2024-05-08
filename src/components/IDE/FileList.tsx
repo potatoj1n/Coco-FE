@@ -1,13 +1,13 @@
 import { IconButton, TextField } from '@mui/material';
 import { styled } from 'styled-components';
-import { ReactComponent as FileAddLightIcon } from '../assets/file-addlight.svg';
-import { ReactComponent as FileAddDarkIcon } from '../assets/file-adddark.svg';
-import { ReactComponent as FolderAddLightIcon } from '../assets/folder-addlight.svg';
-import { ReactComponent as FolderAddDarkIcon } from '../assets/folder-adddark.svg';
+import { ReactComponent as FileAddLightIcon } from '../../assets/file-addlight.svg';
+import { ReactComponent as FileAddDarkIcon } from '../../assets/file-adddark.svg';
+import { ReactComponent as FolderAddLightIcon } from '../../assets/folder-addlight.svg';
+import { ReactComponent as FolderAddDarkIcon } from '../../assets/folder-adddark.svg';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import { useTheTheme } from './Theme';
-import useProjectStore, { useFileStore, useFolderStore } from '../state/IDE/ProjectState';
+import { useTheTheme } from '../Theme';
+import useProjectStore, { useFileStore, useFolderStore } from '../../state/IDE/ProjectState';
 import { useState } from 'react';
 
 const Title = styled.div`

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { LanguageOptions } from '../const/LanguageOption';
+import { LanguageOptions } from '../../const/LanguageOption';
 import { styled } from 'styled-components';
-import useLanguageStore from '../state/IDE/IdeStore';
+import useLanguageStore from '../../state/IDE/IdeStore';
 import { Link } from 'react-router-dom';
 import { TextField } from '@mui/material';
-import { useTheTheme } from './Theme';
-import useProjectStore from '../state/IDE/ProjectState';
+import { useTheTheme } from '../Theme';
+import useProjectStore from '../../state/IDE/ProjectState';
 
 interface Props {
   onSelectChange: (language: string) => void;
