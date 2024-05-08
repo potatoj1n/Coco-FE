@@ -8,6 +8,7 @@ import { TextField } from '@mui/material';
 import { useTheTheme } from '../Theme';
 import useProjectStore from '../../state/IDE/ProjectState';
 import { CreateContainer, CreateCustomButton } from './IdeStyle';
+import { createProject } from './CodeApi';
 
 interface Props {
   onSelectChange: (language: string) => void;
@@ -19,28 +20,33 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [projects, addProject] = useProjectStore(state => [state.projects, state.addProject]);
   const [newProjectName, setNewProjectName] = useState('');
-
+  //언어 선택 이벤트
   const handleChange = (event: SelectChangeEvent<string>) => {
     const selectedLanguage = event.target.value;
     setLanguage(selectedLanguage);
     onSelectChange(selectedLanguage);
   };
-  const handleCreateProject = () => {
+  //생성하기 버튼 이벤트
+  const handleCreateProject = async () => {
     if (newProjectName.trim() === '') {
       alert('프로젝트명을 입력하세요.');
       return;
     }
 
     const newProject = {
-      id: Math.random().toString(), // 임의의 고유 ID 생성
+      id: Math.random().toString(),
       name: newProjectName,
       language: language,
-      folders: [], // 일단 빈 배열로 초기화
+      folders: [],
     };
-
-    addProject(newProject);
-    setNewProjectName('');
-    onClose();
+    try {
+      await createProject(newProject);
+      addProject(newProject);
+      setNewProjectName('');
+      onClose();
+    } catch (error) {
+      console.error('Error creating project:', error);
+    }
   };
 
   return (
