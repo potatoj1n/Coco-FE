@@ -1,9 +1,9 @@
 import Editor, { EditorProps, loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { useEffect, useRef } from 'react';
-import { CODE_SNIPPETS } from '../const/LanguageOption';
-import useLanguageStore from '../state/IDE/IdeStore';
-import { useTheTheme } from './Theme';
+import { CODE_SNIPPETS } from '../../const/LanguageOption';
+import useLanguageStore from '../../state/IDE/IdeStore';
+import { useTheTheme } from '../Theme';
 
 loader.config({
   paths: {
@@ -33,6 +33,7 @@ export const IdeEditor: React.FC = () => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const language = useLanguageStore(state => state.language);
   const setLanguage = useLanguageStore(state => state.setLanguage);
+
   const { themeColor } = useTheTheme();
 
   useEffect(() => {

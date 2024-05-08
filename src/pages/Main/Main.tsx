@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import LanguageSelector from '../../components/LanguageSelect';
+import LanguageSelector from '../../components/IDE/LanguageSelect';
 import PjList from '../../components/PjList';
 import {
   lightTheme,

@@ -1,4 +1,4 @@
-import { LanguageOptions } from '../const/LanguageOption';
+import { LanguageOptions } from '../../const/LanguageOption';
 
 const API_BASE_URL = 'https://emkc.org/api/v2/piston';
 
@@ -26,6 +26,28 @@ export const executeCode = async (language, sourceCode) => {
     return data;
   } catch (error) {
     console.error(error);
+    throw error;
+  }
+};
+
+export const createProject = async projectData => {
+  try {
+    const response = await fetch('/api/create-project', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(projectData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create project');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error creating project:', error);
     throw error;
   }
 };
