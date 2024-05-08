@@ -2,35 +2,17 @@ import React, { useState } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { LanguageOptions } from '../../const/LanguageOption';
-import { styled } from 'styled-components';
 import useLanguageStore from '../../state/IDE/IdeStore';
 import { Link } from 'react-router-dom';
 import { TextField } from '@mui/material';
 import { useTheTheme } from '../Theme';
 import useProjectStore from '../../state/IDE/ProjectState';
+import { CreateContainer, CreateCustomButton } from './IdeStyle';
 
 interface Props {
   onSelectChange: (language: string) => void;
   onClose: () => void;
 }
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  border: 0.5px solid;
-  width: 500px;
-  height: 400px;
-  padding: 30px;
-  background-color: ${props => props.theme.backgroundColor};
-  position: fixed;
-`;
-const CustomButton = styled.div`
-  border: 1px solid #28b381;
-  font-size: 16px;
-  border-radius: 5px;
-  padding: 15px;
-  margin-top: 20px;
-`;
 
 const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const { themeColor } = useTheTheme();
@@ -62,7 +44,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   };
 
   return (
-    <Container>
+    <CreateContainer>
       <h1 className="text-2xl">새 프로젝트 생성하기 </h1>
       <h2 className="text-lg">새 프로젝트 명</h2>
       <TextField
@@ -109,15 +91,15 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
       </Select>
       <span className="flex justify-end gap-3">
         <Link to="/ide">
-          <CustomButton className="bg-green-500" onClick={handleCreateProject}>
+          <CreateCustomButton className="bg-green-500" onClick={handleCreateProject}>
             생성 하기
-          </CustomButton>
+          </CreateCustomButton>
         </Link>
-        <CustomButton className="text-green-500" onClick={onClose}>
+        <CreateCustomButton className="text-green-500" onClick={onClose}>
           취소 하기
-        </CustomButton>
+        </CreateCustomButton>
       </span>
-    </Container>
+    </CreateContainer>
   );
 };
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { IconButton, Snackbar, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { styled } from 'styled-components';
 import useConsoleStore from '../../state/IDE/ConsoleStore';
+import { ConsoleButton } from './IdeStyle';
 
 interface Props {
   editorRef: React.MutableRefObject<any>;
@@ -15,15 +15,6 @@ interface Props {
   consoleOpen: boolean;
   setConsoleOpen: (consoleOpen: boolean) => void;
 }
-const ConsoleButton = styled.div`
-  width: max-content;
-  height: auto;
-  background-color: #28b381;
-  color: black;
-  padding: 8px;
-  font-size: 16px;
-  z-index: -1;
-`;
 
 const Console: React.FC<Props> = () => {
   const { output, isError, openSnackbar, snackbarMessage, setOpenSnackbar, consoleOpen, setConsoleOpen } =

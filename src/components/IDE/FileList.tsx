@@ -1,5 +1,4 @@
 import { IconButton, TextField } from '@mui/material';
-import { styled } from 'styled-components';
 import { ReactComponent as FileAddLightIcon } from '../../assets/file-addlight.svg';
 import { ReactComponent as FileAddDarkIcon } from '../../assets/file-adddark.svg';
 import { ReactComponent as FolderAddLightIcon } from '../../assets/folder-addlight.svg';
@@ -9,26 +8,8 @@ import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutl
 import { useTheTheme } from '../Theme';
 import useProjectStore, { useFileStore, useFolderStore } from '../../state/IDE/ProjectState';
 import { useState } from 'react';
-
-const Title = styled.div`
-  border-bottom: 0.3px solid #a3a3a3;
-  padding: 7px 10px;
-  display: flex;
-  justify-content: space-between;
-  gap: 5px;
-  align-items: center;
-  font-size: 18px;
-`;
-const ProjectWrapper = styled.div`
-  width: max-content;
-  display: flex;
-  flex-direction: column;
-`;
-const FolderWrapper = styled.div`
-  width: max-content;
-  display: flex;
-  flex-direction: column;
-`;
+import { fetchFileTree } from './FiletreeApi';
+import { FolderWrapper, ProjectWrapper, Title } from './IdeStyle';
 
 export default function FileList() {
   const { themeColor } = useTheTheme();
