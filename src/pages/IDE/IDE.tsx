@@ -5,7 +5,7 @@ import * as monaco from 'monaco-editor';
 import { IdeEditor } from '../../components/IDE/IdeEditor';
 import { useTheTheme } from '../../components/Theme';
 import Console from '../../components/IDE/Console';
-import FileList from '../../components/IDE/FileList';
+import FileList from '../../components/IDE/FileTree/FileList';
 import { ReactComponent as ChatlightIcon } from '../../assets/chatlight.svg';
 import { ReactComponent as FolderlightIcon } from '../../assets/folderlight.svg';
 import { ReactComponent as FolderDarkIcon } from '../../assets/folderdark.svg';

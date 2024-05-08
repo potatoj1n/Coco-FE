@@ -1,15 +1,13 @@
 import { IconButton, TextField } from '@mui/material';
-import { ReactComponent as FileAddLightIcon } from '../../assets/file-addlight.svg';
-import { ReactComponent as FileAddDarkIcon } from '../../assets/file-adddark.svg';
-import { ReactComponent as FolderAddLightIcon } from '../../assets/folder-addlight.svg';
-import { ReactComponent as FolderAddDarkIcon } from '../../assets/folder-adddark.svg';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import { useTheTheme } from '../Theme';
-import useProjectStore, { useFileStore, useFolderStore } from '../../state/IDE/ProjectState';
+import { ReactComponent as FileAddLightIcon } from '../../../assets/file-addlight.svg';
+import { ReactComponent as FileAddDarkIcon } from '../../../assets/file-adddark.svg';
+import { ReactComponent as FolderAddLightIcon } from '../../../assets/folder-addlight.svg';
+import { ReactComponent as FolderAddDarkIcon } from '../../../assets/folder-adddark.svg';
+import { useTheTheme } from '../../Theme';
+import useProjectStore, { useFileStore, useFolderStore } from '../../../state/IDE/ProjectState';
 import { useState } from 'react';
-import { fetchFileTree } from './FiletreeApi';
-import { FolderWrapper, ProjectWrapper, Title } from './IdeStyle';
+import { FolderWrapper, ProjectWrapper, Title } from '../IdeStyle';
+import FileTree from './FileTree';
 
 export default function FileList() {
   const { themeColor } = useTheTheme();
@@ -66,32 +64,15 @@ export default function FileList() {
         </span>
       </Title>
 
-      {isAdding && (
-        <FolderWrapper>
-          <TextField
-            size="small"
-            value={newFolderName}
-            onChange={e => setNewFolderName(e.target.value)}
-            placeholder="폴더명 입력"
-          />
-          {/* 폴더 목록 표시 */}
-          <ul>
-            {folders.map(folder => (
-              <li key={folder.id}>
-                <FolderOutlinedIcon />
-                {folder.name}
-              </li>
-            ))}
-            {/* 파일 목록 표시 */}
-            {files.map(file => (
-              <li key={file.id}>
-                <InsertDriveFileOutlinedIcon />
-                {file.name}
-              </li>
-            ))}
-          </ul>
-        </FolderWrapper>
-      )}
+      <FolderWrapper>
+        <TextField
+          size="small"
+          value={newFolderName}
+          onChange={e => setNewFolderName(e.target.value)}
+          placeholder="폴더명 입력"
+        />
+        <FileTree />
+      </FolderWrapper>
     </ProjectWrapper>
   );
 }
