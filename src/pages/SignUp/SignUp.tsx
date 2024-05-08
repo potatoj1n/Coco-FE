@@ -36,18 +36,18 @@ const SignUp = () => {
     //이메일 백엔드로 보내서 이미 있는 이메일인지 확인하기
   };
 
-  const onNickNameCheck = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (email == '') {
-      setError('이메일을 입력해주세요.');
-      return;
-    }
-    const NickNameCheck = {
-      nickname: nickname,
-    };
-    console.log(NickNameCheck);
-    //이메일 백엔드로 보내서 이미 있는 닉네임있는지 확인하기
-  };
+  // const onNickNameCheck = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   if (email == '') {
+  //     setError('이메일을 입력해주세요.');
+  //     return;
+  //   }
+  //   const NickNameCheck = {
+  //     nickname: nickname,
+  //   };
+  //   console.log(NickNameCheck);
+  //   //이메일 백엔드로 보내서 이미 있는 닉네임있는지 확인하기
+  // };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -101,20 +101,8 @@ const SignUp = () => {
             </Check>
           </div>
           <span className="mt-6 text-lg">닉네임</span>
-          <div>
-            <SignUpInput
-              onChange={onChange}
-              name="nickname"
-              value={nickname}
-              type="text"
-              placeholder="닉네임"
-              style={{ height: '100%', width: '82%' }}
-              required
-            />
-            <Check onClick={onNickNameCheck} className="text-sm">
-              중복확인
-            </Check>
-          </div>
+
+          <SignUpInput onChange={onChange} name="nickname" value={nickname} type="text" placeholder="닉네임" required />
           <span className="mt-6 text-lg">비밀번호</span>
           <SignUpInput
             onChange={onChange}

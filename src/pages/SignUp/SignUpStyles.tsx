@@ -51,10 +51,8 @@ export const SignUpInput = styled.input`
   width: 70%;
   border-radius: 5px;
   height: 9%;
+  color: black;
   padding: 10px 20px;
-  &::placeholder {
-    background-image: url('../../assets/signUp_user.png');
-  }
   &[type='submit'] {
     cursor: pointer;
     border: none;
