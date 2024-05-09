@@ -197,9 +197,9 @@ export const Hitwo = styled.p`
 export const Attendancecontainer = styled.div`
   background-color: ${({ theme }) => theme.buttonColor};
 
-  height: max(22vw, 250px);
+  height: 300px;
   display: flex;
-  width: max(30vw, 100px);
+  width: 380px;
   flex-direction: column;
   justify-content: center;
   padding: 30px;
@@ -223,6 +223,8 @@ export const Date = styled.div`
   height: 160px;
   width: 160px;
   border-radius: 50%;
+  position: relative; // AttendanceImage의 부모 요소가 됨
+  z-index: 0; // z-index를 설정하여 다른 콘텐츠와의 층위를 조정
 `;
 export const Month = styled.p`
   color: black;
@@ -244,9 +246,10 @@ export const AttendanceImage = styled.img<{ show: boolean }>`
   display: ${({ show }) => (show ? 'block' : 'none')};
   height: 160px;
   width: 160px;
-  position: fixed;
+  position: absolute; // 스크롤에 따라 이동하지 않도록 위치 설정
   margin-top: -220px;
   margin-left: 20px;
+  z-index: 1; // Date 위에 위치하기 위해 z-index 사용
 `;
 
 export const Pjcontainer = styled.div`
