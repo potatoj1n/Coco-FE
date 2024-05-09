@@ -40,9 +40,11 @@ const Login = () => {
       setLoading(true);
       //axios써서 post로 보내기
       //유저 정보 받아오고 업데이트해주기
-      const response = await axios.post('http://localhost:3000/login', user);
-      localStorage.setItem('accessToken', response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
+      const response = await axios.post('/api/members/login', user);
+      //localhost문제.
+      console.log(response.data);
+      // localStorage.setItem('accessToken', response.data.accessToken);
+      // localStorage.setItem('refreshToken', response.data.refreshToken);
       alert('Login successful!');
       //유저정보에 없거나 비밀번호,아이디 틀리면 에러바로 뜨게
       navigate('/main');
