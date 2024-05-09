@@ -9,6 +9,7 @@ const AppStyles = createGlobalStyle`
   ${reset};
   body {
     background-color: ${({ theme }) => theme.backgroundColor};
+    cursor: pointer;
   }
 `;
 

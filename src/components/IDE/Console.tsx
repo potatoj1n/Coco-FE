@@ -2,7 +2,9 @@ import React from 'react';
 import { IconButton, Snackbar, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import useConsoleStore from '../../state/IDE/ConsoleStore';
-import { ConsoleButton } from './IdeStyle';
+import { ButtonWrapper, ConsoleButton } from './IdeStyle';
+import { useTheTheme } from '../Theme';
+import { ThemeProvider } from 'styled-components';
 
 interface Props {
   editorRef: React.MutableRefObject<any>;
@@ -17,6 +19,10 @@ interface Props {
 }
 
 const Console: React.FC<Props> = () => {
+  const { themeColor } = useTheTheme();
+  const themeObject = {
+    ButtonWrapperBackground: themeColor === 'light' ? '#ffffff' : '#011627',
+  };
   const { output, isError, openSnackbar, snackbarMessage, setOpenSnackbar, consoleOpen, setConsoleOpen } =
     useConsoleStore();
 
@@ -28,15 +34,17 @@ const Console: React.FC<Props> = () => {
   };
 
   return (
-    <>
+    <ThemeProvider theme={themeObject}>
       {consoleOpen ? (
         <div>
-          <ConsoleButton>
-            console
-            <IconButton size="small">
-              <CloseIcon fontSize="small" onClick={closeConsole} />
-            </IconButton>
-          </ConsoleButton>
+          <ButtonWrapper>
+            <ConsoleButton>
+              console
+              <IconButton size="small">
+                <CloseIcon fontSize="small" onClick={closeConsole} />
+              </IconButton>
+            </ConsoleButton>
+          </ButtonWrapper>
           <div
             style={{
               width: 'auto',
@@ -62,7 +70,7 @@ const Console: React.FC<Props> = () => {
           />
         </div>
       ) : null}
-    </>
+    </ThemeProvider>
   );
 };
 
