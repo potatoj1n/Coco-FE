@@ -66,7 +66,7 @@ export const PjButton = styled.button`
   border-radius: 5px;
   margin-top: 10px;
   transition: background-color 0.3s;
-  width: 11vw;
+  width: 120px;
   min-width: 120px;
   &:hover {
     background-color: #76c1af; /* 호버 시 배경색 변경 */
@@ -139,7 +139,7 @@ export const Maincontainer = styled.div`
   height: 100vh;
   position: fixed;
   /* 미디어 쿼리를 사용하여 뷰포트 너비가 600px 이하일 때 반응형으로 변경 */
-  @media (max-width: 600px) {
+  @media (max-width: 700px) {
     grid-template-columns: 1fr; /* 한 열로 변경 */
     padding: 50px 20px;
     overflow: scroll;
