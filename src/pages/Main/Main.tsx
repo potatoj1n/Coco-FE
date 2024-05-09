@@ -7,6 +7,7 @@ import {
   Container,
   FolderButton,
   Icon,
+  Iconchat,
   ChatButton,
   Sidecontainer,
   Menuname,
@@ -52,29 +53,7 @@ import modifypj from '../../assets/modifypj.svg';
 import attend from '../../assets/attend.svg';
 import profileOther from '../../assets/profileOther.svg';
 import profileMine from '../../assets/profileMine.svg';
-interface ProjectInfoModalProps {
-  onClose: () => void; // onClose는 함수이며 반환 값이 없다.
-}
 
-const ProjectInfoModal: React.FC<ProjectInfoModalProps> = ({ onClose }) => {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        backgroundColor: 'white',
-        padding: '20px',
-        zIndex: 10,
-      }}
-    >
-      <h1>내프로젝트</h1>
-      <p>프로젝트의 세부 정보를 여기에 표시합니다.</p>
-      <button onClick={onClose}>X</button>
-    </div>
-  );
-};
 const Main = () => {
   const [messages, setMessages] = useState([
     {
@@ -177,7 +156,7 @@ const Main = () => {
           </div>
 
           <ChatButton to="/chat">
-            <Icon src={themeColor === 'light' ? chatLight : chatDark} />
+            <Iconchat src={themeColor === 'light' ? chatLight : chatDark} />
             <Menuname>chat</Menuname>
           </ChatButton>
         </Sidecontainer>
@@ -208,7 +187,7 @@ const Main = () => {
           </Pjcontainer>
           <ChatContainer>
             <Chatnav>
-              <Icon src={themeColor === 'light' ? chatLight : chatDark} />
+              <Iconchat src={themeColor === 'light' ? chatLight : chatDark} />
               <Chatname> Chat </Chatname>
               <Chatmore to="/chat"> 더보기... </Chatmore>
             </Chatnav>

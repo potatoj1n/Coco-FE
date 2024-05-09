@@ -39,7 +39,8 @@ export const Sidecontainer = styled.div`
   height: 100%;
   display: flex;
   left: 0;
-  width: 150px;
+  min-width: 150px;
+  width: 13vw;
   flex-direction: column;
   align-items: center;
   position: fixed;
@@ -66,7 +67,7 @@ export const PjButton = styled.button`
   border-radius: 5px;
   margin-top: 10px;
   transition: background-color 0.3s;
-  width: 120px;
+  width: 11vw;
   min-width: 120px;
   &:hover {
     background-color: #76c1af; /* 호버 시 배경색 변경 */
@@ -77,47 +78,59 @@ export const PjButton = styled.button`
   }
 `;
 export const FolderButton = styled.button`
-color: ${({ theme }) => theme.text};
-padding: 10px;
-font-size: 15px;
-font-style: normal;
-font-weight: 600;
-border: none;
-border-radius: 5px;
-transition: background-color 0.3s;
-width: 11vw;
-flex-direction: raw;
-min-width: 120px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-
-&:hover {
-  background-color: #d8dfe3;`;
+  color: ${({ theme }) => theme.text};
+  padding: 10px;
+  padding-left: 20px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+  flex-direction: row;
+  min-width: 150px;
+  width: 13vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  &:hover {
+    background-color: rgba(118, 193, 175, 0.3);
+  }
+`;
 export const ChatButton = styled(Link)`
   color: ${({ theme }) => theme.text};
   padding: 10px;
-  font-size: 15px;
+  padding-left: 14px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 600;
   border: none;
   border-radius: 5px;
   transition: background-color 0.3s;
-  width: 11vw;
-  flex-direction: raw;
-  min-width: 120px;
+  min-width: 150px;
+  width: 13vw;
+  flex-direction: row;
   display: flex;
   align-items: center;
-  justify-content: space-between;
 
   &:hover {
-  background-color: #d8dfe3;
+    background-color: rgba(118, 193, 175, 0.3);
+  }
 `;
 
 export const Icon = styled.img`
   width: 20px;
   height: 20px;
 `;
+export const Iconchat = styled.img`
+  width: 35px;
+  height: 35px;
+  margin-right: -5px;
+`;
+
 export const Menuname = styled.p`
   color: ${({ theme }) => theme.text};
   font-style: normal;
