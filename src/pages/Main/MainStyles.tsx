@@ -95,6 +95,8 @@ export const FolderButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 40px;
+
   margin-top: 10px;
   &:hover {
     background-color: rgba(118, 193, 175, 0.3);
@@ -115,7 +117,7 @@ export const ChatButton = styled(Link)`
   flex-direction: row;
   display: flex;
   align-items: center;
-
+  height: 40px;
   &:hover {
     background-color: rgba(118, 193, 175, 0.3);
   }
@@ -128,7 +130,7 @@ export const Icon = styled.img`
 export const Iconchat = styled.img`
   width: 35px;
   height: 35px;
-  margin-right: -5px;
+  margin-right: -6px;
 `;
 
 export const Menuname = styled.p`
@@ -140,17 +142,17 @@ export const Menuname = styled.p`
   margin-left: 10px;
 `;
 export const Maincontainer = styled.div`
-  width: calc(100vw - max(12vw, 130px));
-  margin-left: 150px;
-  justify-content: center;
-  align-items: center;
+  width: calc(100vw - max(13vw, 150px));
+  margin-left: max(13vw, 150px);
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 두 개의 열을 동일한 비율로 설정 */
+  grid-template-columns: 1fr 0.8fr; /* 왼쪽 열은 1fr, 오른쪽 열은 0.5fr */
   grid-template-rows: repeat(2, 1fr); /* 두 개의 행을 동일한 비율로 설정 */
-  gap: 25px;
-  padding: 85px 20px 40px 90px;
+  gap: 5px;
+  padding: 20px 20px 20px 20px;
   height: 100vh;
   position: fixed;
+  justify-content: center;
+  align-items: center;
   /* 미디어 쿼리를 사용하여 뷰포트 너비가 600px 이하일 때 반응형으로 변경 */
   @media (max-width: 700px) {
     grid-template-columns: 1fr; /* 한 열로 변경 */
@@ -160,31 +162,32 @@ export const Maincontainer = styled.div`
 `;
 export const Hicontainer = styled.div`
   background-color: ${({ theme }) => theme.HiColor};
-  height: max(22vw, 250px);
+  height: 300px;
   display: flex;
-  width: max(40vw, 350px);
-  min-width: 130px;
+  width: 500px;
   flex-direction: column;
   justify-content: center;
   align-items: left;
-  padding: 50px 30px 30px 30px;
+  padding: 50px 30px 30px 70px;
   border-radius: 16px;
   margin: 10px;
+  align-self: center; // 그리드 셀 내 중앙 정렬
+  justify-self: center; // 그리드 셀 내 중앙 정렬
 `;
 
 export const MainImg = styled.img`
-  width: max(25vw, 200px);
+  width: 250px;
   height: 170px;
   margin-top: 10px;
 `;
 export const Hione = styled.p`
-  font-size: max(2vw, 16px);
+  font-size: 24px;
   font-style: normal;
   font-weight: 600;
   color: black;
 `;
 export const Hitwo = styled.p`
-  font-size: max(1.9vw, 14px);
+  font-size: 20px;
   margin-top: 10px;
   font-style: normal;
   font-weight: 600;
@@ -203,6 +206,8 @@ export const Attendancecontainer = styled.div`
   border-radius: 16px;
   margin: 10px;
   align-items: center;
+  align-self: center;
+  justify-self: center;
 `;
 export const AttendButton = styled.button`
   background-color: ${({ theme }) => theme.attendbutton};
@@ -258,6 +263,8 @@ export const ModifyPj = styled.p`
   font-weight: 600;
   margin-top: -20px;
   margin-left: 30px;
+  align-self: center;
+  justify-self: center;
 `;
 
 export const ModifyPjBtn = styled(Link)`
@@ -287,6 +294,8 @@ export const ChatContainer = styled.div`
   margin: 10px;
   margin-left: -4.3vw;
   align-items: left;
+  align-self: center;
+  justify-self: center;
 `;
 export const Chatnav = styled.div`
   flex-direction: raw;
