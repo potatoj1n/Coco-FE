@@ -16,7 +16,6 @@ import { ButtonContainer, Container, CustomButton, IconContainer, FileListContai
 import useLanguageStore from '../../state/IDE/IdeStore';
 import { executeCode, saveCode } from '../../components/IDE/CodeApi';
 import useConsoleStore from '../../state/IDE/ConsoleStore';
-import useProjectStore, { useFolderStore } from '../../state/IDE/ProjectState';
 
 export default function IDE() {
   const { themeColor } = useTheTheme();
