@@ -39,12 +39,29 @@ export const CreateCustomButton = styled.div`
   margin-top: 20px;
 `;
 
+export const EditorButton = styled.div`
+  display: flex;
+  justify-content: space-between;
+  border: 0.5px solid;
+  border-top-right-radius: 20px;
+  background-color: #28b381;
+  color: black;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px;
+  width: 140px;
+  height: 40px;
+`;
 export const ConsoleButton = styled.div`
   width: max-content;
   height: auto;
   background-color: #28b381;
   color: black;
+  font-weight: 600;
   padding: 8px;
   font-size: 16px;
   z-index: -1;
+`;
+export const ButtonWrapper = styled.div`
+  background-color: ${props => props.theme.ButtonWrapperBackground};
 `;

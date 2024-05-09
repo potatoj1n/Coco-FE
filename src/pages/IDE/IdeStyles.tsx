@@ -8,8 +8,11 @@ export const Container = styled.div`
 `;
 export const CustomButton = styled.div`
   border: none;
-  border-radius: 8px;
+  border-radius: 3px;
   padding: 5px 23px;
+  color: black;
+  background-color: #d5f2e7;
+  margin-right: 10px;
 `;
 export const ButtonContainer = styled.div`
   background-color: ${props => props.theme.buttonBackground};
@@ -20,7 +23,7 @@ export const ButtonContainer = styled.div`
   border-bottom: 0.5px solid #d8dfe3;
 `;
 export const IconContainer = styled.div`
-  border: 0.5px solid #d8dfe3;
+  border-right: 0.5px solid #d8dfe3;
   height: 100vh;
   width: max-content;
   display: flex;

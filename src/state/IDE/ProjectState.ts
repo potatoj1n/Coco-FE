@@ -1,4 +1,5 @@
-import create from 'zustand';
+import axios from 'axios';
+import { create } from 'zustand';
 
 interface Project {
   id: string;
@@ -67,6 +68,35 @@ const useFileStore = create<FileStore>(set => ({
     })),
 }));
 
+interface SelectedFileStore {
+  selectedFileId: string | null;
+  selectedFileName: string | null;
+  selectedFileContent: string | null;
+  selectFile: (fileId: string) => void;
+  fetchFileContent: (fileId: string) => void;
+}
+
+const useSelectedFileStore = create<SelectedFileStore>(set => ({
+  selectedFileId: null,
+  selectedFileName: null,
+  selectedFileContent: null,
+  selectFile: fileId => set({ selectedFileId: fileId }),
+  fetchFileContent: async fileId => {
+    try {
+      const response = await axios.get(`/api/files/${fileId}`);
+      const fileContent = response.data.content;
+      set(state => ({
+        selectedFileId: state.selectedFileId, // 선택된 파일 ID는 변경되지 않으므로 유지
+        selectedFileName: state.selectedFileName,
+        fetchFileContent: state.fetchFileContent,
+        selectedFileContent: fileContent,
+      }));
+    } catch (error) {
+      console.error('Error fetching file content:', error);
+    }
+  },
+}));
+
 export default useProjectStore;
-export { useFolderStore, useFileStore };
-export type { ProjectStore, FolderStore, FileStore };
+export { useFolderStore, useFileStore, useSelectedFileStore };
+export type { ProjectStore, FolderStore, FileStore, SelectedFileStore };
