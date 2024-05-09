@@ -38,6 +38,7 @@ export const CreateCustomButton = styled.div`
   padding: 15px;
   margin-top: 20px;
 `;
+
 export const EditorButton = styled.div`
   display: flex;
   justify-content: space-between;
@@ -60,4 +61,7 @@ export const ConsoleButton = styled.div`
   padding: 8px;
   font-size: 16px;
   z-index: -1;
+`;
+export const ButtonWrapper = styled.div`
+  background-color: ${props => props.theme.ButtonWrapperBackground};
 `;
