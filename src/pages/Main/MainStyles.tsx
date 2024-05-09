@@ -39,10 +39,11 @@ export const Sidecontainer = styled.div`
   height: 100%;
   display: flex;
   left: 0;
-  width: 12vw;
-  min-width: 130px;
+  width: 150px;
   flex-direction: column;
   align-items: center;
+  position: fixed;
+  border-right: 1px solid #d8dfe3;
 `;
 
 // "+" 부분을 스타일링하는 컴포넌트
@@ -127,17 +128,22 @@ export const Menuname = styled.p`
 `;
 export const Maincontainer = styled.div`
   width: calc(100vw - max(12vw, 130px));
-  border-left: 1px solid #d8dfe3;
-  margin-top: -192px;
-  margin-left: max(12vw, 130px);
+  margin-left: 150px;
   justify-content: center;
   align-items: center;
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 두 개의 열을 동일한 비율로 설정 */
   grid-template-rows: repeat(2, 1fr); /* 두 개의 행을 동일한 비율로 설정 */
-  gap: 25px; /* 그리드 간격 설정 */
-  padding: 85px 20px 40px 90px; /* 내부 여백 */
-  height: 100vh; /* 부모 컨테이너 높이 설정 */
+  gap: 25px;
+  padding: 85px 20px 40px 90px;
+  height: 100vh;
+  position: fixed;
+  /* 미디어 쿼리를 사용하여 뷰포트 너비가 600px 이하일 때 반응형으로 변경 */
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr; /* 한 열로 변경 */
+    padding: 50px 20px;
+    overflow: scroll;
+  }
 `;
 export const Hicontainer = styled.div`
   background-color: ${({ theme }) => theme.HiColor};

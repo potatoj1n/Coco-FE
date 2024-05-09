@@ -37,7 +37,7 @@ import {
 } from './ChatStyles';
 
 // 웹소켓 주소 설정 (예: ws://localhost:4000)
-const WEBSOCKET_URL = 'ws://localhost:4000';
+const WEBSOCKET_URL = 'ws://13.124.84.248:8080/topic?memberId=1';
 
 const Chat = () => {
   const [message, setMessages] = useState([
@@ -121,7 +121,6 @@ const Chat = () => {
 
     websocket.current.onerror = (error: any) => {
       console.error('WebSocket error:', error);
-      alert('WebSocket error occurred. Please check the console for more details.');
     };
 
     websocket.current.onclose = () => {
