@@ -11,6 +11,8 @@ const SignUp = () => {
   const [passwordCheck, setPasswordCheck] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setLoading] = useState(false);
+  const max_length = 10;
+  const [InputCount, setInputCpunt] = useState(0);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
@@ -18,7 +20,9 @@ const SignUp = () => {
     } = e;
 
     if (name === 'nickname') {
-      setNickName(value);
+      const sliceValue = value.slice(0, max_length);
+      setNickName(sliceValue);
+      setInputCpunt(sliceValue.length);
     } else if (name === 'email') {
       setEmail(value);
     } else if (name === 'password') {
@@ -29,26 +33,7 @@ const SignUp = () => {
   };
   const onEmailCheck = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const EmailCheck = {
-      email: email,
-    };
-    console.log(EmailCheck);
-    //이메일 백엔드로 보내서 이미 있는 이메일인지 확인하기
   };
-
-  // const onNickNameCheck = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault();
-  //   if (email == '') {
-  //     setError('이메일을 입력해주세요.');
-  //     return;
-  //   }
-  //   const NickNameCheck = {
-  //     nickname: nickname,
-  //   };
-  //   console.log(NickNameCheck);
-  //   //이메일 백엔드로 보내서 이미 있는 닉네임있는지 확인하기
-  // };
-
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
@@ -97,13 +82,18 @@ const SignUp = () => {
               required
             />
             <Check onClick={onEmailCheck} className="text-sm">
-              중복확인
+              인증
             </Check>
           </div>
           <span className="mt-6 text-lg">닉네임</span>
 
           <SignUpInput onChange={onChange} name="nickname" value={nickname} type="text" placeholder="닉네임" required />
-          <span className="mt-6 text-lg">비밀번호</span>
+          <div className="text-sm" style={{ textAlign: 'right' }}>
+            <p style={{ width: '80%', color: 'green' }}>
+              {InputCount.toLocaleString()}/{max_length.toLocaleString()}자
+            </p>
+          </div>
+          <span className="mt-2 text-lg">비밀번호</span>
           <SignUpInput
             onChange={onChange}
             name="password"
@@ -112,13 +102,13 @@ const SignUp = () => {
             placeholder="비밀번호"
             required
           />
-          <span className=" mt-6 text-lg">비밀번호</span>
+          <span className=" mt-6 text-lg">비밀번호 확인</span>
           <SignUpInput
             onChange={onChange}
             name="passwordcheck"
             value={passwordCheck}
             type="password"
-            placeholder="비밀번호"
+            placeholder="비밀번호 확인"
             required
           />
           <SignUpInput type="submit" className="mt-12" value={isLoading ? '로딩 중..' : '회원가입'} />

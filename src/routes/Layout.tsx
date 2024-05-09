@@ -10,8 +10,10 @@ export const Layout = () => {
     color: themeColor === 'light' ? '#000000' : '#ffffff',
     height: '100vh',
     overflow: 'hidden',
+    border: '1px solid black',
   };
   const showNav = location.pathname !== '/login';
+
   return (
     <div style={style}>
       {showNav && <Nav />}
