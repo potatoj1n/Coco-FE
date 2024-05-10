@@ -6,15 +6,21 @@ import useLanguageStore from '../../state/IDE/IdeStore';
 import { TextField } from '@mui/material';
 import { useTheTheme } from '../Theme';
 import useProjectStore from '../../state/IDE/ProjectState';
-import { CreateContainer, CreateCustomButton } from './IdeStyle';
+import { CreateCustomButton } from './IdeStyle';
 import { createProject } from './CodeApi';
 import { useNavigate } from 'react-router-dom';
+import { CreateContainer, Overlay, modalRoot } from '../ModalOverlay';
+import ReactDOM from 'react-dom';
+import styled from 'styled-components';
+
 
 interface Props {
   onSelectChange: (language: string) => void;
   onClose: () => void;
 }
-
+const FontColor = styled.h1`
+  color: ${({ theme }) => (theme.themeColor === 'dark' ? '#FFFFFF' : '#000000')};
+`;
 const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const { themeColor } = useTheTheme();
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
@@ -22,6 +28,11 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const { addProject } = useProjectStore();
   const navigate = useNavigate();
 
+  const [closing, setClosing] = useState(false);
+  const handleClose = () => {
+    setClosing(true);
+    setTimeout(onClose, 300);
+  };
   //언어 선택 이벤트
   const handleChange = (event: SelectChangeEvent<string>) => {
     const selectedLanguage = event.target.value;
@@ -57,23 +68,25 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
     }
   };
 
-  return (
-    <CreateContainer>
-      <h1 className="text-2xl">새 프로젝트 생성하기 </h1>
-      <h2 className="text-lg">새 프로젝트 명</h2>
-      <TextField
-        placeholder="새 프로젝트 명"
-        variant="outlined"
-        size="small"
-        fullWidth
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              borderColor: '#28b381',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#28b381',
-            },
+  return ReactDOM.createPortal(
+    <Overlay closing={closing}>
+      <CreateContainer onClick={e => e.stopPropagation()} closing={closing}>
+        <FontColor className="text-2xl font-pretendard font-normal ">새 프로젝트 생성하기</FontColor>
+        <FontColor className="text-lg font-pretendard font-normal">새 프로젝트 명</FontColor>
+        <TextField
+          placeholder="새 프로젝트 명"
+          variant="outlined"
+          size="small"
+          fullWidth
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: '#28b381',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#28b381',
+              },
+             
             backgroundColor: themeColor === 'light' ? '#ffffff' : '#243B56',
             color: themeColor === 'light' ? 'black' : '#76ECC2',
           },
@@ -94,24 +107,29 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
           '& .MuiOutlinedInput-root': {
             borderColor: '#28b381',
           },
-          maxWidth: 'max-content',
-        }}
-      >
-        {LanguageOptions.map(option => (
-          <MenuItem key={option.id} value={option.id}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-      <span className="flex justify-end gap-3">
-        <CreateCustomButton className="bg-green-500" onClick={handleCreateProject}>
-          생성 하기
-        </CreateCustomButton>
-        <CreateCustomButton className="text-green-500" onClick={onClose}>
-          취소 하기
-        </CreateCustomButton>
-      </span>
-    </CreateContainer>
+            maxWidth: 'max-content',
+          }}
+        >
+          {LanguageOptions.map(option => (
+            <MenuItem key={option.id} value={option.id}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+        <span className="flex justify-end gap-3">
+          <Link to="/ide">
+            <CreateCustomButton className="bg-green-500 font-pretendard font-normal" onClick={handleCreateProject}>
+              생성 하기
+            </CreateCustomButton>
+          </Link>
+          <CreateCustomButton className="text-green-500 font-pretendard font-normal" onClick={handleClose}>
+            취소 하기
+          </CreateCustomButton>
+        </span>
+      </CreateContainer>
+    </Overlay>,
+    modalRoot,
+
   );
 };
 

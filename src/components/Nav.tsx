@@ -59,6 +59,11 @@ export default function Header() {
   const [menu, setMenu] = useState(false);
   const location = useLocation();
   const showIcons = location.pathname !== '/' && location.pathname !== '/signup';
+  const isSpecialPage =
+    location.pathname === '/chat' ||
+    location.pathname === '/ide' ||
+    location.pathname === '/main' ||
+    location.pathname === '/mypage';
 
   return (
     <Container>
@@ -69,7 +74,11 @@ export default function Header() {
         <span style={{ marginLeft: 'auto' }}>
           {location.pathname !== '/signup' && (
             <IconButton onClick={toggleTheme}>
-              {themeColor === 'light' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
+              {themeColor === 'light' ? (
+                <DarkModeOutlinedIcon />
+              ) : (
+                <LightModeOutlinedIcon style={{ color: isSpecialPage ? 'white' : 'inherit' }} />
+              )}
             </IconButton>
           )}
           {showIcons && (
@@ -85,7 +94,7 @@ export default function Header() {
             <MenuContainer>
               <p>Logout</p>
               <hr></hr>
-              <Link to="/myPage">my Page</Link>
+              <Link to="/mypage">my Page</Link>
             </MenuContainer>
           ) : null}
         </span>
