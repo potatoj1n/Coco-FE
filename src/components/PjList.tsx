@@ -5,27 +5,8 @@ import messageTrash from '../assets/messageTrash.svg';
 import { ThemeProvider } from 'styled-components';
 import { useTheTheme } from '../components/Theme';
 import ReactDOM from 'react-dom';
+import { Container, Overlay } from './ModalOverlay';
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-`;
-const fadeOut = keyframes`
-  from {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.95);
-  }
-`;
 interface PjListProps {
   onClose: () => void;
 }
@@ -39,33 +20,6 @@ const darkTheme = {
   filter: 'invert(100%)', // 다크 모드에서는 색상 반전
 };
 
-const Container = styled.div<{ closing: boolean }>`
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: ${props => props.theme.backgroundColor};
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 300px;
-  width: 50vw;
-  z-index: 1001;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  animation: ${props => (props.closing ? fadeOut : fadeIn)} 0.3s ease-out forwards;
-  border: 1px solid ${({ theme }) => theme.text};
-`;
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); // 반투명 검은색 배경
-  backdrop-filter: blur(2px);
-  z-index: 1000;
-`;
 const Myproject = styled.h1`
   width: 90%;
   display: flexed;
@@ -118,6 +72,7 @@ const modalRoot =
     document.body.appendChild(div);
     return div;
   })();
+
 const PjList: React.FC<PjListProps> = ({ onClose }) => {
   const [projects, setprojects] = useState([
     {
@@ -155,7 +110,7 @@ const PjList: React.FC<PjListProps> = ({ onClose }) => {
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
   return ReactDOM.createPortal(
     <ThemeProvider theme={currentTheme}>
-      <Overlay>
+      <Overlay closing={closing}>
         <Container onClick={e => e.stopPropagation()} closing={closing}>
           <CloseModal onClick={handleClose}>x</CloseModal>
           <Myproject>내 프로젝트</Myproject>
