@@ -13,7 +13,6 @@ import { CreateContainer, Overlay, modalRoot } from '../ModalOverlay';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
-
 interface Props {
   onSelectChange: (language: string) => void;
   onClose: () => void;
@@ -86,27 +85,27 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
               '&.Mui-focused fieldset': {
                 borderColor: '#28b381',
               },
-             
-            backgroundColor: themeColor === 'light' ? '#ffffff' : '#243B56',
-            color: themeColor === 'light' ? 'black' : '#76ECC2',
-          },
-        }}
-        onChange={e => setNewProjectName(e.target.value)}
-      ></TextField>
-      <h2 className="text-lg">언어 선택</h2>
-      <Select
-        value={language}
-        onChange={handleChange}
-        placeholder={`Filter By Category`}
-        size="small"
-        sx={{
-          '& .MuiSelect-select': {
-            backgroundColor: themeColor === 'light' ? '#ffffff' : '#ffffff',
-            color: themeColor === 'light' ? 'black' : 'black',
-          },
-          '& .MuiOutlinedInput-root': {
-            borderColor: '#28b381',
-          },
+
+              backgroundColor: themeColor === 'light' ? '#ffffff' : '#243B56',
+              color: themeColor === 'light' ? 'black' : '#76ECC2',
+            },
+          }}
+          onChange={e => setNewProjectName(e.target.value)}
+        ></TextField>
+        <h2 className="text-lg">언어 선택</h2>
+        <Select
+          value={language}
+          onChange={handleChange}
+          placeholder={`Filter By Category`}
+          size="small"
+          sx={{
+            '& .MuiSelect-select': {
+              backgroundColor: themeColor === 'light' ? '#ffffff' : '#ffffff',
+              color: themeColor === 'light' ? 'black' : 'black',
+            },
+            '& .MuiOutlinedInput-root': {
+              borderColor: '#28b381',
+            },
             maxWidth: 'max-content',
           }}
         >
@@ -117,11 +116,10 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
           ))}
         </Select>
         <span className="flex justify-end gap-3">
-          <Link to="/ide">
-            <CreateCustomButton className="bg-green-500 font-pretendard font-normal" onClick={handleCreateProject}>
-              생성 하기
-            </CreateCustomButton>
-          </Link>
+          <CreateCustomButton className="bg-green-500 font-pretendard font-normal" onClick={handleCreateProject}>
+            생성 하기
+          </CreateCustomButton>
+
           <CreateCustomButton className="text-green-500 font-pretendard font-normal" onClick={handleClose}>
             취소 하기
           </CreateCustomButton>
@@ -129,7 +127,6 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
       </CreateContainer>
     </Overlay>,
     modalRoot,
-
   );
 };
 
