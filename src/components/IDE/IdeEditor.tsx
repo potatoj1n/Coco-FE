@@ -85,8 +85,8 @@ export const IdeEditor: React.FC = () => {
     <div className="h-3/5 w-screen overflow-scroll">
       <EditorButton>
         {selectedFileName ? `${selectedFileName}` : 'Untitled'}
-        <IconButton size="small">
-          <CloseIcon fontSize="small" onClick={closeEditor} />
+        <IconButton size="small" onClick={closeEditor}>
+          <CloseIcon fontSize="small" />
         </IconButton>
       </EditorButton>
       {/* {selectedFileId && ( */}

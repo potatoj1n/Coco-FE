@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton, Snackbar, TextField, Typography, alpha } from '@mui/material';
+import { IconButton, Snackbar, TextField, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import useConsoleStore from '../../state/IDE/ConsoleStore';
 import { ButtonWrapper, ConsoleButton, ConsoleWrapper, InputWrapper } from './IdeStyle';
