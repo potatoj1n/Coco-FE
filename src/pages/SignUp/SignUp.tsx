@@ -3,7 +3,6 @@ import { Switcher } from '../Login/LoginStyles';
 import { Check, Error, Form, SignUpInput, SignUpPart, SignUpWrapper } from './SignUpStyles';
 import { useState } from 'react';
 import EmailAuthModal from '../../components/EmailAuthModal';
-import axios from 'axios';
 
 const SignUp = () => {
   const navigate = useNavigate();
