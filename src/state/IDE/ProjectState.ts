@@ -6,91 +6,162 @@ interface Project {
   name: string;
   language: string;
   folders: Folder[];
+  files: File[];
 }
 
 interface Folder {
   id: string;
   name: string;
   files: File[];
+  parentId: string;
 }
 
 interface File {
   id: string;
   name: string;
   content: string;
+  parentId: string;
 }
+
 interface ProjectStore {
   projects: Project[];
+  selectedProjectId: string | null;
+  selectedFileId: string | null;
+  selectedFileName: string | null;
+  selectedFileContent: string | null;
   addProject: (project: Project) => void;
   removeProject: (projectId: string) => void;
   updateProject: (projectId: string, newData: Partial<Project>) => void;
+  addFolder: (projectId: string, folder: Folder) => void;
+  removeFolder: (projectId: string, folderId: string) => void;
+  updateFolder: (projectId: string, folderId: string, newData: Partial<Folder>) => void;
+  addFile: (projectId: string, folderId: string, file: File) => void;
+  removeFile: (projectId: string, folderId: string, fileId: string) => void;
+  updateFile: (projectId: string, folderId: string, fileId: string, newData: Partial<File>) => void;
+  selectFile: (fileId: string, fileName: string) => void;
+  fetchFileContent: (fileId: string) => void;
 }
+
 const useProjectStore = create<ProjectStore>(set => ({
   projects: [],
+  selectedProjectId: null,
+  selectedFileId: null,
+  selectedFileName: null,
+  selectedFileContent: null,
   addProject: project => set(state => ({ projects: [...state.projects, project] })),
   removeProject: projectId => set(state => ({ projects: state.projects.filter(p => p.id !== projectId) })),
   updateProject: (projectId, newData) =>
     set(state => ({
       projects: state.projects.map(p => (p.id === projectId ? { ...p, ...newData } : p)),
     })),
-}));
-
-interface FolderStore {
-  folders: Folder[];
-  addFolder: (folder: Folder) => void;
-  removeFolder: (folderId: string) => void;
-  updateFolder: (folderId: string, newData: Partial<Folder>) => void;
-}
-const useFolderStore = create<FolderStore>(set => ({
-  folders: [],
-  addFolder: folder => set(state => ({ folders: [...state.folders, folder] })),
-  removeFolder: folderId => set(state => ({ folders: state.folders.filter(f => f.id !== folderId) })),
-  updateFolder: (folderId, newData) =>
+  addFolder: (projectId, folder) =>
     set(state => ({
-      folders: state.folders.map(f => (f.id === folderId ? { ...f, ...newData } : f)),
+      projects: state.projects.map(p => (p.id === projectId ? { ...p, folders: [...p.folders, folder] } : p)),
     })),
-}));
-
-interface FileStore {
-  files: File[];
-  addFile: (file: File) => void;
-  removeFile: (fileId: string) => void;
-  updateFile: (fileId: string, newData: Partial<File>) => void;
-}
-
-const useFileStore = create<FileStore>(set => ({
-  files: [],
-  addFile: file => set(state => ({ files: [...state.files, file] })),
-  removeFile: fileId => set(state => ({ files: state.files.filter(f => f.id !== fileId) })),
-  updateFile: (fileId, newData) =>
+  removeFolder: (projectId, folderId) =>
     set(state => ({
-      files: state.files.map(f => (f.id === fileId ? { ...f, ...newData } : f)),
+      projects: state.projects.map(p =>
+        p.id === projectId ? { ...p, folders: p.folders.filter(f => f.id !== folderId) } : p,
+      ),
     })),
-}));
+  updateFolder: (projectId, folderId, newData) =>
+    set(state => ({
+      projects: state.projects.map(p =>
+        p.id === projectId
+          ? {
+              ...p,
+              folders: p.folders.map(f => (f.id === folderId ? { ...f, ...newData } : f)),
+            }
+          : p,
+      ),
+    })),
+  selectProject: async (projectId: string) => {
+    try {
+      // 프로젝트 정보 요청
+      const response = await axios.get(`/api/projects/${projectId}`);
+      const { folders, files } = response.data;
 
-interface SelectedFileStore {
-  selectedFileId: string | null;
-  selectedFileName: string | null;
-  selectedFileContent: string | null;
-  selectFile: (fileId: string) => void;
-  fetchFileContent: (fileId: string) => void;
-}
+      // 폴더와 파일 정보를 스토어에 추가
+      const projectFolders: Folder[] = folders.map((folder: any) => ({
+        folderId: folder.folderId,
+        folderName: folder.folderName,
+        parentId: folder.parentId,
+      }));
+      const projectFiles: File[] = files.map((file: any) => ({
+        fileId: file.fileId,
+        fileName: file.fileName,
+        parentId: file.parentId,
+      }));
 
-const useSelectedFileStore = create<SelectedFileStore>(set => ({
-  selectedFileId: null,
-  selectedFileName: null,
-  selectedFileContent: null,
-  selectFile: fileId => set({ selectedFileId: fileId }),
+      // 프로젝트의 폴더와 파일 목록을 업데이트
+      set(state => ({
+        selectedProjectId: projectId,
+        projects: state.projects.map(project => {
+          if (project.id === projectId) {
+            return {
+              ...project,
+              folders: projectFolders,
+              files: projectFiles,
+            };
+          }
+          return project;
+        }),
+      }));
+    } catch (error) {
+      console.error('Error fetching project data:', error);
+    }
+  },
+
+  addFile: (projectId, folderId, file) =>
+    set(state => ({
+      projects: state.projects.map(p =>
+        p.id === projectId
+          ? {
+              ...p,
+              folders: p.folders.map(f => (f.id === folderId ? { ...f, files: [...f.files, file] } : f)),
+            }
+          : p,
+      ),
+    })),
+  removeFile: (projectId, folderId, fileId) =>
+    set(state => ({
+      projects: state.projects.map(p =>
+        p.id === projectId
+          ? {
+              ...p,
+              folders: p.folders.map(f =>
+                f.id === folderId ? { ...f, files: f.files.filter(fi => fi.id !== fileId) } : f,
+              ),
+            }
+          : p,
+      ),
+    })),
+  updateFile: (projectId, folderId, fileId, newData) =>
+    set(state => ({
+      projects: state.projects.map(p =>
+        p.id === projectId
+          ? {
+              ...p,
+              folders: p.folders.map(f =>
+                f.id === folderId
+                  ? { ...f, files: f.files.map(fi => (fi.id === fileId ? { ...fi, ...newData } : fi)) }
+                  : f,
+              ),
+            }
+          : p,
+      ),
+    })),
+  selectFile: (fileId, fileName) =>
+    set({
+      selectedFileId: fileId,
+      selectedFileName: fileName,
+      selectedFileContent: null,
+    }),
   fetchFileContent: async fileId => {
     try {
       const response = await axios.get(`/api/files/${fileId}`);
       const fileContent = response.data.content;
-      set(state => ({
-        selectedFileId: state.selectedFileId, // 선택된 파일 ID는 변경되지 않으므로 유지
-        selectedFileName: state.selectedFileName,
-        fetchFileContent: state.fetchFileContent,
-        selectedFileContent: fileContent,
-      }));
+      set({ selectedFileContent: fileContent });
     } catch (error) {
       console.error('Error fetching file content:', error);
     }
@@ -98,5 +169,4 @@ const useSelectedFileStore = create<SelectedFileStore>(set => ({
 }));
 
 export default useProjectStore;
-export { useFolderStore, useFileStore, useSelectedFileStore };
-export type { ProjectStore, FolderStore, FileStore, SelectedFileStore };
+export type { ProjectStore, Project, Folder, File };

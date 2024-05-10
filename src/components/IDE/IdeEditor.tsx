@@ -3,14 +3,13 @@ import * as monaco from 'monaco-editor';
 import tomorrowTheme from 'monaco-themes/themes/Tomorrow.json';
 import tomorrowDarkTheme from 'monaco-themes/themes/Night Owl.json';
 import { useEffect, useRef, useState } from 'react';
-import { CODE_SNIPPETS, LanguageOptions } from '../../const/LanguageOption';
+import { CODE_SNIPPETS } from '../../const/LanguageOption';
 import useLanguageStore from '../../state/IDE/IdeStore';
 import { useTheTheme } from '../Theme';
-import { useSelectedFileStore } from '../../state/IDE/ProjectState';
-import { ButtonWrapper, EditorButton } from './IdeStyle';
+import useProjectStore from '../../state/IDE/ProjectState';
+import { EditorButton } from './IdeStyle';
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { ThemeProvider } from 'styled-components';
 
 loader.config({
   paths: {
@@ -35,14 +34,22 @@ const MONACO_OPTIONS: monaco.editor.IEditorConstructionOptions = {
     verticalSliderSize: 18,
   },
 };
-
+interface SelectedFileState {
+  selectedFileId: string | null;
+  selectedFileContent: string | null;
+  selectedFileName: string | null;
+}
 export const IdeEditor: React.FC = () => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const language = useLanguageStore(state => state.language);
   const setLanguage = useLanguageStore(state => state.setLanguage);
-  const selectedFileId = useSelectedFileStore(state => state.selectedFileId);
-  const selectedFileContent = useSelectedFileStore(state => state.selectedFileContent);
-  const selectedFileName = useSelectedFileStore(state => state.selectedFileName);
+
+  const { selectedFileId, selectedFileContent, selectedFileName } = useProjectStore<SelectedFileState>(state => ({
+    selectedFileId: state.selectedFileId,
+    selectedFileContent: state.selectedFileContent,
+    selectedFileName: state.selectedFileName,
+  }));
+
   const [isEditorOpen, setIsEditorOpen] = useState(true);
 
   //테마
@@ -78,7 +85,6 @@ export const IdeEditor: React.FC = () => {
     <div className="h-3/5 w-screen overflow-scroll">
       <EditorButton>
         {selectedFileName ? `${selectedFileName}` : 'Untitled'}
-        {selectedFileName && <span>{`.${LanguageOptions.find(option => option.id === language)?.id}`}</span>}
         <IconButton size="small">
           <CloseIcon fontSize="small" onClick={closeEditor} />
         </IconButton>
