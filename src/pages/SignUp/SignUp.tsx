@@ -2,6 +2,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Switcher } from '../Login/LoginStyles';
 import { Check, Error, Form, SignUpInput, SignUpPart, SignUpWrapper } from './SignUpStyles';
 import { useState } from 'react';
+import EmailAuthModal from '../../components/EmailAuthModal';
+import axios from 'axios';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -13,13 +15,14 @@ const SignUp = () => {
   const [isLoading, setLoading] = useState(false);
   const max_length = 10;
   const [InputCount, setInputCpunt] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { name, value },
     } = e;
-
     if (name === 'nickname') {
+      //닉네임 글자 수 제한
       const sliceValue = value.slice(0, max_length);
       setNickName(sliceValue);
       setInputCpunt(sliceValue.length);
@@ -31,16 +34,41 @@ const SignUp = () => {
       setPasswordCheck(value);
     }
   };
-  const onEmailCheck = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onEmailCheck = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      //인증버튼 눌렀을 때 이메일을 입력하지 않았을 경우
+      alert('이메일을 입력해주세요.');
+    } else if (!emailRegex.test(email)) {
+      //인증버튼 눌렀을 때 이메일 형식이 올바르지 않을 경우
+      alert('유효한 이메일 주소를 입력해주세요.');
+    } else {
+      // try {
+      //   //이메일 인증을 위해 서버로 이메일 보내기
+      //   const response = await axios.post('/signup', { email: email });
+      setIsModalOpen(true);
+      //   console.log(response.data);
+      // } catch (error) {
+      //   console.log(error);
+      // }
+    }
   };
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onCloseModal = () => {
+    setIsModalOpen(false); // 모달을 닫아줍니다
+  };
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setError('');
     if (isLoading || passwordCheck == '' || nickname === '' || password === '' || email === '') return;
     else if (passwordCheck !== password) {
       setError('비밀번호가 일치하지 않습니다.');
       //timeout 설정할까??
+      return;
+    } else if (!emailRegex.test(email)) {
+      //이메일 형식이 맞지 않을 경우 에러설정
+      setError('유효한 이메일 주소를 입력해주세요.');
       return;
     }
     const userSignUp = {
@@ -84,6 +112,7 @@ const SignUp = () => {
             <Check onClick={onEmailCheck} className="text-sm">
               인증
             </Check>
+            <EmailAuthModal isOpen={isModalOpen} onClose={onCloseModal} />
           </div>
           <span className="mt-6 text-lg">닉네임</span>
 
