@@ -36,7 +36,9 @@ const rotateAnimation = keyframes`
     transform: rotate(360deg);
   }
 `;
-export const Container = styled.div``;
+export const Container = styled.div`
+  z-index: 0;
+`;
 export const Sidecontainer = styled.div`
   height: 100%;
   display: flex;
@@ -153,11 +155,11 @@ export const Maincontainer = styled.div`
   gap: 40px;
   padding: 0px 0px 0px 0px;
   height: 93vh;
-  position: fixed;
   justify-content: center;
   align-items: center;
   transition: margin-left 0.6s ease; /* 부드러운 전환 효과 추가 */
-
+  z-index: 0;
+  position: relative;
   /* 미디어 쿼리를 사용하여 뷰포트 너비가 600px 이하일 때 반응형으로 변경 */
   @media (max-width: 1250px) {
     grid-template-columns: 1fr; /* 한 열로 변경 */
@@ -193,6 +195,8 @@ export const Hicontainer = styled.div`
   margin: 10px;
   align-self: end;
   justify-self: left; // 그리드 셀 내 중앙 정렬
+  position: relative;
+  z-index: 0;
   @media (max-width: 1250px) {
     width: 66vw;
   }
@@ -242,6 +246,9 @@ export const Attendancecontainer = styled.div`
   align-items: center;
   align-self: end;
   justify-self: left;
+  z-index: 0;
+  position: relative;
+
   @media (max-width: 1250px) {
   }
 `;
@@ -262,7 +269,6 @@ export const Date = styled.div`
   width: 150px;
   border-radius: 50%;
   position: relative; // AttendanceImage의 부모 요소가 됨
-  z-index: 0; // z-index를 설정하여 다른 콘텐츠와의 층위를 조정
 `;
 export const Month = styled.p`
   color: black;
@@ -298,6 +304,9 @@ export const Pjcontainer = styled.div`
   margin: 10px;
   align-self: start;
   justify-self: left;
+  z-index: 0;
+  position: relative;
+
   @media (max-width: 1250px) {
     margin-left: 45vw;
     margin-top: -330px;
@@ -342,6 +351,9 @@ export const ChatContainer = styled.div`
   margin: 10px;
   align-self: start;
   justify-self: left;
+  z-index: 0;
+  position: relative;
+
   @media (max-width: 1250px) {
     width: 66vw;
   }
