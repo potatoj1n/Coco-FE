@@ -11,12 +11,15 @@ import { CreateCustomButton } from './IdeStyle';
 import { createProject } from './CodeApi';
 import { CreateContainer, Overlay, modalRoot } from '../ModalOverlay';
 import ReactDOM from 'react-dom';
+import styled from 'styled-components';
 
 interface Props {
   onSelectChange: (language: string) => void;
   onClose: () => void;
 }
-
+const FontColor = styled.h1`
+  color: ${({ theme }) => (theme.themeColor === 'dark' ? '#FFFFFF' : '#000000')};
+`;
 const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const { themeColor } = useTheTheme();
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
@@ -59,8 +62,8 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   return ReactDOM.createPortal(
     <Overlay closing={closing}>
       <CreateContainer onClick={e => e.stopPropagation()} closing={closing}>
-        <h1 className="text-2xl">새 프로젝트 생성하기 </h1>
-        <h2 className="text-lg">새 프로젝트 명</h2>
+        <FontColor className="text-2xl font-pretendard font-normal ">새 프로젝트 생성하기</FontColor>
+        <FontColor className="text-lg font-pretendard font-normal">새 프로젝트 명</FontColor>
         <TextField
           placeholder="새 프로젝트 명"
           variant="outlined"
@@ -80,7 +83,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
           }}
           onChange={e => setNewProjectName(e.target.value)}
         ></TextField>
-        <h2 className="text-lg">언어 선택</h2>
+        <FontColor className="text-lg font-pretendard font-normal">언어 선택</FontColor>
         <Select
           value={language}
           onChange={handleChange}
@@ -105,11 +108,11 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
         </Select>
         <span className="flex justify-end gap-3">
           <Link to="/ide">
-            <CreateCustomButton className="bg-green-500" onClick={handleCreateProject}>
+            <CreateCustomButton className="bg-green-500 font-pretendard font-normal" onClick={handleCreateProject}>
               생성 하기
             </CreateCustomButton>
           </Link>
-          <CreateCustomButton className="text-green-500" onClick={handleClose}>
+          <CreateCustomButton className="text-green-500 font-pretendard font-normal" onClick={handleClose}>
             취소 하기
           </CreateCustomButton>
         </span>

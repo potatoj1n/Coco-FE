@@ -452,7 +452,31 @@ export const MessageMinetext = styled.div`
   overflow-wrap: break-word;
   font-size: 13px;
   color: black;
-  max-width: 90%;
+  max-width: 265px;
+  @media (max-width: 1250px) {
+    max-width: 55vw;
+  }
+  @media (max-width: 1200px) {
+    max-width: 54.5vw;
+  }
+  @media (max-width: 1150px) {
+    max-width: 54vw;
+  }
+  @media (max-width: 1100px) {
+    max-width: 53.5vw;
+  }
+  @media (max-width: 1050px) {
+    max-width: 53vw;
+  }
+  @media (max-width: 1000px) {
+    max-width: 52.5vw;
+  }
+  @media (max-width: 950px) {
+    max-width: 52vw;
+  }
+  @media (max-width: 900px) {
+    max-width: 245px;
+  }
 `;
 export const MessageOthertext = styled(MessageMinetext)`
   background-color: #fff;
