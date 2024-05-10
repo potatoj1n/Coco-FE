@@ -43,22 +43,13 @@ export const UserInput = styled.input`
   padding: 10px 20px;
   font-size: 16px;
   color: black;
-  /* border: 1px solid ${({ readOnly }) => (readOnly ? '#d9d9d9' : '#4A90E2')};
-  background-color: ${({ readOnly }) => (readOnly ? '#f0f0f0' : '#ffffff')};
-  transition:
-    border 0.3s,
-    background-color 0.3s;
-
-  &:focus {
-    border-color: #4a90e2;
-    outline: none;
-  } */
 `;
 export const Edit = styled(EditIcon)`
-  cursor: pointer;
+  color: ${({ theme }) => (theme.themeColor === 'light' ? 'black' : 'white')};
   margin-left: 5px;
   &:hover {
     cursor: pointer;
+    fill: white;
   }
 `;
 export const Save = styled.button`
@@ -70,5 +61,6 @@ export const Save = styled.button`
   margin-top: 5px;
   &:hover {
     cursor: pointer;
+    opacity: 0.8;
   }
 `;
