@@ -8,6 +8,7 @@ import {
   FolderButton,
   Icon,
   Iconchat,
+  Iconmypage,
   ChatButton,
   Sidecontainer,
   Menuname,
@@ -53,6 +54,8 @@ import modifypj from '../../assets/modifypj.svg';
 import attend from '../../assets/attend.svg';
 import profileOther from '../../assets/profileOther.svg';
 import profileMine from '../../assets/profileMine.svg';
+import mypageIconlight from '../../assets/mypageIconlight.svg';
+import mypageIcondark from '../../assets/mypageIcondark.svg';
 
 const Main = () => {
   const [messages, setMessages] = useState([
@@ -186,6 +189,10 @@ const Main = () => {
           <ChatButton to="/chat">
             <Iconchat src={themeColor === 'light' ? chatLight : chatDark} />
             <Menuname>chat</Menuname>
+          </ChatButton>
+          <ChatButton to="/mypage">
+            <Iconmypage src={themeColor === 'light' ? mypageIconlight : mypageIcondark} />
+            <Menuname>my page</Menuname>
           </ChatButton>
         </Sidecontainer>
         <Maincontainer>

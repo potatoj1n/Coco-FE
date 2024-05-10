@@ -136,6 +136,12 @@ export const Iconchat = styled.img`
   height: 35px;
   margin-right: -6px;
 `;
+export const Iconmypage = styled.img`
+  width: 20px;
+  height: 20px;
+  margin-right: 0px;
+  margin-left: 7px;
+`;
 
 export const Menuname = styled.p`
   color: ${({ theme }) => theme.text};
