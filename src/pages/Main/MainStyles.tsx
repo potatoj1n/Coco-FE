@@ -10,6 +10,7 @@ export const lightTheme = {
   borderColor: '#eef1f3', // 라이트 모드 보더 색상
   background: '#fff',
   buttonColor: '#AAEAD3',
+  attendcolor: '#E1F9F0',
   HiColor: '#23BE87',
   attend: '#ffffff',
   attendbutton: '#28B381',
@@ -20,7 +21,8 @@ export const darkTheme = {
   borderColor: '#54595b', // 다크 모드 보더 색상
   background: '#243B56',
   buttonColor: '#23BE87',
-  HiColor: '#AAEAD3',
+  attendcolor: '#23BE87',
+  HiColor: '#E1F9F0',
   attend: '#23BE87',
   attendbutton: '#ffffff',
 };
@@ -34,12 +36,15 @@ const rotateAnimation = keyframes`
     transform: rotate(360deg);
   }
 `;
-export const Container = styled.div``;
+export const Container = styled.div`
+  z-index: 0;
+`;
 export const Sidecontainer = styled.div`
   height: 100%;
   display: flex;
   left: 0;
-  width: 150px;
+  min-width: 150px;
+  width: 13vw;
   flex-direction: column;
   align-items: center;
   position: fixed;
@@ -77,47 +82,67 @@ export const PjButton = styled.button`
   }
 `;
 export const FolderButton = styled.button`
-color: ${({ theme }) => theme.text};
-padding: 10px;
-font-size: 15px;
-font-style: normal;
-font-weight: 600;
-border: none;
-border-radius: 5px;
-transition: background-color 0.3s;
-width: 11vw;
-flex-direction: raw;
-min-width: 120px;
-display: flex;
-align-items: center;
-justify-content: space-between;
+  color: ${({ theme }) => theme.text};
+  padding: 10px;
+  padding-left: 20px;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+  flex-direction: row;
+  min-width: 150px;
+  width: 13vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
 
-&:hover {
-  background-color: #d8dfe3;`;
+  margin-top: 10px;
+  &:hover {
+    background-color: rgba(118, 193, 175, 0.3);
+  }
+`;
 export const ChatButton = styled(Link)`
   color: ${({ theme }) => theme.text};
   padding: 10px;
-  font-size: 15px;
+  padding-left: 14px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 600;
   border: none;
   border-radius: 5px;
   transition: background-color 0.3s;
-  width: 11vw;
-  flex-direction: raw;
-  min-width: 120px;
+  min-width: 150px;
+  width: 13vw;
+  flex-direction: row;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-
+  height: 40px;
   &:hover {
-  background-color: #d8dfe3;
+    background-color: rgba(118, 193, 175, 0.3);
+  }
 `;
 
 export const Icon = styled.img`
   width: 20px;
   height: 20px;
 `;
+export const Iconchat = styled.img`
+  width: 35px;
+  height: 35px;
+  margin-right: -6px;
+`;
+export const Iconmypage = styled.img`
+  width: 20px;
+  height: 20px;
+  margin-right: 0px;
+  margin-left: 7px;
+`;
+
 export const Menuname = styled.p`
   color: ${({ theme }) => theme.text};
   font-style: normal;
@@ -127,69 +152,111 @@ export const Menuname = styled.p`
   margin-left: 10px;
 `;
 export const Maincontainer = styled.div`
-  width: calc(100vw - max(12vw, 130px));
-  margin-left: 150px;
+  width: 900px;
+  margin-left: 24vw;
+  margin-right: 15vw;
+  display: grid;
+  grid-template-columns: 1fr 0.8fr; /* 왼쪽 열은 1fr, 오른쪽 열은 0.5fr */
+  grid-template-rows: repeat(2, 1fr); /* 두 개의 행을 동일한 비율로 설정 */
+  gap: 40px;
+  padding: 0px 0px 0px 0px;
+  height: 93vh;
   justify-content: center;
   align-items: center;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 두 개의 열을 동일한 비율로 설정 */
-  grid-template-rows: repeat(2, 1fr); /* 두 개의 행을 동일한 비율로 설정 */
-  gap: 25px;
-  padding: 85px 20px 40px 90px;
-  height: 100vh;
-  position: fixed;
+  transition: margin-left 0.6s ease; /* 부드러운 전환 효과 추가 */
+  z-index: 0;
+  position: relative;
   /* 미디어 쿼리를 사용하여 뷰포트 너비가 600px 이하일 때 반응형으로 변경 */
-  @media (max-width: 600px) {
+  @media (max-width: 1250px) {
     grid-template-columns: 1fr; /* 한 열로 변경 */
-    padding: 50px 20px;
-    overflow: scroll;
+    padding: 20px 20px;
+    margin-left: 20vw;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      display: none; /* 스크롤바를 숨깁니다 */
+    }
+    /* Firefox용 스크롤바 숨김 */
+    scrollbar-width: none; /* 스크롤바를 숨깁니다 */
+  }
+  @media (max-width: 900px) {
+    margin-left: 33vw;
+  }
+  @media (max-width: 750px) {
+    margin-left: 29vw;
+  }
+  @media (max-width: 600px) {
+    margin-left: 25vw;
   }
 `;
 export const Hicontainer = styled.div`
   background-color: ${({ theme }) => theme.HiColor};
-  height: max(22vw, 250px);
+  height: 280px;
   display: flex;
-  width: max(40vw, 350px);
-  min-width: 130px;
+  width: 500px;
   flex-direction: column;
   justify-content: center;
   align-items: left;
-  padding: 50px 30px 30px 30px;
+  padding: 30px 30px 0px 60px;
   border-radius: 16px;
   margin: 10px;
+  align-self: end;
+  justify-self: left; // 그리드 셀 내 중앙 정렬
+  position: relative;
+  z-index: 0;
+  @media (max-width: 1250px) {
+    width: 66vw;
+  }
+  @media (max-width: 900px) {
+    width: 370px;
+  }
 `;
 
 export const MainImg = styled.img`
-  width: max(25vw, 200px);
+  width: 250px;
   height: 170px;
   margin-top: 10px;
+  @media (max-width: 1250px) {
+    margin-left: 30vw;
+    margin-top: -100px;
+  }
+  @media (max-width: 900px) {
+    margin-left: 0;
+    margin-top: -10px;
+  }
 `;
 export const Hione = styled.p`
-  font-size: max(2vw, 16px);
+  font-size: 24px;
   font-style: normal;
   font-weight: 600;
   color: black;
 `;
 export const Hitwo = styled.p`
-  font-size: max(1.9vw, 14px);
-  margin-top: 10px;
+  font-size: 20px;
+  margin-top: 20px;
   font-style: normal;
   font-weight: 600;
   color: black;
 `;
 
 export const Attendancecontainer = styled.div`
-  background-color: ${({ theme }) => theme.buttonColor};
+  background-color: ${({ theme }) => theme.attendcolor};
 
-  height: max(22vw, 250px);
+  height: 280px;
   display: flex;
-  width: max(30vw, 100px);
+  width: 370px;
   flex-direction: column;
   justify-content: center;
   padding: 30px;
   border-radius: 16px;
   margin: 10px;
   align-items: center;
+  align-self: end;
+  justify-self: left;
+  z-index: 0;
+  position: relative;
+
+  @media (max-width: 1250px) {
+  }
 `;
 export const AttendButton = styled.button`
   background-color: ${({ theme }) => theme.attendbutton};
@@ -197,14 +264,17 @@ export const AttendButton = styled.button`
   width: 200px;
   height: 40px;
   font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
   border-radius: 5px;
   margin: 20px 0 0 0;
 `;
 export const Date = styled.div`
   background-color: white;
-  height: 160px;
-  width: 160px;
+  height: 150px;
+  width: 150px;
   border-radius: 50%;
+  position: relative; // AttendanceImage의 부모 요소가 됨
 `;
 export const Month = styled.p`
   color: black;
@@ -224,27 +294,40 @@ export const Day = styled.p`
 
 export const AttendanceImage = styled.img<{ show: boolean }>`
   display: ${({ show }) => (show ? 'block' : 'none')};
-  height: 160px;
-  width: 160px;
-  position: fixed;
-  margin-top: -220px;
-  margin-left: 20px;
+  height: 150px;
+  width: 150px;
+  position: absolute; // 스크롤에 따라 이동하지 않도록 위치 설정
+  margin-top: -210px;
+  margin-left: 25px;
+  z-index: 1; // Date 위에 위치하기 위해 z-index 사용
 `;
 
 export const Pjcontainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: max(28vw, 250px);
-  width: max(30vw, 100px);
+  height: 240px;
+  width: 200px;
   margin: 10px;
+  align-self: start;
+  justify-self: left;
+  z-index: 0;
+  position: relative;
+
+  @media (max-width: 1250px) {
+    margin-left: 45vw;
+    margin-top: -330px;
+  }
+  @media (max-width: 900px) {
+    margin: 10px;
+  }
 `;
 export const ModifyPj = styled.p`
   color: ${({ theme }) => theme.text};
-  margin-top: 25px;
   font-style: normal;
   font-weight: 600;
   margin-top: -20px;
   margin-left: 30px;
+  font-size: 18px;
 `;
 
 export const ModifyPjBtn = styled(Link)`
@@ -257,7 +340,7 @@ margin-top: 10px;
 display: flex;
 justify-content: center;
 align-items: center;
-width: 130px;
+width: 140px;
 height: 160px;
 &:hover {
   background-color: #d8dfe3;`;
@@ -269,18 +352,26 @@ export const ModifyIcon = styled.img`
 
 export const ChatContainer = styled.div`
   flex-direction: column;
-  height: max(28vw, 250px);
-  width: max(35vw, 100px);
+  height: 350px;
+  width: 400px;
   margin: 10px;
-  margin-left: -4.3vw;
-  align-items: left;
+  align-self: start;
+  justify-self: left;
+  z-index: 0;
+  position: relative;
+
+  @media (max-width: 1250px) {
+    width: 66vw;
+  }
+  @media (max-width: 900px) {
+    width: 380px;
+  }
 `;
 export const Chatnav = styled.div`
-  flex-direction: raw;
   display: flex;
   width: 100%;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 `;
 
 export const Chatname = styled.p`
@@ -288,14 +379,15 @@ export const Chatname = styled.p`
   font-style: normal;
   font-weight: 600;
   display: flex;
-  margin: 0 10px;
+  margin: 7px 0px 0 10px;
   flex-grow: 1;
+  font-size: 18px;
 `;
 export const Chatmore = styled(Link)`
   color: ${({ theme }) => theme.text};
   font-style: normal;
   font-weight: 500;
-  margin-top: 10px;
+  margin-top: 20px;
   margin-right: 10px;
   font-size: 8px;
 `;
@@ -303,11 +395,18 @@ export const Chatmore = styled(Link)`
 export const Chatmain = styled.div`
   border-top: 1px solid rgba(102, 102, 102, 0.6);
   border-bottom: 1px solid rgba(102, 102, 102, 0.6);
-  height: max(18vw, 20px);
-  width: max(35vw, 100px);
+  height: 250px;
+  width: 400px;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
+  padding-bottom: 5px;
+  @media (max-width: 1250px) {
+    width: 66vw;
+  }
+  @media (max-width: 900px) {
+    width: 380px;
+  }
 `;
 
 export const UserContainer = styled.div`
@@ -318,8 +417,9 @@ export const UserContainer = styled.div`
 `;
 
 export const UserName = styled.h1`
-  font-size: 9px;
-  margin-top: 0.6rem;
+  font-size: 8px;
+  margin-top: 5px;
+  white-space: nowrap;
 `;
 
 export const UserIcon = styled.img`
@@ -338,7 +438,8 @@ export const MessageFlexContainer = styled.div`
 export const MessageOther = styled.div`
   align-self: flex-start;
   display: flex;
-  margin: 4px 0px;
+  margin: 0px 5px 0px 0px;
+  padding: 0;
 `;
 
 export const MessageMine = styled(MessageOther)`
@@ -357,9 +458,32 @@ export const MessageMinetext = styled.div`
   overflow-wrap: break-word;
   font-size: 13px;
   color: black;
-  max-width: 26vw;
+  max-width: 265px;
+  @media (max-width: 1250px) {
+    max-width: 55vw;
+  }
+  @media (max-width: 1200px) {
+    max-width: 54.5vw;
+  }
+  @media (max-width: 1150px) {
+    max-width: 54vw;
+  }
+  @media (max-width: 1100px) {
+    max-width: 53.5vw;
+  }
+  @media (max-width: 1050px) {
+    max-width: 53vw;
+  }
+  @media (max-width: 1000px) {
+    max-width: 52.5vw;
+  }
+  @media (max-width: 950px) {
+    max-width: 52vw;
+  }
+  @media (max-width: 900px) {
+    max-width: 245px;
+  }
 `;
 export const MessageOthertext = styled(MessageMinetext)`
   background-color: #fff;
-  margin-bottom: 28px;
 `;

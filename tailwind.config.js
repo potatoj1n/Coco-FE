@@ -10,6 +10,9 @@ module.exports = {
           500: '#23be87',
         },
       },
+      fontFamily: {
+        pretendard: ['Pretendard', 'sans-serif'],
+      },
     },
   },
   plugins: [],
