@@ -139,9 +139,13 @@ const Main = () => {
   };
   // 메시지 배열이 변경될 때마다 실행되어 스크롤을 맨 아래로 이동
   useEffect(() => {
-    if (messagesEndRef.current) {
-      // 스크롤 위치를 강제로 최하단으로 이동
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    const chatContainer = messagesEndRef.current?.parentElement; // Chatmain 컨테이너를 가져옴
+    if (chatContainer) {
+      // 최하단으로 스크롤
+      chatContainer.scrollTo({
+        top: chatContainer.scrollHeight,
+        behavior: 'smooth',
+      });
     }
   }, [messages]);
 
