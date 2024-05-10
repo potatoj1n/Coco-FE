@@ -37,7 +37,6 @@ export const saveCode = async (language, sourceCode, fileId) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        language: language,
         sourceCode: sourceCode,
         fileId: fileId,
       }),

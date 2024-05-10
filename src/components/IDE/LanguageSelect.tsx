@@ -3,15 +3,16 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { LanguageOptions } from '../../const/LanguageOption';
 import useLanguageStore from '../../state/IDE/IdeStore';
-import { Link } from 'react-router-dom';
 import { TextField } from '@mui/material';
 import { useTheTheme } from '../Theme';
 import useProjectStore from '../../state/IDE/ProjectState';
 import { CreateCustomButton } from './IdeStyle';
 import { createProject } from './CodeApi';
+import { useNavigate } from 'react-router-dom';
 import { CreateContainer, Overlay, modalRoot } from '../ModalOverlay';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
+
 
 interface Props {
   onSelectChange: (language: string) => void;
@@ -25,6 +26,8 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [newProjectName, setNewProjectName] = useState('');
   const { addProject } = useProjectStore();
+  const navigate = useNavigate();
+
   const [closing, setClosing] = useState(false);
   const handleClose = () => {
     setClosing(true);
@@ -44,16 +47,22 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
     }
 
     const newProject = {
-      id: Math.random().toString(),
+      temporaryId: Math.random().toString(),
       name: newProjectName,
       language: language,
       folders: [],
+      files: [],
     };
     try {
-      await createProject(newProject);
-      addProject(newProject);
+      const createdProject = await createProject(newProject);
+      //임시 프로젝트 id에서 백엔드에서 생성한 프로젝트 id로
+      createdProject.id = createdProject.realProjectId;
+      delete createdProject.realProjectId;
+
+      addProject(createdProject);
       setNewProjectName('');
       onClose();
+      navigate(`/ide/${createdProject.id}`);
     } catch (error) {
       console.error('Error creating project:', error);
     }
@@ -77,26 +86,27 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
               '&.Mui-focused fieldset': {
                 borderColor: '#28b381',
               },
-              backgroundColor: themeColor === 'light' ? '#ffffff' : '#243B56',
-              color: themeColor === 'light' ? 'black' : '#76ECC2',
-            },
-          }}
-          onChange={e => setNewProjectName(e.target.value)}
-        ></TextField>
-        <FontColor className="text-lg font-pretendard font-normal">언어 선택</FontColor>
-        <Select
-          value={language}
-          onChange={handleChange}
-          placeholder={`Filter By Category`}
-          size="small"
-          sx={{
-            '& .MuiSelect-select': {
-              backgroundColor: themeColor === 'light' ? '#ffffff' : '#ffffff',
-              color: themeColor === 'light' ? 'black' : 'black',
-            },
-            '& .MuiOutlinedInput-root': {
-              borderColor: '#28b381',
-            },
+             
+            backgroundColor: themeColor === 'light' ? '#ffffff' : '#243B56',
+            color: themeColor === 'light' ? 'black' : '#76ECC2',
+          },
+        }}
+        onChange={e => setNewProjectName(e.target.value)}
+      ></TextField>
+      <h2 className="text-lg">언어 선택</h2>
+      <Select
+        value={language}
+        onChange={handleChange}
+        placeholder={`Filter By Category`}
+        size="small"
+        sx={{
+          '& .MuiSelect-select': {
+            backgroundColor: themeColor === 'light' ? '#ffffff' : '#ffffff',
+            color: themeColor === 'light' ? 'black' : 'black',
+          },
+          '& .MuiOutlinedInput-root': {
+            borderColor: '#28b381',
+          },
             maxWidth: 'max-content',
           }}
         >
@@ -119,6 +129,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
       </CreateContainer>
     </Overlay>,
     modalRoot,
+
   );
 };
 

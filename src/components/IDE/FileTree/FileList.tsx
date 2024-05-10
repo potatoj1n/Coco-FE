@@ -4,7 +4,7 @@ import { ReactComponent as FileAddDarkIcon } from '../../../assets/file-adddark.
 import { ReactComponent as FolderAddLightIcon } from '../../../assets/folder-addlight.svg';
 import { ReactComponent as FolderAddDarkIcon } from '../../../assets/folder-adddark.svg';
 import { useTheTheme } from '../../Theme';
-import useProjectStore, { useFileStore, useFolderStore } from '../../../state/IDE/ProjectState';
+import useProjectStore from '../../../state/IDE/ProjectState';
 import { useState } from 'react';
 import { FolderWrapper, ProjectWrapper, Title } from '../IdeStyle';
 import FileTree from './FileTree';
@@ -12,8 +12,8 @@ import FileTree from './FileTree';
 export default function FileList() {
   const { themeColor } = useTheTheme();
   const projects = useProjectStore(state => state.projects);
-  const { folders, addFolder, removeFolder, updateFolder } = useFolderStore();
-  const { files, addFile, removeFile, updateFile } = useFileStore();
+  const selectedProjectId = useProjectStore(state => state.selectedProjectId);
+  const { addFolder, addFile } = useProjectStore();
   const [newFolderName, setNewFolderName] = useState('');
   const [newFileName, setNewFileName] = useState('');
   const [isAdding, setIsAdding] = useState(false);
@@ -23,13 +23,18 @@ export default function FileList() {
       alert('폴더명을 입력하세요.');
       return;
     }
+    if (!selectedProjectId) {
+      alert('프로젝트를 선택하세요.');
+      return;
+    }
     const newFolder = {
       id: Math.random().toString(),
       name: newFolderName,
       files: [],
+      parentId: '',
     };
 
-    addFolder(newFolder);
+    addFolder(selectedProjectId, newFolder);
     setNewFolderName('');
     setIsAdding(true);
   };
@@ -39,13 +44,23 @@ export default function FileList() {
       alert('파일명을 입력하세요.');
       return;
     }
+    if (!selectedProjectId) {
+      alert('프로젝트를 선택하세요.');
+      return;
+    }
     const newFile = {
       id: Math.random().toString(),
       name: newFileName,
       content: '',
+      parentId: '',
     };
 
-    addFile(newFile);
+    const selectedProject = projects.find(project => project.id === selectedProjectId);
+    if (selectedProject && selectedProject.folders.length > 0) {
+      const folderId = selectedProject.folders[0].id;
+      addFile(selectedProjectId, folderId, newFile);
+    }
+
     setNewFileName('');
   };
   return (
