@@ -3,12 +3,12 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { LanguageOptions } from '../../const/LanguageOption';
 import useLanguageStore from '../../state/IDE/IdeStore';
-import { Link } from 'react-router-dom';
 import { TextField } from '@mui/material';
 import { useTheTheme } from '../Theme';
 import useProjectStore from '../../state/IDE/ProjectState';
 import { CreateContainer, CreateCustomButton } from './IdeStyle';
 import { createProject } from './CodeApi';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   onSelectChange: (language: string) => void;
@@ -20,6 +20,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [newProjectName, setNewProjectName] = useState('');
   const { addProject } = useProjectStore();
+  const navigate = useNavigate();
 
   //언어 선택 이벤트
   const handleChange = (event: SelectChangeEvent<string>) => {
@@ -35,16 +36,22 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
     }
 
     const newProject = {
-      id: Math.random().toString(),
+      temporaryId: Math.random().toString(),
       name: newProjectName,
       language: language,
       folders: [],
+      files: [],
     };
     try {
-      await createProject(newProject);
-      addProject(newProject);
+      const createdProject = await createProject(newProject);
+      //임시 프로젝트 id에서 백엔드에서 생성한 프로젝트 id로
+      createdProject.id = createdProject.realProjectId;
+      delete createdProject.realProjectId;
+
+      addProject(createdProject);
       setNewProjectName('');
       onClose();
+      navigate(`/ide/${createdProject.id}`);
     } catch (error) {
       console.error('Error creating project:', error);
     }
@@ -97,11 +104,9 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
         ))}
       </Select>
       <span className="flex justify-end gap-3">
-        <Link to="/ide">
-          <CreateCustomButton className="bg-green-500" onClick={handleCreateProject}>
-            생성 하기
-          </CreateCustomButton>
-        </Link>
+        <CreateCustomButton className="bg-green-500" onClick={handleCreateProject}>
+          생성 하기
+        </CreateCustomButton>
         <CreateCustomButton className="text-green-500" onClick={onClose}>
           취소 하기
         </CreateCustomButton>
