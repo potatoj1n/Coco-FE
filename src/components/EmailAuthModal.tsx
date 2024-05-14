@@ -66,6 +66,7 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
   };
 
   useEffect(() => {
+    // 모달이 열려있을 때만 타이머를 시작
     if (isOpen) {
       setTimeLeft(10);
       setCode(new Array(code.length).fill(''));

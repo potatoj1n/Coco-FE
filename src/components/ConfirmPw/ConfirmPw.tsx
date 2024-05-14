@@ -6,11 +6,12 @@ interface ModalProps {
   pw?: string;
 }
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../../components/Animation.css';
 import { CancleBtn, ConfirmDiv, ConfirmWrapper, Eyes, SaveBtn } from './ConfirmPwStyles';
 import { ReactComponent as Eye } from '../../assets/eye.svg';
 import { ReactComponent as EyeOff } from '../../assets/eye_off.svg';
+import { ReactComponent as PwCheck } from '../../assets/pwCheck.svg';
 import axios from 'axios';
 
 const Modal: React.FC<ModalProps> = ({ isOpen, children, theme }) => {
@@ -27,6 +28,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, children, theme }) => {
         transform: 'translate(-50%, -50%)',
         height: '100%',
         width: '100%',
+        border: 'none',
         zIndex: '10',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         backdropFilter: 'blur(2px)',
@@ -35,17 +37,18 @@ const Modal: React.FC<ModalProps> = ({ isOpen, children, theme }) => {
       <ConfirmDiv
         style={{
           position: 'absolute',
+          borderRadius: '5px',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
           padding: '20px',
           background: backgroundColor,
-          borderRadius: '5px',
           width: '30%',
+          border: 'none',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          height: '55%',
+          height: '60%',
         }}
       >
         {children}
@@ -60,7 +63,11 @@ const Confirmpassword: React.FC<ModalProps> = ({ isOpen, onClose, theme, pw }) =
   const [changePw, setChangePw] = useState('');
   const [confirmPw, setConfirmPw] = useState('');
   const max_length = 10;
+  const [passwordValidLength, setPasswordValidLength] = useState(false);
+  const [passwordValidChar, setPasswordValidChar] = useState(false);
   const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,10}$/;
+  const passwordRegexLength = /^.{8,10}$/; // 길이 8-10
+  const passwordRegexChar = /.*[!@#$%^&*].*/; // 특수문자 포함
   const [pwType, setpwType] = useState({
     type: 'password',
     visible: false,
@@ -75,6 +82,11 @@ const Confirmpassword: React.FC<ModalProps> = ({ isOpen, onClose, theme, pw }) =
       }
     });
   };
+
+  useEffect(() => {
+    setPasswordValidLength(passwordRegexLength.test(changePw));
+    setPasswordValidChar(passwordRegexChar.test(changePw));
+  }, [changePw]);
 
   const OnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -105,7 +117,6 @@ const Confirmpassword: React.FC<ModalProps> = ({ isOpen, onClose, theme, pw }) =
       handleError('현재 비밀번호가 일치하지 않습니다.');
       return;
     } else if (!passwordRegex.test(changePw)) {
-      handleError('비밀번호는 8~10자이며, 특수문자를 포함해야 합니다.');
       return;
     } else if (changePw !== confirmPw) {
       handleError('변경할 비밀번호가 일치하지 않습니다.');
@@ -150,14 +161,41 @@ const Confirmpassword: React.FC<ModalProps> = ({ isOpen, onClose, theme, pw }) =
             <input name="changePw" type={pwType.type} onChange={OnChange} value={changePw} />
             <Eyes onClick={handelPwType}>{pwType.visible ? <Eye /> : <EyeOff />}</Eyes>
           </ConfirmDiv>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              color: passwordValidLength ? '#28b381' : 'gray',
+            }}
+          >
+            <PwCheck />
+            <span style={{ fontSize: '13px', marginTop: '3px', marginLeft: '2px' }}>길이 8~10자</span>
+          </div>
+
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              color: passwordValidChar ? '#28b381' : 'gray',
+            }}
+          >
+            <PwCheck />
+            <span style={{ fontSize: '13px', marginTop: '3px' }}>특수문자 포함</span>
+          </div>
           <span className="mt-5">비밀번호 확인</span>
           <ConfirmDiv>
             <input name="confirmPw" onChange={OnChange} type="password" value={confirmPw} />
           </ConfirmDiv>
-          <p className="text-sm text-red-500">{error}</p>
+          <p className="text-xs text-red-500">{error}</p>
           <ConfirmDiv
-            style={{ display: 'flex', width: '100%', justifyContent: 'space-evenly', border: 'none' }}
-            className="mt-10"
+            style={{
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'space-evenly',
+              border: 'none',
+              backgroundColor: 'inherit',
+            }}
+            className="mt-7"
           >
             <SaveBtn>확인</SaveBtn>
             <CancleBtn type="button" onClick={enhancedOnClose}>
