@@ -84,10 +84,11 @@ const SignUp = () => {
       try {
         //이메일 인증을 위해 서버로 이메일 보내기
         const response = await axios.post(
-          `http://3.37.87.232:8080/api/members/emails/verification-requests?email=${email}`,
+          `http://13.125.162.255:8080/api/members/emails/verification-requests?email=${email}`,
           { email: email },
         );
         setIsModalOpen(true);
+        console.log(email);
         console.log(response.data);
       } catch (error) {
         console.log(error);
@@ -138,7 +139,7 @@ const SignUp = () => {
     console.log(userSignUp);
     try {
       setLoading(true);
-      const response = await axios.post(`http://3.37.87.232:8080/api/members/register`, userSignUp);
+      const response = await axios.post(`http://13.125.162.255:8080/api/members/register`, userSignUp);
       console.log(response.data);
       navigate('/login');
     } catch (e) {
@@ -241,7 +242,9 @@ const SignUp = () => {
             }}
           >
             <PwCheck />
-            <span style={{ fontSize: '13px', marginTop: '3px', marginLeft: '2px' }}>길이 8~10자</span>
+            <span style={{ fontSize: '13px', marginTop: '3px', marginLeft: '2px' }}>
+              영어 소문자/대문자 길이 8~10자
+            </span>
           </div>
 
           <div

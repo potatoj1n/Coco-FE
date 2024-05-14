@@ -38,6 +38,7 @@ export const Logindiv = styled.form`
 export const Input = styled.input`
   border: 1.5px solid #28b381;
   width: 100%;
+  outline: none;
   font-size: 18px;
   border-radius: 5px;
   padding: 10px 20px;
