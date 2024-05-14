@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom';
 import { Container, Overlay } from './ModalOverlay';
 import { Project } from '../state/IDE/ProjectState';
 import useProjectStore from '../state/IDE/ProjectState';
+import { useNavigate } from 'react-router-dom';
 
 interface PjListProps {
   onClose: () => void;
@@ -47,6 +48,7 @@ const CloseModal = styled.h1`
 const Listcontainer = styled.div`
   height: 300px;
   width: 90%;
+  overflow-y: scroll;
 `;
 const Pjcontainer = styled.div`
   display: flex;
@@ -77,6 +79,7 @@ const modalRoot =
 
 const PjList: React.FC<PjListProps> = ({ onClose }) => {
   const { themeColor } = useTheTheme();
+  const navigate = useNavigate();
   const [closing, setClosing] = useState(false);
   const { projects, loadProjects } = useProjectStore(state => ({
     projects: state.projects,
@@ -90,6 +93,11 @@ const PjList: React.FC<PjListProps> = ({ onClose }) => {
   useEffect(() => {
     loadProjects();
   }, [loadProjects]);
+
+  const handleProjectClick = (projectId: string) => {
+    navigate(`/ide/${projectId}`);
+    onClose();
+  };
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
   return ReactDOM.createPortal(
     <ThemeProvider theme={currentTheme}>
@@ -99,7 +107,7 @@ const PjList: React.FC<PjListProps> = ({ onClose }) => {
           <Myproject>내 프로젝트</Myproject>
           <Listcontainer>
             {projects.map((project: Project) => (
-              <Pjcontainer key={project.id}>
+              <Pjcontainer key={project.id} onClick={() => handleProjectClick(project.id)}>
                 <Icon src={folderLight} />
                 <Foldername>{project.name}</Foldername>
                 <Icon src={messageTrash} />
