@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Switcher } from '../Login/LoginStyles';
 import { Check, Error, Eyes, Form, InputDiv, SignUpInput, SignUpPart, SignUpWrapper, Svg } from './SignUpStyles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import EmailAuthModal from '../../components/EmailAuthModal';
 import { useTheTheme } from '../../components/Theme';
 import { ReactComponent as Eye } from '../../assets/eye.svg';
@@ -10,6 +10,7 @@ import axios from 'axios';
 import { ReactComponent as User } from '../../assets/signUp_user.svg';
 import { ReactComponent as Nickname } from '../../assets/signUp_nickname.svg';
 import { ReactComponent as Pw } from '../../assets/signUp_pw.svg';
+import { ReactComponent as PwCheck } from '../../assets/pwCheck.svg';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -20,12 +21,16 @@ const SignUp = () => {
   const [error, setError] = useState('');
   const [isLoading, setLoading] = useState(false);
   const max_length = 10;
-  const [InputCount, setInputCpunt] = useState(0);
+  const [InputCount, setInputCount] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false); // 이메일 인증 상태
   const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,10}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const { themeColor } = useTheTheme();
+  const [passwordValidLength, setPasswordValidLength] = useState(false);
+  const [passwordValidChar, setPasswordValidChar] = useState(false);
+  const passwordRegexLength = /^.{8,10}$/; // 길이 8-10
+  const passwordRegexChar = /.*[!@#$%^&*].*/; // 특수문자 포함
   const [pwType, setpwType] = useState({
     type: 'password',
     visible: false,
@@ -43,6 +48,12 @@ const SignUp = () => {
       }
     });
   };
+
+  useEffect(() => {
+    setPasswordValidLength(passwordRegexLength.test(password));
+    setPasswordValidChar(passwordRegexChar.test(password));
+  }, [password]);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { name, value },
@@ -51,7 +62,7 @@ const SignUp = () => {
       //닉네임 글자 수 제한
       const sliceValue = value.slice(0, max_length);
       setNickName(sliceValue);
-      setInputCpunt(sliceValue.length);
+      setInputCount(sliceValue.length);
     } else if (name === 'email') {
       setEmail(value);
     } else if (name === 'password') {
@@ -72,12 +83,12 @@ const SignUp = () => {
     } else {
       try {
         //이메일 인증을 위해 서버로 이메일 보내기
-        // const response = await axios.post(
-        //   `http://3.37.87.232:8080/api/members/emails/verification-requests?email=${email}`,
-        //   { email: email },
-        // );
+        const response = await axios.post(
+          `http://3.37.87.232:8080/api/members/emails/verification-requests?email=${email}`,
+          { email: email },
+        );
         setIsModalOpen(true);
-        // console.log(response.data);
+        console.log(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -87,17 +98,23 @@ const SignUp = () => {
     setEmailVerified(true); // 인증 성공 시 상태 업데이트
   };
 
+  const handleError = (error: string) => {
+    setError(error);
+    setTimeout(() => {
+      setError('');
+    }, 600);
+  };
+
   const onCloseModal = () => {
-    setIsModalOpen(false); // 모달을 닫아줍니다
+    setIsModalOpen(false); // 모달닫기
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
     if (isLoading || passwordCheck == '' || nickname === '' || password === '' || email === '') {
-      setError('입력하지 않은 필드가 있습니다.');
+      handleError('입력하지 않은 필드가 있습니다.');
     } else if (passwordCheck !== password) {
-      setError('비밀번호가 일치하지 않습니다.');
+      handleError('비밀번호가 일치하지 않습니다.');
       //timeout 설정할까??
       return;
     }
@@ -108,10 +125,9 @@ const SignUp = () => {
     //   return;
     // }
     else if (!passwordRegex.test(password)) {
-      setError('비밀번호는 8~10자이며, 특수문자를 포함해야 합니다.');
       return;
     } else if (!emailVerified) {
-      setError('이메일 인증이 완료되지 않았습니다.');
+      handleError('이메일 인증이 완료되지 않았습니다.');
       return;
     }
     const userSignUp = {
@@ -138,7 +154,7 @@ const SignUp = () => {
   return (
     <SignUpWrapper>
       <SignUpPart>
-        <span className="text-3xl mt-9 flex justify-center font-bold">회원가입</span>
+        <span className="text-3xl mt-4 flex justify-center font-bold">회원가입</span>
         <Form onSubmit={onSubmit}>
           <style>
             {/* 자동완성시 autofill 조정 */}
@@ -217,6 +233,27 @@ const SignUp = () => {
             />
             <Eyes onClick={handelPwType}>{pwType.visible ? <Eye /> : <EyeOff />}</Eyes>
           </InputDiv>
+          <div
+            style={{
+              width: '75%',
+              display: 'flex',
+              color: passwordValidLength ? '#28b381' : 'gray',
+            }}
+          >
+            <PwCheck />
+            <span style={{ fontSize: '13px', marginTop: '3px', marginLeft: '2px' }}>길이 8~10자</span>
+          </div>
+
+          <div
+            style={{
+              width: '75%',
+              display: 'flex',
+              color: passwordValidChar ? '#28b381' : 'gray',
+            }}
+          >
+            <PwCheck />
+            <span style={{ fontSize: '13px', marginTop: '3px' }}>특수문자 포함</span>
+          </div>
           <span className=" mt-6 text-lg">비밀번호 확인</span>
           <InputDiv>
             <Svg>
@@ -233,7 +270,7 @@ const SignUp = () => {
           </InputDiv>
           <SignUpInput className="mt-10" type="submit" value={isLoading ? '로딩 중..' : '회원가입'} />
         </Form>
-        {error !== '' ? <Error>{error}</Error> : null}
+        <Error className="mt-2">{error}</Error>
         <Switcher className="mt-5">
           이미 회원이라면?{' '}
           <Link to="/login" className="underline">

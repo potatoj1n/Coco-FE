@@ -21,6 +21,7 @@ export const ConfirmWrapper = styled.form`
 `;
 export const ConfirmDiv = styled.div`
   display: flex;
+  background-color: white;
   align-items: center;
   width: 100%;
   height: 10%;
