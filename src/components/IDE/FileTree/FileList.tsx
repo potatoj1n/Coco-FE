@@ -7,7 +7,7 @@ import { useTheTheme } from '../../Theme';
 import useProjectStore from '../../../state/IDE/ProjectState';
 import { useState } from 'react';
 import { FolderWrapper, ProjectWrapper, Title } from '../IdeStyle';
-import { createFolder, createFile } from '../CodeApi';
+import { createFolder, createFile } from '../ProjectApi';
 import FileTree from './FileTree';
 
 export default function FileList() {
@@ -18,6 +18,7 @@ export default function FileList() {
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [newFileName, setNewFileName] = useState('');
+
   const toggleFolderCreation = () => {
     setIsCreatingFolder(prevState => !prevState);
   };

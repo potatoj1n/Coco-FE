@@ -24,6 +24,10 @@ interface File {
   content: string;
   parentId: string;
 }
+interface ProjectData {
+  projectId: string;
+  projectName: string;
+}
 
 interface ProjectStore {
   projects: Project[];
@@ -42,6 +46,7 @@ interface ProjectStore {
   updateFile: (projectId: string, folderId: string, fileId: string, newData: Partial<File>) => void;
   selectFile: (fileId: string, fileName: string) => void;
   fetchFileContent: (fileId: string) => void;
+  loadProjects: () => Promise<void>;
 }
 
 const useProjectStore = create<ProjectStore>(set => ({
@@ -50,7 +55,13 @@ const useProjectStore = create<ProjectStore>(set => ({
   selectedFileId: null,
   selectedFileName: null,
   selectedFileContent: null,
-  addProject: project => set(state => ({ projects: [...state.projects, project] })),
+  addProject: project =>
+    set(state => {
+      const newState = { projects: [...state.projects, project] };
+      console.log('Updated projects list:', newState.projects);
+      return newState;
+    }),
+
   removeProject: projectId => set(state => ({ projects: state.projects.filter(p => p.id !== projectId) })),
   updateProject: (projectId, newData) =>
     set(state => ({
@@ -77,10 +88,27 @@ const useProjectStore = create<ProjectStore>(set => ({
           : p,
       ),
     })),
+  loadProjects: async () => {
+    try {
+      const response = await axios.get<ProjectData[]>('http://13.125.162.255:8080/api/projects');
+      const projects = response.data.map(
+        (project: ProjectData): Project => ({
+          id: project.projectId,
+          name: project.projectName,
+          language: '', // 언어 정보가 없으면 빈 문자열로 초기화
+          folders: [], // 초기 폴더는 비어있음
+          files: [], // 초기 파일도 비어있음
+        }),
+      );
+      set({ projects });
+    } catch (error) {
+      console.error('Failed to load projects:', error);
+    }
+  },
   selectProject: async (projectId: string) => {
     try {
       // 프로젝트 정보 요청
-      const response = await axios.get(`/api/projects/${projectId}`);
+      const response = await axios.get(`http://13.125.162.255:8080/api/projects/${projectId}`);
       const { folders, files } = response.data;
 
       // 폴더와 파일 정보를 스토어에 추가

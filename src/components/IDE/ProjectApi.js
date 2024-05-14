@@ -1,26 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://3.37.87.232:8080/api';
+const API_BASE_URL = 'http://13.125.162.255:8080/api';
 
-export const saveCode = async (language, sourceCode, fileId) => {
+export const saveCode = async (sourceCode, fileId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/savecode`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        sourceCode: sourceCode,
-        fileId: fileId,
-      }),
+    const response = await axios.post(`${API_BASE_URL}/savecode`, {
+      sourceCode: sourceCode,
+      fileId: fileId,
     });
-    if (!response.ok) {
-      throw new Error('Failed to save code');
-    }
-    const data = await response.json();
-    return data;
+    return response.data;
   } catch (error) {
-    console.error(error);
+    console.error('Failed to save code:', error);
     throw error;
   }
 };

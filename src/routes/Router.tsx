@@ -19,7 +19,11 @@ const Routers = createBrowserRouter([
       { path: '/signup', element: <SignUp /> },
       { path: '/mypage', element: <MyPage /> },
       { path: '/chat', element: <Chat /> },
-      { path: '/ide', element: <IDE /> },
+      {
+        path: '/ide',
+        element: <IDE />,
+        children: [{ path: ':projectId', element: <IDE /> }],
+      },
     ],
   },
 ]);
