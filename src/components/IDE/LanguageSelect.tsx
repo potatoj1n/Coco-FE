@@ -24,7 +24,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const { themeColor } = useTheTheme();
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [newProjectName, setNewProjectName] = useState('');
-  const { addProject } = useProjectStore();
+
   const navigate = useNavigate();
 
   const [closing, setClosing] = useState(false);

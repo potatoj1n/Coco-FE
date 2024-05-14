@@ -36,6 +36,8 @@ interface ProjectStore {
   selectedFileName: string | null;
   selectedFileContent: string | null;
   addProject: (project: Project) => void;
+  loadProjects: () => Promise<void>;
+  selectProject: (projectId: string) => void;
   removeProject: (projectId: string) => void;
   updateProject: (projectId: string, newData: Partial<Project>) => void;
   addFolder: (projectId: string, folder: Folder) => void;
@@ -46,7 +48,6 @@ interface ProjectStore {
   updateFile: (projectId: string, folderId: string, fileId: string, newData: Partial<File>) => void;
   selectFile: (fileId: string, fileName: string) => void;
   fetchFileContent: (fileId: string) => void;
-  loadProjects: () => Promise<void>;
 }
 
 const useProjectStore = create<ProjectStore>(set => ({
