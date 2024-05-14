@@ -14,10 +14,11 @@ import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 import { Button, IconButton } from '@mui/material';
 import { ButtonContainer, Container, CustomButton, IconContainer, FileListContainer, IDEContainer } from './IdeStyles';
 import useLanguageStore from '../../state/IDE/IdeStore';
-import { executeCode, saveCode } from '../../components/IDE/CodeApi';
+import { saveCode } from '../../components/IDE/CodeApi';
 import useConsoleStore from '../../state/IDE/ConsoleStore';
 
 export default function IDE() {
+  const consoleRef = useRef<any>(null);
   const { themeColor } = useTheTheme();
   const themeObject = {
     buttonBackground: themeColor === 'light' ? '#f4f4f4' : '#18293D',
@@ -65,15 +66,29 @@ export default function IDE() {
 
     try {
       useConsoleStore.setState({ isLoading: true });
-      const { run: result } = await executeCode(language, sourceCode);
+      // WebSocket 연결
+      const sessionId = await consoleRef.current.connectWebSocket();
+      // 코드 실행 요청 데이터 생성
+      const fixedFilePath = '1/23/';
+      const data = { command: 'run', filePath: fixedFilePath, sessionId: sessionId };
+      // 코드 실행 요청 보내기
+      const response = await fetch(`http://3.37.87.232:8080/api`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      // 서버로부터 받은 결과 처리
+      const text = await response.text();
       useConsoleStore.setState({
-        output: result.output.split('\n'),
-        isError: !!result.stderr,
+        output: text.split('\n'),
+        isError: false,
         snackbarMessage: '',
         openSnackbar: false,
       });
     } catch (error) {
-      console.log(error);
+      console.error('Error:', error);
       useConsoleStore.setState({ snackbarMessage: '코드 실행에 실패했습니다.', openSnackbar: true });
     } finally {
       useConsoleStore.setState({ isLoading: false });
