@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import folderLight from '../assets/folderlight.svg';
 import messageTrash from '../assets/messageTrash.svg';
@@ -6,6 +6,8 @@ import { ThemeProvider } from 'styled-components';
 import { useTheTheme } from '../components/Theme';
 import ReactDOM from 'react-dom';
 import { Container, Overlay } from './ModalOverlay';
+import { Project } from '../state/IDE/ProjectState';
+import useProjectStore from '../state/IDE/ProjectState';
 
 interface PjListProps {
   onClose: () => void;
@@ -74,39 +76,20 @@ const modalRoot =
   })();
 
 const PjList: React.FC<PjListProps> = ({ onClose }) => {
-  const [projects, setprojects] = useState([
-    {
-      id: 1,
-      name: 'cocowebproject',
-    },
-    {
-      id: 1,
-      name: 'cocowebproject',
-    },
-    {
-      id: 1,
-      name: 'cocowebproject',
-    },
-    {
-      id: 1,
-      name: 'cocowebproject',
-    },
-    {
-      id: 1,
-      name: 'cocowebproject',
-    },
-    {
-      id: 1,
-      name: 'cocowebproject',
-    }, // ... 퍼블리싱만
-  ]);
   const { themeColor } = useTheTheme();
   const [closing, setClosing] = useState(false);
+  const { projects, loadProjects } = useProjectStore(state => ({
+    projects: state.projects,
+    loadProjects: state.loadProjects,
+  }));
+
   const handleClose = () => {
     setClosing(true);
     setTimeout(onClose, 300);
   };
-
+  useEffect(() => {
+    loadProjects();
+  }, [loadProjects]);
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
   return ReactDOM.createPortal(
     <ThemeProvider theme={currentTheme}>
@@ -115,11 +98,13 @@ const PjList: React.FC<PjListProps> = ({ onClose }) => {
           <CloseModal onClick={handleClose}>x</CloseModal>
           <Myproject>내 프로젝트</Myproject>
           <Listcontainer>
-            <Pjcontainer>
-              <Icon src={folderLight} />
-              <Foldername>cocowebproject</Foldername>
-              <Icon src={messageTrash} />
-            </Pjcontainer>
+            {projects.map((project: Project) => (
+              <Pjcontainer key={project.id}>
+                <Icon src={folderLight} />
+                <Foldername>{project.name}</Foldername>
+                <Icon src={messageTrash} />
+              </Pjcontainer>
+            ))}
           </Listcontainer>
         </Container>
       </Overlay>
