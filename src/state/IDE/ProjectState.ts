@@ -13,12 +13,14 @@ interface Folder {
   id: string;
   name: string;
   files: File[];
+  type: string;
   parentId: string;
 }
 
 interface File {
   id: string;
   name: string;
+  type: string;
   content: string;
   parentId: string;
 }

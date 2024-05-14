@@ -1,6 +1,6 @@
 export const fetchFileTree = async projectId => {
   try {
-    const response = await fetch(`/api/file-tree/${projectId}`);
+    const response = await fetch(`http://3.37.87.232:8080/${projectId}`);
     if (!response.ok) {
       throw new Error('Failed to fetch file tree');
     }
