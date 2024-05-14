@@ -40,8 +40,7 @@ const Login = () => {
       setLoading(true);
       //axios써서 post로 보내기
       //유저 정보 받아오고 업데이트해주기
-      const response = await axios.post('/api/members/login', user);
-      //localhost문제.
+      const response = await axios.post('http://3.37.87.232:8080/api/members/login', user);
       console.log(response.data);
       // localStorage.setItem('accessToken', response.data.accessToken);
       // localStorage.setItem('refreshToken', response.data.refreshToken);
