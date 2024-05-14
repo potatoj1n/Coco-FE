@@ -40,13 +40,14 @@ const Login = () => {
       setLoading(true);
       //axios써서 post로 보내기
       //유저 정보 받아오고 업데이트해주기
-      const response = await axios.post('http://3.37.87.232:8080/api/members/login', user);
+      const response = await axios.post('http://13.125.162.255:8080/api/members/login', user);
       console.log(response.data);
+      // response.data에서 닉네임, 이메일 저장해서 main이랑 mypage에 사용
       // localStorage.setItem('accessToken', response.data.accessToken);
       // localStorage.setItem('refreshToken', response.data.refreshToken);
       alert('Login successful!');
       //유저정보에 없거나 비밀번호,아이디 틀리면 에러바로 뜨게
-      navigate('/main');
+      // navigate('/main');
     } catch (e) {
       //에러 캐치
       alert('Login failed!');
@@ -92,6 +93,27 @@ const Login = () => {
         </Phrases>
       </LoginLogo>
       <LoginPart>
+        <style>
+          {/* 자동완성시 autofill 조정 */}
+          {`
+              input:-webkit-autofill,
+              input:-webkit-autofill:hover,
+              input:-webkit-autofill:focus,
+              input:-webkit-autofill:active {
+                -webkit-text-fill-color: #000;
+                -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+                box-shadow: 0 0 0px 1000px #fff inset;
+              transition: background-color 5000s ease-in-out 0s;}
+
+            input:autofill,
+            input:autofill:hover,
+            input:autofill:focus,
+            input:autofill:active {
+              -webkit-text-fill-color: #000;
+                -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+                box-shadow: 0 0 0px 1000px #fff inset;
+                transition: background-color 5000s ease-in-out 0s;}`}
+        </style>
         <Logindiv onSubmit={onSubmit}>
           <span className="mb-5 text-lg text-black">이메일</span>
           <Input

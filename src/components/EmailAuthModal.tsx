@@ -57,7 +57,7 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
   const [code, setCode] = useState(new Array(5).fill(''));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [error, setError] = useState('');
-  const [timeLeft, setTimeLeft] = useState(10); // 초 단위
+  const [timeLeft, setTimeLeft] = useState(0); // 초 단위
 
   const enhancedOnClose = () => {
     setError('');
@@ -68,7 +68,7 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
   useEffect(() => {
     // 모달이 열려있을 때만 타이머를 시작
     if (isOpen) {
-      setTimeLeft(10);
+      setTimeLeft(600);
       setCode(new Array(code.length).fill(''));
     }
   }, [isOpen]);
@@ -112,17 +112,17 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
   const handleSubmit = async (fullCode: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/members/emails/verifications?email=${email}&code=${fullCode}`,
+        `http:///13.125.162.255:8080/api/members/emails/verifications?email=${email}&code=${fullCode}`,
       );
-      if (response.data === 'success') {
-        // 가정: 성공적인 응답을 'success' 문자열로 받는다고 가정합니다
-        alert('이메일 인증 성공');
+      console.log(response.data.data.verified);
+      // console.log(response.data.data);
+      console.log(fullCode);
+      if (response.data.data.verified) {
         if (onVerifySuccess) {
           onVerifySuccess(); // 부모 컴포넌트에서 전달받은 콜백 함수 호출
         }
         enhancedOnClose();
       } else {
-        // 서버에서 'success' 이외의 응답을 받은 경우
         throw new Error('Invalid verification code');
       }
     } catch (error) {

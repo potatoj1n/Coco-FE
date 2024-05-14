@@ -40,7 +40,7 @@ export const UserInput = styled.input`
   /* outline: none; */
   height: 100%;
   outline-color: #28b381;
-  border-radius: 15px;
+  border-radius: 5px;
   border: 1px solid #d9d9d9;
   padding: 10px 20px;
   font-size: 16px;
