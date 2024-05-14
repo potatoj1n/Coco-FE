@@ -62,15 +62,10 @@ export const ConsoleButton = styled.div`
   font-size: 16px;
 `;
 
-export const InputWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 30%;
-`;
 export const ConsoleWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: 100%;
 `;
 export const ButtonWrapper = styled.div`
   background-color: ${props => props.theme.ButtonWrapperBackground};

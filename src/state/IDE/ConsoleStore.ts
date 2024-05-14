@@ -8,7 +8,7 @@ interface ConsoleStore {
   snackbarMessage: string;
   consoleOpen: boolean;
   setOpenSnackbar: (openSnackbar: boolean) => void;
-  setOutput: (output: string[]) => void;
+  setOutput: (output: (prevOutput: string[] | null) => string[]) => void;
   setIsLoading: (isLoading: boolean) => void;
   setIsError: (isError: boolean) => void;
   setSnackbarMessage: (snackbarMessage: string) => void;
@@ -16,13 +16,13 @@ interface ConsoleStore {
 }
 
 const useConsoleStore = create<ConsoleStore>(set => ({
-  output: null,
+  output: [],
   isLoading: false,
   isError: false,
   openSnackbar: false,
   snackbarMessage: '',
   consoleOpen: false,
-  setOutput: (output: string[]) => set({ output }),
+  setOutput: updater => set(state => ({ output: updater(state.output) })),
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
   setIsError: (isError: boolean) => set({ isError }),
   setOpenSnackbar: (openSnackbar: boolean) => set({ openSnackbar }),
