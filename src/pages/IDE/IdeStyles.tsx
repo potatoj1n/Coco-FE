@@ -5,6 +5,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${props => props.theme.backgroundColor};
+  cursor: pointer;
 `;
 export const CustomButton = styled.div`
   border: none;
