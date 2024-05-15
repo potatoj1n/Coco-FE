@@ -42,7 +42,7 @@ export const createFolder = async (projectId, folderName, parentId) => {
 
 export const createFile = async (projectId, folderId, fileName, fileContent) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/projects/${projectId}/files`, {
+    const response = await axios.post(`${API_BASE_URL}/projects/${projectId}/folders/${folderId}`, {
       name: fileName,
       content: fileContent,
       parentId: folderId,

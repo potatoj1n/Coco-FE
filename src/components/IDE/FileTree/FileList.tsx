@@ -78,7 +78,7 @@ export default function FileList() {
   return (
     <ProjectWrapper>
       <Title>
-        {selectedProject && <span>{selectedProject.name}</span>}
+        {selectedProject && <span className="mr-3">{selectedProject.name}</span>}
         <span>
           <IconButton size="small" onClick={handleCreateFolder}>
             {themeColor === 'light' ? <FolderAddLightIcon /> : <FolderAddDarkIcon />}

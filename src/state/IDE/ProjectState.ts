@@ -28,6 +28,19 @@ interface ProjectData {
   projectId: string;
   projectName: string;
 }
+interface FolderData {
+  folderId: string;
+  folderName: string;
+  parentId: string | null;
+}
+
+interface FileData {
+  fileId: string;
+  fileName: string;
+  parentId: string | null;
+  type: string;
+  content: string;
+}
 
 interface ProjectStore {
   projects: Project[];
@@ -37,7 +50,7 @@ interface ProjectStore {
   selectedFileContent: string | null;
   addProject: (project: Project) => void;
   loadProjects: () => Promise<void>;
-  selectProject: (projectId: string) => void;
+  selectProject: (projectId: string) => Promise<void>;
   removeProject: (projectId: string) => void;
   updateProject: (projectId: string, newData: Partial<Project>) => void;
   addFolder: (projectId: string, folder: Folder) => void;
@@ -113,14 +126,17 @@ const useProjectStore = create<ProjectStore>(set => ({
       const { folders, files } = response.data;
 
       // 폴더와 파일 정보를 스토어에 추가
-      const projectFolders: Folder[] = folders.map((folder: any) => ({
-        folderId: folder.folderId,
-        folderName: folder.folderName,
+      const projectFolders: Folder[] = folders.map((folder: FolderData) => ({
+        id: folder.folderId,
+        name: folder.folderName,
+        files: [],
         parentId: folder.parentId,
       }));
-      const projectFiles: File[] = files.map((file: any) => ({
-        fileId: file.fileId,
-        fileName: file.fileName,
+      const projectFiles: File[] = files.map((file: FileData) => ({
+        id: file.fileId,
+        name: file.fileName,
+        type: file.type,
+        content: file.content,
         parentId: file.parentId,
       }));
 
