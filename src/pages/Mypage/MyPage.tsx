@@ -5,12 +5,14 @@ import api from '../../components/Api';
 import { useNavigate } from 'react-router-dom';
 import Confirmpassword from '../../components/ConfirmPw/ConfirmPw';
 import { useTheTheme } from '../../components/Theme';
+import useAuthStore from '../../state/AuthStore';
 
 const MyPage = () => {
   const navigate = useNavigate();
   const [isReadOnly, setIsReadOnly] = useState(true);
   const nickNameRef = useRef<HTMLInputElement>(null);
-  const [nickname, setNickname] = useState('귤'); //서버에서 받아오기
+  const { email, nickname } = useAuthStore();
+  const [nickName, setNickname] = useState(nickname); //서버에서 받아오기
   const [password, setPassword] = useState('password'); //서버에서 받아오기
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { themeColor } = useTheTheme();
@@ -38,8 +40,8 @@ const MyPage = () => {
   const handleSaveClick = async () => {
     try {
       // 서버에 데이터를 POST 요청으로 보내는 예시
-      const response = await api.post('http://3.37.87.232:8080/api/user/update', {
-        nickname: nickname,
+      const response = await api.post('https://keb96172d8b65a.user-app.krampoline.com/api/user/update', {
+        nickname: nickName,
         newPassword: password,
       });
       if (response.status === 200) {
@@ -64,7 +66,7 @@ const MyPage = () => {
       <span className="text-2xl font-semibold mt-5">My Page</span>
       <AttendanceDiv className="mt-3">
         {/* 닉네임 정보 불러오기 */}
-        <span className="text-xl font-semibold">어서오세요 은진님</span>
+        <span className="text-xl font-semibold">어서오세요, {nickname}님</span>
       </AttendanceDiv>
       <UserInfo>
         <span className="text-lg mt-4 font-semibold">회원정보</span>
@@ -82,7 +84,8 @@ const MyPage = () => {
             <span>이메일</span>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               {/* 이메일 정보 받아오기 */}
-              <UserInput style={{ backgroundColor: '#D9D9D9' }} readOnly value="user@example.com" />
+              <UserInput style={{ backgroundColor: '#D9D9D9' }} readOnly value={email} />
+              <div style={{ height: '25px', width: '30px' }} />
             </div>
           </div>
           <div
@@ -98,7 +101,7 @@ const MyPage = () => {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <UserInput
                 readOnly={isReadOnly}
-                value={nickname}
+                value={nickName}
                 name="nickname"
                 type="text"
                 onChange={OnChange}

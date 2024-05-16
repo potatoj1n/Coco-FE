@@ -82,12 +82,12 @@ const SignUp = () => {
       alert('유효한 이메일 주소를 입력해주세요.');
     } else {
       try {
+        setIsModalOpen(true);
         //이메일 인증을 위해 서버로 이메일 보내기
         const response = await axios.post(
-          `http://13.125.162.255:8080/api/members/emails/verification-requests?email=${email}`,
+          `https://kede9a8620e03a.user-app.krampoline.com/api/members/emails/verification-requests?email=${email}`,
           { email: email },
         );
-        setIsModalOpen(true);
         console.log(email);
         console.log(response.data);
       } catch (error) {
@@ -139,7 +139,10 @@ const SignUp = () => {
     console.log(userSignUp);
     try {
       setLoading(true);
-      const response = await axios.post(`http://13.125.162.255:8080/api/members/register`, userSignUp);
+      const response = await axios.post(
+        `https://kede9a8620e03a.user-app.krampoline.com/api/members/register`,
+        userSignUp,
+      );
       console.log(response.data);
       navigate('/login');
     } catch (e) {

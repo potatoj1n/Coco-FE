@@ -53,6 +53,12 @@ export const Edit = styled(EditIcon)`
     cursor: pointer;
     fill: white;
   }
+  ${({ hidden }) =>
+    hidden &&
+    `
+    opacity: 0;
+    pointer-events: none;
+  `}
 `;
 export const Save = styled.button`
   height: 17%;

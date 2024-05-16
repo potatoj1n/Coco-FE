@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Error } from '../SignUp/SignUpStyles';
 import axios from 'axios';
+import useAuthStore from '../../state/AuthStore';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const setAuthInfo = useAuthStore(state => state.setAuthInfo);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
@@ -35,27 +37,27 @@ const Login = () => {
       email: email,
       password: password,
     };
-    console.log(user);
     try {
       setLoading(true);
       //axios써서 post로 보내기
       //유저 정보 받아오고 업데이트해주기
-      const response = await axios.post('http://13.125.162.255:8080/api/members/login', user);
-      console.log(response.data);
+      const response = await axios.post('https://kede9a8620e03a.user-app.krampoline.com/api/members/login', user);
+      const { email, nickname, memberId } = response.data;
+      setAuthInfo(email, nickname, memberId);
       // response.data에서 닉네임, 이메일 저장해서 main이랑 mypage에 사용
       // localStorage.setItem('accessToken', response.data.accessToken);
       // localStorage.setItem('refreshToken', response.data.refreshToken);
-      alert('Login successful!');
+      alert('로그인 성공');
       //유저정보에 없거나 비밀번호,아이디 틀리면 에러바로 뜨게
-      // navigate('/main');
+      //메인으로 가게 해야함
+      navigate(`/mypage/${memberId}`);
     } catch (e) {
       //에러 캐치
-      alert('Login failed!');
+      alert('로그인 실패');
       console.log(e);
     } finally {
       setLoading(false);
     }
-    console.log(email, password);
   };
   return (
     <LoginWrapper>

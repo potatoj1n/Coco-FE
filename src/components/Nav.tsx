@@ -8,6 +8,7 @@ import { IconButton } from '@mui/material';
 import { useState } from 'react';
 import { useTheTheme } from '../components/Theme';
 import styled from 'styled-components';
+import useAuthStore from '../state/AuthStore';
 
 const Container = styled.nav`
   height: 64px; // 16px * 4
@@ -58,12 +59,13 @@ export default function Header() {
   const { themeColor, toggleTheme } = useTheTheme();
   const [menu, setMenu] = useState(false);
   const location = useLocation();
+  const memberId = useAuthStore(state => state.memberId);
   const showIcons = location.pathname !== '/' && location.pathname !== '/signup';
   const isSpecialPage =
     location.pathname === '/chat' ||
     location.pathname === '/ide' ||
     location.pathname === '/main' ||
-    location.pathname === '/mypage';
+    location.pathname === `/mypage/${memberId}`;
 
   return (
     <Container>
@@ -94,7 +96,7 @@ export default function Header() {
             <MenuContainer>
               <p>Logout</p>
               <hr></hr>
-              <Link to="/mypage">my Page</Link>
+              <Link to={`/mypage/${memberId}`}>my Page</Link>
             </MenuContainer>
           ) : null}
         </span>

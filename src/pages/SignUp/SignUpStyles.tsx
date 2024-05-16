@@ -61,9 +61,6 @@ export const Eyes = styled.div`
 export const Svg = styled.div`
   position: absolute;
   left: 15px;
-  &:hover {
-    cursor: pointer;
-  }
 `;
 export const SignUpInput = styled.input`
   /* border: 1.5px solid #28b381; */
