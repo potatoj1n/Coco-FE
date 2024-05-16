@@ -5,7 +5,7 @@ export const Title = styled.div`
   padding: 7px 10px;
   display: flex;
   justify-content: space-between;
-  gap: 5px;
+  gap: 8px;
   align-items: center;
   font-size: 18px;
 `;
@@ -60,8 +60,25 @@ export const ConsoleButton = styled.div`
   font-weight: 600;
   padding: 8px;
   font-size: 16px;
-  z-index: -1;
+`;
+
+export const ConsoleWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 `;
 export const ButtonWrapper = styled.div`
   background-color: ${props => props.theme.ButtonWrapperBackground};
+`;
+export const FileTreeWrapper = styled.div`
+  font-size: 16px;
+  padding-left: 10px;
+  padding-bottom: 3px;
+`;
+export const FileWrapper = styled.div`
+  border: none;
+  :hover {
+    background-color: rgba(118, 193, 175, 0.3);
+    border-radius: 4px;
+  }
 `;

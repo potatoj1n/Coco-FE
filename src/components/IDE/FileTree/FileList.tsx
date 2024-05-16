@@ -7,6 +7,7 @@ import { useTheTheme } from '../../Theme';
 import useProjectStore from '../../../state/IDE/ProjectState';
 import { useState } from 'react';
 import { FolderWrapper, ProjectWrapper, Title } from '../IdeStyle';
+import { createFolder, createFile } from '../ProjectApi';
 import FileTree from './FileTree';
 
 export default function FileList() {
@@ -14,11 +15,15 @@ export default function FileList() {
   const projects = useProjectStore(state => state.projects);
   const selectedProjectId = useProjectStore(state => state.selectedProjectId);
   const { addFolder, addFile } = useProjectStore();
+  const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [newFileName, setNewFileName] = useState('');
-  const [isAdding, setIsAdding] = useState(false);
 
-  const handleCreateFolder = () => {
+  const toggleFolderCreation = () => {
+    setIsCreatingFolder(prevState => !prevState);
+  };
+
+  const handleCreateFolder = async () => {
     if (newFolderName.trim() === '') {
       alert('폴더명을 입력하세요.');
       return;
@@ -27,19 +32,17 @@ export default function FileList() {
       alert('프로젝트를 선택하세요.');
       return;
     }
-    const newFolder = {
-      id: Math.random().toString(),
-      name: newFolderName,
-      files: [],
-      parentId: '',
-    };
-
-    addFolder(selectedProjectId, newFolder);
-    setNewFolderName('');
-    setIsAdding(true);
+    try {
+      const createdFolder = await createFolder(selectedProjectId, newFolderName);
+      addFolder(selectedProjectId, createdFolder);
+      setNewFolderName('');
+    } catch (error) {
+      console.error('Error creating folder:', error);
+      alert('Failed to create folder');
+    }
   };
 
-  const handleCreateFile = () => {
+  const handleCreateFile = async () => {
     if (newFileName.trim() === '') {
       alert('파일명을 입력하세요.');
       return;
@@ -48,27 +51,34 @@ export default function FileList() {
       alert('프로젝트를 선택하세요.');
       return;
     }
-    const newFile = {
-      id: Math.random().toString(),
-      name: newFileName,
-      content: '',
-      parentId: '',
-    };
 
     const selectedProject = projects.find(project => project.id === selectedProjectId);
     if (selectedProject && selectedProject.folders.length > 0) {
       const folderId = selectedProject.folders[0].id;
-      addFile(selectedProjectId, folderId, newFile);
-    }
+      try {
+        const newFile = {
+          id: Math.random().toString(),
+          name: newFileName,
+          content: '',
+          type: 'file',
+          parentId: folderId,
+        };
 
-    setNewFileName('');
+        await createFile(selectedProjectId, folderId, newFileName);
+        addFile(selectedProjectId, folderId, newFile);
+        setNewFileName('');
+      } catch (error) {
+        console.error('Error creating file:', error);
+        alert('Failed to create file');
+      }
+    }
   };
+  const selectedProject = projects.find(project => project.id === selectedProjectId);
+
   return (
     <ProjectWrapper>
       <Title>
-        {projects.map(project => (
-          <span key={project.id}>{project.name}</span>
-        ))}
+        {selectedProject && <span className="mr-3">{selectedProject.name}</span>}
         <span>
           <IconButton size="small" onClick={handleCreateFolder}>
             {themeColor === 'light' ? <FolderAddLightIcon /> : <FolderAddDarkIcon />}
@@ -85,8 +95,24 @@ export default function FileList() {
           value={newFolderName}
           onChange={e => setNewFolderName(e.target.value)}
           placeholder="폴더명 입력"
+          disabled={!isCreatingFolder}
         />
-        <FileTree />
+        <TextField
+          size="small"
+          value={newFileName}
+          onChange={e => setNewFileName(e.target.value)}
+          placeholder="파일명 입력"
+        />
+        <FileTree
+          isCreatingFolder={isCreatingFolder}
+          toggleFolderCreation={toggleFolderCreation}
+          newFolderName={newFolderName}
+          setNewFolderName={setNewFolderName}
+          newFileName={newFileName}
+          setNewFileName={setNewFileName}
+          handleCreateFolder={handleCreateFolder}
+          handleCreateFile={handleCreateFile}
+        />
       </FolderWrapper>
     </ProjectWrapper>
   );

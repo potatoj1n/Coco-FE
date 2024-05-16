@@ -37,8 +37,10 @@ export const EditUser = styled.div`
 `;
 export const UserInput = styled.input`
   width: 95%;
+  /* outline: none; */
   height: 100%;
-  border-radius: 15px;
+  outline-color: #28b381;
+  border-radius: 5px;
   border: 1px solid #d9d9d9;
   padding: 10px 20px;
   font-size: 16px;

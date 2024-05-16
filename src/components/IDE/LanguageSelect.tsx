@@ -7,7 +7,7 @@ import { TextField } from '@mui/material';
 import { useTheTheme } from '../Theme';
 import useProjectStore from '../../state/IDE/ProjectState';
 import { CreateCustomButton } from './IdeStyle';
-import { createProject } from './CodeApi';
+import { createProject } from './ProjectApi';
 import { useNavigate } from 'react-router-dom';
 import { CreateContainer, Overlay, modalRoot } from '../ModalOverlay';
 import ReactDOM from 'react-dom';
@@ -24,7 +24,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const { themeColor } = useTheTheme();
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [newProjectName, setNewProjectName] = useState('');
-  const { addProject } = useProjectStore();
+
   const navigate = useNavigate();
 
   const [closing, setClosing] = useState(false);
@@ -44,26 +44,31 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
       alert('프로젝트명을 입력하세요.');
       return;
     }
-
     const newProject = {
-      temporaryId: Math.random().toString(),
       name: newProjectName,
       language: language,
-      folders: [],
-      files: [],
+      memberId: 1,
     };
     try {
       const createdProject = await createProject(newProject);
-      //임시 프로젝트 id에서 백엔드에서 생성한 프로젝트 id로
-      createdProject.id = createdProject.realProjectId;
-      delete createdProject.realProjectId;
+      console.log(createdProject);
+      // 백엔드에서 생성된 실제 프로젝트 ID 사용
+      const projectToAdd = {
+        id: createdProject,
+        name: newProjectName,
+        language: language,
+        folders: [],
+        files: [],
+      };
 
-      addProject(createdProject);
+      // 새 프로젝트를 Zustand 스토어에 추가
+      useProjectStore.getState().addProject(projectToAdd);
       setNewProjectName('');
       onClose();
-      navigate(`/ide/${createdProject.id}`);
+      navigate(`/ide/${createdProject}`);
     } catch (error) {
       console.error('Error creating project:', error);
+      alert('프로젝트 생성에 실패했습니다.');
     }
   };
 
@@ -92,7 +97,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
           }}
           onChange={e => setNewProjectName(e.target.value)}
         ></TextField>
-        <h2 className="text-lg">언어 선택</h2>
+        <FontColor className="text-lg">언어 선택</FontColor>
         <Select
           value={language}
           onChange={handleChange}
@@ -110,7 +115,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
           }}
         >
           {LanguageOptions.map(option => (
-            <MenuItem key={option.id} value={option.id}>
+            <MenuItem key={option.id} value={option.label}>
               {option.label}
             </MenuItem>
           ))}

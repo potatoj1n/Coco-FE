@@ -13,14 +13,33 @@ interface Folder {
   id: string;
   name: string;
   files: File[];
+  type: string;
   parentId: string;
 }
 
 interface File {
   id: string;
   name: string;
+  type: string;
   content: string;
   parentId: string;
+}
+interface ProjectData {
+  projectId: string;
+  projectName: string;
+}
+interface FolderData {
+  folderId: string;
+  folderName: string;
+  parentId: string | null;
+}
+
+interface FileData {
+  fileId: string;
+  fileName: string;
+  parentId: string | null;
+  type: string;
+  content: string;
 }
 
 interface ProjectStore {
@@ -30,6 +49,8 @@ interface ProjectStore {
   selectedFileName: string | null;
   selectedFileContent: string | null;
   addProject: (project: Project) => void;
+  loadProjects: () => Promise<void>;
+  selectProject: (projectId: string) => Promise<void>;
   removeProject: (projectId: string) => void;
   updateProject: (projectId: string, newData: Partial<Project>) => void;
   addFolder: (projectId: string, folder: Folder) => void;
@@ -48,7 +69,13 @@ const useProjectStore = create<ProjectStore>(set => ({
   selectedFileId: null,
   selectedFileName: null,
   selectedFileContent: null,
-  addProject: project => set(state => ({ projects: [...state.projects, project] })),
+  addProject: project =>
+    set(state => {
+      const newState = { projects: [...state.projects, project] };
+      console.log('Updated projects list:', newState.projects);
+      return newState;
+    }),
+
   removeProject: projectId => set(state => ({ projects: state.projects.filter(p => p.id !== projectId) })),
   updateProject: (projectId, newData) =>
     set(state => ({
@@ -75,21 +102,41 @@ const useProjectStore = create<ProjectStore>(set => ({
           : p,
       ),
     })),
+  loadProjects: async () => {
+    try {
+      const response = await axios.get<ProjectData[]>('http://13.125.162.255:8080/api/projects');
+      const projects = response.data.map(
+        (project: ProjectData): Project => ({
+          id: project.projectId,
+          name: project.projectName,
+          language: '', // 언어 정보가 없으면 빈 문자열로 초기화
+          folders: [], // 초기 폴더는 비어있음
+          files: [], // 초기 파일도 비어있음
+        }),
+      );
+      set({ projects });
+    } catch (error) {
+      console.error('Failed to load projects:', error);
+    }
+  },
   selectProject: async (projectId: string) => {
     try {
       // 프로젝트 정보 요청
-      const response = await axios.get(`/api/projects/${projectId}`);
+      const response = await axios.get(`http://13.125.162.255:8080/api/projects/${projectId}`);
       const { folders, files } = response.data;
 
       // 폴더와 파일 정보를 스토어에 추가
-      const projectFolders: Folder[] = folders.map((folder: any) => ({
-        folderId: folder.folderId,
-        folderName: folder.folderName,
+      const projectFolders: Folder[] = folders.map((folder: FolderData) => ({
+        id: folder.folderId,
+        name: folder.folderName,
+        files: [],
         parentId: folder.parentId,
       }));
-      const projectFiles: File[] = files.map((file: any) => ({
-        fileId: file.fileId,
-        fileName: file.fileName,
+      const projectFiles: File[] = files.map((file: FileData) => ({
+        id: file.fileId,
+        name: file.fileName,
+        type: file.type,
+        content: file.content,
         parentId: file.parentId,
       }));
 

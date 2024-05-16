@@ -3,40 +3,45 @@ import { AttendanceDiv, UserInfo, MainPageWrapper, UserInput, EditUser, Edit, Sa
 // import axios from 'axios';
 import api from '../../components/Api';
 import { useNavigate } from 'react-router-dom';
+import Confirmpassword from '../../components/ConfirmPw/ConfirmPw';
+import { useTheTheme } from '../../components/Theme';
 
 const MyPage = () => {
   const navigate = useNavigate();
   const [isReadOnly, setIsReadOnly] = useState(true);
   const nickNameRef = useRef<HTMLInputElement>(null);
-  const passWordRef = useRef<HTMLInputElement>(null);
   const [nickname, setNickname] = useState('귤'); //서버에서 받아오기
   const [password, setPassword] = useState('password'); //서버에서 받아오기
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { themeColor } = useTheTheme();
 
-  const handleEditClick = (name: string) => {
+  const handleEditClick = (name?: string) => {
     setIsReadOnly(!isReadOnly);
     if (name === 'nickname') {
       if (nickNameRef.current) {
         nickNameRef.current.focus(); // 입력 필드에 포커스 설정
       }
     } else {
-      if (passWordRef.current) {
-        passWordRef.current.focus();
-      }
+      setIsModalOpen(true);
     }
   };
   const OnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (name === 'nickname') {
       setNickname(value);
-    } else if (name === 'password') {
-      setPassword(value);
     }
+  };
+  const onCloseModal = () => {
+    setIsModalOpen(false); // 모달을 닫아줍니다
   };
   //저장버튼 눌렀을 때 현재 상태 서버로 전송
   const handleSaveClick = async () => {
     try {
       // 서버에 데이터를 POST 요청으로 보내는 예시
-      const response = await api.post('/api/user/update', { nickname: nickname, newPassword: password });
+      const response = await api.post('http://3.37.87.232:8080/api/user/update', {
+        nickname: nickname,
+        newPassword: password,
+      });
       if (response.status === 200) {
         alert('정보가 성공적으로 업데이트되었습니다.');
       } else {
@@ -117,13 +122,11 @@ const MyPage = () => {
               <UserInput
                 style={{ backgroundColor: '#D9D9D9' }}
                 readOnly={isReadOnly}
-                value={password}
                 name="password"
-                ref={passWordRef}
-                type="password"
                 onChange={OnChange}
               />
-              <Edit onClick={() => handleEditClick('password')} />
+              <Edit onClick={() => handleEditClick()} />
+              <Confirmpassword isOpen={isModalOpen} onClose={onCloseModal} theme={themeColor} pw={password} />
             </div>
           </div>
           <Save onClick={handleSaveClick}>저장</Save>
