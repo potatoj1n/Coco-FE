@@ -1,6 +1,6 @@
 export const fetchFileTree = async projectId => {
   try {
-    const response = await fetch(`http://http://13.125.162.255:8080/api/${projectId}`);
+    const response = await fetch(`https://k40d5114c4212a.user-app.krampoline.com/api/${projectId}`);
     if (!response.ok) {
       throw new Error('Failed to fetch file tree');
     }
