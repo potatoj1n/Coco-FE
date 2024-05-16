@@ -56,6 +56,7 @@ import profileOther from '../../assets/profileOther.svg';
 import profileMine from '../../assets/profileMine.svg';
 import mypageIconlight from '../../assets/mypageIconlight.svg';
 import mypageIcondark from '../../assets/mypageIcondark.svg';
+import { getCurrentDate } from '../../components/Date';
 
 const Main = () => {
   const [messages, setMessages] = useState([
@@ -131,6 +132,7 @@ const Main = () => {
   const [showImage, setShowImage] = useState(false);
   const [clicked, setClicked] = useState(false); // 버튼 클릭 상태 추가
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [currentDate, setCurrentDate] = useState<{ day: number; month: number }>();
 
   const handleButtonClick = () => {
     if (!clicked) {
@@ -168,6 +170,11 @@ const Main = () => {
     setLanguageSelector(false);
   };
 
+  useEffect(() => {
+    const date = getCurrentDate();
+    setCurrentDate(date);
+  }, []);
+
   return (
     <ThemeProvider theme={currentTheme}>
       <Container>
@@ -203,8 +210,8 @@ const Main = () => {
           </Hicontainer>
           <Attendancecontainer>
             <Date>
-              <Day>24</Day>
-              <Month>|5|</Month>
+              <Day>{currentDate?.day}</Day>
+              <Month>|{currentDate?.month}|</Month>
             </Date>
             <div>
               <AttendButton onClick={handleButtonClick} disabled={clicked}>
