@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://k40d5114c4212a.user-app.krampoline.com/api';
+const API_BASE_URL = 'https://k100f7af4f18ea.user-app.krampoline.com/api';
 
 export const saveCode = async (sourceCode, fileId) => {
   try {
@@ -65,7 +65,6 @@ export const deleteFolder = async (projectId, folderId) => {
   }
 };
 
-// 파일 삭제 API
 export const deleteFile = async (projectId, folderId, fileId) => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/projects/${projectId}/folders/${folderId}/files/${fileId}`);
@@ -74,5 +73,29 @@ export const deleteFile = async (projectId, folderId, fileId) => {
   } catch (error) {
     console.error('파일 삭제 중 오류 발생:', error);
     throw error;
+  }
+};
+
+export const updateFolderName = async (projectId, folderId, newName) => {
+  try {
+    const response = await axios.patch(`/api/projects/${projectId}/folders/${folderId}`, {
+      name: newName,
+    });
+    console.log('폴더명 수정 완료', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update folder name:', error);
+  }
+};
+
+export const updateFileName = async (projectId, folderId, fileId, newName) => {
+  try {
+    const response = await axios.patch(`/api/projects/${projectId}/folders/${folderId}/files/${fileId}`, {
+      name: newName,
+    });
+    console.log('파일명 수정 완료', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update file name:', error);
   }
 };

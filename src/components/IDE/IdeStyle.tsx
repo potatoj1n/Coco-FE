@@ -73,12 +73,13 @@ export const ButtonWrapper = styled.div`
 export const FileTreeWrapper = styled.div`
   font-size: 16px;
   padding-left: 10px;
+  padding-right: 10px;
   padding-bottom: 3px;
 `;
 export const FileWrapper = styled.div`
   border: none;
-  :hover {
-    background-color: rgba(118, 193, 175, 0.3);
-    border-radius: 4px;
-  }
+  // :hover {
+  //   background-color: rgba(118, 193, 175, 0.3);
+  //   border-radius: 4px;
+  // }
 `;
