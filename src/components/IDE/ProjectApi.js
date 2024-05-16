@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://13.125.162.255:8080/api';
+const API_BASE_URL = 'https://keb96172d8b65a.user-app.krampoline.com/api';
 
 export const saveCode = async (sourceCode, fileId) => {
   try {
@@ -42,7 +42,7 @@ export const createFolder = async (projectId, folderName, parentId) => {
 
 export const createFile = async (projectId, folderId, fileName, fileContent) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/projects/${projectId}/folders/${folderId}`, {
+    const response = await axios.post(`${API_BASE_URL}/projects/${projectId}/folders/${folderId}/files`, {
       name: fileName,
       content: fileContent,
       parentId: folderId,

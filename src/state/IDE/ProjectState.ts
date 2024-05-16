@@ -104,7 +104,7 @@ const useProjectStore = create<ProjectStore>(set => ({
     })),
   loadProjects: async () => {
     try {
-      const response = await axios.get<ProjectData[]>('http://13.125.162.255:8080/api/projects');
+      const response = await axios.get<ProjectData[]>('https://keb96172d8b65a.user-app.krampoline.com/api/projects');
       const projects = response.data.map(
         (project: ProjectData): Project => ({
           id: project.projectId,
@@ -122,7 +122,7 @@ const useProjectStore = create<ProjectStore>(set => ({
   selectProject: async (projectId: string) => {
     try {
       // 프로젝트 정보 요청
-      const response = await axios.get(`http://13.125.162.255:8080/api/projects/${projectId}`);
+      const response = await axios.get(`https://keb96172d8b65a.user-app.krampoline.com/api/projects/${projectId}`);
       const { folders, files } = response.data;
 
       // 폴더와 파일 정보를 스토어에 추가
