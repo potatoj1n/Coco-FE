@@ -2,7 +2,7 @@ import create from 'zustand';
 
 export interface Message {
   memberId: string;
-  text: string;
+  message: string;
 }
 
 interface ChatState {

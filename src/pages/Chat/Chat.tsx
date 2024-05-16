@@ -17,8 +17,6 @@ import { ReactComponent as FolderDarkIcon } from '../../assets/folderdark.svg';
 import { ReactComponent as ChatDarkIcon } from '../../assets/chatdark.svg';
 import useChatStore, { Message } from '../../state/Chat/ChatStore';
 
-import { v4 as uuidv4 } from 'uuid';
-
 import {
   lightTheme,
   darkTheme,
@@ -53,13 +51,13 @@ const Chat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const stompClient = useRef<Client | null>(null);
 
-  const [memberId] = useState(() => String(Math.floor(Math.random() * 3) + 1));
+  const memberId = String(1);
 
   useEffect(() => {
     // 비동기 작업을 실행하는 함수
     const connectStomp = async () => {
       try {
-        const socket = new SockJS('http://3.37.87.63:8080/ws');
+        const socket = new SockJS('https://k100f7af4f18ea.user-app.krampoline.com');
         stompClient.current = new Client({
           webSocketFactory: () => socket,
           onConnect: () => {
@@ -116,14 +114,6 @@ const Chat = () => {
   }, []);
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
 
-  const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewMessage(e.target.value);
-  };
-
-  function createMessage(memberId: string, username: string, text: string): Message {
-    return { memberId, text };
-  }
-
   // 메시지 전송
   const handleSendMessage = () => {
     if (newMessage.trim() !== '') {
@@ -158,7 +148,9 @@ const Chat = () => {
   return (
     <ThemeProvider theme={currentTheme}>
       <StyledDiv>
-        <IconButton>{themeColor === 'light' ? <FolderLightIcon /> : <FolderDarkIcon />}</IconButton>
+        <IconButton>
+          <Link to="/ide/1">{themeColor === 'light' ? <FolderLightIcon /> : <FolderDarkIcon />}</Link>
+        </IconButton>
         <IconButton>
           <Link to="/chat">{themeColor === 'light' ? <ChatLightIcon /> : <ChatDarkIcon />}</Link>
         </IconButton>
@@ -174,7 +166,7 @@ const Chat = () => {
                   <UserIcon src={profileMine} />
                   <UserName>Me</UserName>
                 </UserContainer>
-                <MessageMinetext>{msg.text}</MessageMinetext>
+                <MessageMinetext>{msg.message}</MessageMinetext>
                 <MyMessageTrash onClick={() => handleDeleteMessage} src={MessageTrash} />
               </MessageMine>
             ) : (
@@ -183,7 +175,7 @@ const Chat = () => {
                   <UserIcon src={profileOther} />
                   <UserName>Other</UserName>
                 </UserContainer>
-                <MessageOthertext>{msg.text}</MessageOthertext>
+                <MessageOthertext>{msg.message}</MessageOthertext>
               </MessageOther>
             )}
           </div>
