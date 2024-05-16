@@ -1,5 +1,4 @@
 import './styles/App.css';
-import { RouterProvider } from 'react-router-dom';
 import Routers from './routes/Router';
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
@@ -18,7 +17,7 @@ export default function App() {
     <ThemeProvider>
       <AppStyles />
       <div className="App">
-        <RouterProvider router={Routers}></RouterProvider>
+        <Routers />
       </div>
     </ThemeProvider>
   );
