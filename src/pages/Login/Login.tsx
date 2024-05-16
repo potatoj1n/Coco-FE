@@ -6,8 +6,8 @@ import { useTheTheme } from '../../components/Theme';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Error } from '../SignUp/SignUpStyles';
-import axios from 'axios';
 import useAuthStore from '../../state/AuthStore';
+import address from '../../components/Address';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const Login = () => {
       setLoading(true);
       //axios써서 post로 보내기
       //유저 정보 받아오고 업데이트해주기
-      const response = await axios.post('https://kede9a8620e03a.user-app.krampoline.com/api/members/login', user);
+      const response = await address.post('/api/members/login', user);
       const { email, nickname, memberId } = response.data;
       setAuthInfo(email, nickname, memberId);
       // response.data에서 닉네임, 이메일 저장해서 main이랑 mypage에 사용

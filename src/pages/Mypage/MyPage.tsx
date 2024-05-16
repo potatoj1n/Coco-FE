@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react';
 import { AttendanceDiv, UserInfo, MainPageWrapper, UserInput, EditUser, Edit, Save } from './MypageStyles';
-// import axios from 'axios';
 import api from '../../components/Api';
 import { useNavigate } from 'react-router-dom';
 import Confirmpassword from '../../components/ConfirmPw/ConfirmPw';
 import { useTheTheme } from '../../components/Theme';
 import useAuthStore from '../../state/AuthStore';
+import address from '../../components/Address';
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ const MyPage = () => {
   const handleSaveClick = async () => {
     try {
       // 서버에 데이터를 POST 요청으로 보내는 예시
-      const response = await api.post('https://keb96172d8b65a.user-app.krampoline.com/api/user/update', {
+      const response = await address.post('/api/user/update', {
         nickname: nickName,
         newPassword: password,
       });

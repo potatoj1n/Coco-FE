@@ -13,6 +13,7 @@ import { ReactComponent as Eye } from '../../assets/eye.svg';
 import { ReactComponent as EyeOff } from '../../assets/eye_off.svg';
 import { ReactComponent as PwCheck } from '../../assets/pwCheck.svg';
 import axios from 'axios';
+import address from '../Address';
 
 const Modal: React.FC<ModalProps> = ({ isOpen, children, theme }) => {
   const backgroundColor = theme === 'light' ? 'white' : '#1C2631';
@@ -123,7 +124,7 @@ const Confirmpassword: React.FC<ModalProps> = ({ isOpen, onClose, theme, pw }) =
       return;
     }
     try {
-      const response = await axios.post(`http://3.37.87.232:8080/api/members/id/profile`, {
+      const response = await address.post(`/api/members/id/profile`, {
         newPassword: confirmPw,
       });
       console.log(response.data);
