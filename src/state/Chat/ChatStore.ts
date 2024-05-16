@@ -1,16 +1,14 @@
 import create from 'zustand';
 
 export interface Message {
-  id: number;
-  username: string;
-  text: string;
-  owner: 'mine' | 'other';
+  memberId: string;
+  message: string;
 }
 
 interface ChatState {
   messages: Message[];
   addMessage: (message: Message) => void;
-  deleteMessage: (id: number) => void;
+  deleteMessage: (id: string) => void;
 }
 
 const useChatStore = create<ChatState>(set => ({
@@ -23,9 +21,9 @@ const useChatStore = create<ChatState>(set => ({
     })),
 
   // 메시지 삭제 함수
-  deleteMessage: id =>
+  deleteMessage: memberId =>
     set(state => ({
-      messages: state.messages.filter(message => message.id !== id),
+      messages: state.messages.filter(message => message.memberId !== memberId),
     })),
 }));
 
