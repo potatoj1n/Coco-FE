@@ -36,6 +36,7 @@ const rotateAnimation = keyframes`
     transform: rotate(360deg);
   }
 `;
+
 export const Container = styled.div`
   z-index: 0;
 `;
@@ -291,7 +292,20 @@ export const Day = styled.p`
   margin-bottom: -30px;
   margin-top: 50px;
 `;
-
+const Stamp = keyframes`
+  0% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  95% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+`;
 export const AttendanceImage = styled.img<{ show: boolean }>`
   display: ${({ show }) => (show ? 'block' : 'none')};
   height: 150px;
@@ -300,6 +314,7 @@ export const AttendanceImage = styled.img<{ show: boolean }>`
   margin-top: -210px;
   margin-left: 25px;
   z-index: 1; // Date 위에 위치하기 위해 z-index 사용
+  animation: ${Stamp} 0.5s ease-out forwards;
 `;
 
 export const Pjcontainer = styled.div`
