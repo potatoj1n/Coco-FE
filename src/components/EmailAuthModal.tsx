@@ -9,7 +9,7 @@ interface ModalProps {
 
 import React, { useEffect, useRef, useState } from 'react';
 import '../components/Animation.css';
-import axios from 'axios';
+import address from './Address';
 
 const Modal: React.FC<ModalProps> = ({ isOpen, children, theme }) => {
   const backgroundColor = theme === 'light' ? 'white' : '#1C2631';
@@ -122,9 +122,7 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
 
   const handleSubmit = async (fullCode: string) => {
     try {
-      const response = await axios.get(
-        `https://k40d5114c4212a.user-app.krampoline.com/api/members/emails/verifications?email=${email}&code=${fullCode}`,
-      );
+      const response = await address.get(`/api/members/emails/verifications?email=${email}&code=${fullCode}`);
       console.log(response.data.data.verified);
       console.log(fullCode);
       if (response.data.data.verified) {

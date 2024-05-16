@@ -8,19 +8,20 @@ interface Auth {
   clearAuthInfo: () => void;
 }
 const useAuthStore = create<Auth>(set => ({
-  email: localStorage.getItem('email') || '',
-  nickname: localStorage.getItem('nickname') || '',
-  memberId: localStorage.getItem('memberId') || '',
+  email: sessionStorage.getItem('email') || '',
+  nickname: sessionStorage.getItem('nickname') || '',
+  memberId: sessionStorage.getItem('memberId') || '',
   setAuthInfo: (email, nickname, memberId) => {
-    localStorage.setItem('email', email);
-    localStorage.setItem('nickname', nickname);
-    localStorage.setItem('memberId', memberId);
+    sessionStorage.setItem('email', email);
+    sessionStorage.setItem('nickname', nickname);
+    sessionStorage.setItem('memberId', memberId);
+    // console.log('로컬스토리지', typeof memberId);
     set({ email, nickname, memberId });
   },
   clearAuthInfo: () => {
-    localStorage.removeItem('email');
-    localStorage.removeItem('nickname');
-    localStorage.removeItem('memberId');
+    sessionStorage.removeItem('email');
+    sessionStorage.removeItem('nickname');
+    sessionStorage.removeItem('memberId');
     set({ email: '', nickname: '', memberId: '' });
   },
 }));

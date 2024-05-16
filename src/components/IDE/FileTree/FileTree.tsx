@@ -36,11 +36,16 @@ const FileTree: React.FC<Props> = ({
   setNewFileName,
   handleCreateFolder,
 }) => {
-  const { projects, selectedProjectId, selectedFileContent, fetchFileContent } = useProjectStore(state => ({
+  const {
+    projects,
+    selectedProjectId,
+    selectedFileContent,
+    // fetchFileContent
+  } = useProjectStore(state => ({
     projects: state.projects,
     selectedProjectId: state.selectedProjectId,
     selectedFileContent: state.selectedFileContent,
-    fetchFileContent: state.fetchFileContent,
+    // fetchFileContent: state.fetchFileContent,
   }));
   const [contextMenuPosition, setContextMenuPosition] = useState<{ mouseX: number; mouseY: number } | null>(null);
 

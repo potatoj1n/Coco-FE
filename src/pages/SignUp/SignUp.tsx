@@ -6,7 +6,6 @@ import EmailAuthModal from '../../components/EmailAuthModal';
 import { useTheTheme } from '../../components/Theme';
 import { ReactComponent as Eye } from '../../assets/eye.svg';
 import { ReactComponent as EyeOff } from '../../assets/eye_off.svg';
-import axios from 'axios';
 import { ReactComponent as User } from '../../assets/signUp_user.svg';
 import { ReactComponent as Nickname } from '../../assets/signUp_nickname.svg';
 import { ReactComponent as Pw } from '../../assets/signUp_pw.svg';
@@ -139,10 +138,7 @@ const SignUp = () => {
     console.log(userSignUp);
     try {
       setLoading(true);
-      const response = await axios.post(
-        `https://kede9a8620e03a.user-app.krampoline.com/api/members/register`,
-        userSignUp,
-      );
+      const response = await address.post(`/api/members/register`, userSignUp);
       console.log(response.data);
       navigate('/login');
     } catch (e) {
