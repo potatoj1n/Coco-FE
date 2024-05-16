@@ -53,7 +53,7 @@ const Chat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const stompClient = useRef<Client | null>(null);
 
-  const [memberId] = useState<string>(() => uuidv4());
+  const [memberId] = useState(() => String(Math.floor(Math.random() * 3) + 1));
 
   useEffect(() => {
     // 비동기 작업을 실행하는 함수
@@ -64,8 +64,22 @@ const Chat = () => {
           webSocketFactory: () => socket,
           onConnect: () => {
             console.log('Connected');
+            // 기존 메시지를 서버에 요청합니다.
+            stompClient.current?.subscribe('/user/queue/history', message => {
+              const existingMessages = JSON.parse(message.body);
+              existingMessages.forEach((msg: any) => {
+                addMessage(msg);
+              });
+            });
+
+            // 실시간 메시지를 받기 위한 구독 설정
             stompClient.current?.subscribe('/topic/chat', message => {
               addMessage(JSON.parse(message.body));
+            });
+            // 서버에 기존 메시지 요청하기
+            stompClient.current?.publish({
+              destination: '/app/history',
+              body: '', // 필요하다면 여기에 추가 데이터를 넣어서 서버에 보냄
             });
           },
           onStompError: frame => {
@@ -86,7 +100,7 @@ const Chat = () => {
     return () => {
       if (stompClient.current) {
         stompClient.current.deactivate();
-        console.log('close'); // 비동기 작업 없이 STOMP 클라이언트 비활성화
+        console.log('Disconnected'); // 비동기 작업 없이 STOMP 클라이언트 비활성화
       }
     };
   }, []); // 의존성 배열, 필요에 따라 변수 포함
@@ -115,7 +129,7 @@ const Chat = () => {
     if (newMessage.trim() !== '') {
       stompClient.current?.publish({
         destination: '/app/message',
-        body: JSON.stringify({ memberId: 1, message: newMessage }),
+        body: JSON.stringify({ memberId, message: newMessage }),
       });
       setNewMessage('');
       console.log('send');
