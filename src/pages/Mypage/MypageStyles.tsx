@@ -14,6 +14,11 @@ export const AttendanceDiv = styled.div`
   height: 32%;
   width: 100%;
   padding: 30px 50px;
+  padding: 30px 50px;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  /* align-items: center; */
 `;
 
 export const UserInfo = styled.div`
