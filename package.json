@@ -1,8 +1,8 @@
 {
   "name": "coco",
   "version": "0.1.0",
+  "proxy": "https://k4d76a25863a.user-app.krampoline.com",
   "private": true,
-  "proxy": "https://kede9a8620e03a.user-app.krampoline.com",
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
