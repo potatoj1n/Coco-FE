@@ -73,12 +73,12 @@ export default function FileList() {
       }
     }
   };
+  const selectedProject = projects.find(project => project.id === selectedProjectId);
+
   return (
     <ProjectWrapper>
       <Title>
-        {projects.map(project => (
-          <span key={project.id}>{project.name}</span>
-        ))}
+        {selectedProject && <span className="mr-3">{selectedProject.name}</span>}
         <span>
           <IconButton size="small" onClick={handleCreateFolder}>
             {themeColor === 'light' ? <FolderAddLightIcon /> : <FolderAddDarkIcon />}

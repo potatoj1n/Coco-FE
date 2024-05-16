@@ -49,6 +49,7 @@ const Listcontainer = styled.div`
   height: 300px;
   width: 90%;
   overflow-y: scroll;
+  cursor: pointer;
 `;
 const Pjcontainer = styled.div`
   display: flex;
@@ -81,9 +82,10 @@ const PjList: React.FC<PjListProps> = ({ onClose }) => {
   const { themeColor } = useTheTheme();
   const navigate = useNavigate();
   const [closing, setClosing] = useState(false);
-  const { projects, loadProjects } = useProjectStore(state => ({
+  const { projects, loadProjects, selectProject } = useProjectStore(state => ({
     projects: state.projects,
     loadProjects: state.loadProjects,
+    selectProject: state.selectProject,
   }));
 
   const handleClose = () => {
@@ -95,6 +97,7 @@ const PjList: React.FC<PjListProps> = ({ onClose }) => {
   }, [loadProjects]);
 
   const handleProjectClick = (projectId: string) => {
+    selectProject(projectId);
     navigate(`/ide/${projectId}`);
     onClose();
   };
