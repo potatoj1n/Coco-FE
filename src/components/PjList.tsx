@@ -82,10 +82,11 @@ const PjList: React.FC<PjListProps> = ({ onClose }) => {
   const { themeColor } = useTheTheme();
   const navigate = useNavigate();
   const [closing, setClosing] = useState(false);
-  const { projects, loadProjects, selectProject } = useProjectStore(state => ({
+  const { projects, loadProjects, selectProject, removeProject } = useProjectStore(state => ({
     projects: state.projects,
     loadProjects: state.loadProjects,
     selectProject: state.selectProject,
+    removeProject: state.removeProject,
   }));
 
   const handleClose = () => {
@@ -101,6 +102,11 @@ const PjList: React.FC<PjListProps> = ({ onClose }) => {
     navigate(`/ide/${projectId}`);
     onClose();
   };
+  const handleDelete = (projectId: string, projectName: string) => {
+    if (window.confirm(`'${projectName}'을(를) 삭제할건가요?`)) {
+      removeProject(projectId);
+    }
+  };
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
   return ReactDOM.createPortal(
     <ThemeProvider theme={currentTheme}>
@@ -113,7 +119,13 @@ const PjList: React.FC<PjListProps> = ({ onClose }) => {
               <Pjcontainer key={project.id} onClick={() => handleProjectClick(project.id)}>
                 <Icon src={folderLight} />
                 <Foldername>{project.name}</Foldername>
-                <Icon src={messageTrash} />
+                <Icon
+                  src={messageTrash}
+                  onClick={(e: any) => {
+                    e.stopPropagation();
+                    handleDelete(project.id, project.name);
+                  }}
+                />
               </Pjcontainer>
             ))}
           </Listcontainer>
