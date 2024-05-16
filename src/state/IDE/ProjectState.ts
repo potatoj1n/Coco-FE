@@ -60,7 +60,7 @@ interface ProjectStore {
   removeFile: (projectId: string, folderId: string, fileId: string) => void;
   updateFile: (projectId: string, folderId: string, fileId: string, newData: Partial<File>) => void;
   selectFile: (fileId: string, fileName: string) => void;
-  fetchFileContent: (fileId: string) => void;
+  // fetchFileContent: (fileId: string) => void;
 }
 
 const useProjectStore = create<ProjectStore>(set => ({
@@ -91,6 +91,7 @@ const useProjectStore = create<ProjectStore>(set => ({
         p.id === projectId ? { ...p, folders: p.folders.filter(f => f.id !== folderId) } : p,
       ),
     })),
+
   updateFolder: (projectId, folderId, newData) =>
     set(state => ({
       projects: state.projects.map(p =>
@@ -104,7 +105,7 @@ const useProjectStore = create<ProjectStore>(set => ({
     })),
   loadProjects: async () => {
     try {
-      const response = await axios.get<ProjectData[]>('https://keb96172d8b65a.user-app.krampoline.com/api/projects');
+      const response = await axios.get<ProjectData[]>('https://k40d5114c4212a.user-app.krampoline.com/api/projects');
       const projects = response.data.map(
         (project: ProjectData): Project => ({
           id: project.projectId,
@@ -122,7 +123,7 @@ const useProjectStore = create<ProjectStore>(set => ({
   selectProject: async (projectId: string) => {
     try {
       // 프로젝트 정보 요청
-      const response = await axios.get(`https://keb96172d8b65a.user-app.krampoline.com/api/projects/${projectId}`);
+      const response = await axios.get(`https://k40d5114c4212a.user-app.krampoline.com/api/projects/${projectId}`);
       const { folders, files } = response.data;
 
       // 폴더와 파일 정보를 스토어에 추가
@@ -204,15 +205,17 @@ const useProjectStore = create<ProjectStore>(set => ({
       selectedFileName: fileName,
       selectedFileContent: null,
     }),
-  fetchFileContent: async fileId => {
-    try {
-      const response = await axios.get(`/api/files/${fileId}`);
-      const fileContent = response.data.content;
-      set({ selectedFileContent: fileContent });
-    } catch (error) {
-      console.error('Error fetching file content:', error);
-    }
-  },
+  //   fetchFileContent: async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `https://k40d5114c4212a.user-app.krampoline.com/api/projects/${projectId}/folders/${folderId}/files/${fileId}`,
+  //       );
+  //       const fileContent = response.data.content;
+  //       set({ selectedFileContent: fileContent });
+  //     } catch (error) {
+  //       console.error('Error fetching file content:', error);
+  //     }
+  //   },
 }));
 
 export default useProjectStore;
