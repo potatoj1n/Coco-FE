@@ -58,6 +58,8 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [error, setError] = useState('');
   const [timeLeft, setTimeLeft] = useState(0); // 초 단위
+  const [minute, setMinute] = useState(0);
+  const [second, setSecond] = useState(0);
 
   const enhancedOnClose = () => {
     setError('');
@@ -69,22 +71,26 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
     // 모달이 열려있을 때만 타이머를 시작
     if (isOpen) {
       setTimeLeft(600);
+      setError('');
       setCode(new Array(code.length).fill(''));
     }
   }, [isOpen]);
 
   useEffect(() => {
     if (timeLeft === 0) {
+      setMinute(0);
+      setSecond(0);
       setError('인증 시간이 만료되었습니다.');
       const timer = setTimeout(() => {
         enhancedOnClose();
       }, 2000); //3초 후에 닫힘
-
       return () => clearTimeout(timer);
     } else if (timeLeft > 0) {
       const timerId = setTimeout(() => {
         setTimeLeft(timeLeft - 1);
       }, 1000); //1초마다 1씩 줄어듦
+      setMinute(Math.floor(timeLeft / 60));
+      setSecond(timeLeft % 60);
       return () => clearTimeout(timerId);
     }
   }, [timeLeft]);
@@ -95,6 +101,11 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
     setCode(newCode);
     if (index < 4 && value) {
       inputRefs.current[index + 1]?.focus();
+    }
+  };
+  const handleKeyDown = (index: number, event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Backspace' && index > 0 && !code[index]) {
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
@@ -112,10 +123,9 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
   const handleSubmit = async (fullCode: string) => {
     try {
       const response = await axios.get(
-        `http:///13.125.162.255:8080/api/members/emails/verifications?email=${email}&code=${fullCode}`,
+        `https://k40d5114c4212a.user-app.krampoline.com/api/members/emails/verifications?email=${email}&code=${fullCode}`,
       );
       console.log(response.data.data.verified);
-      // console.log(response.data.data);
       console.log(fullCode);
       if (response.data.data.verified) {
         if (onVerifySuccess) {
@@ -123,7 +133,7 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
         }
         enhancedOnClose();
       } else {
-        throw new Error('Invalid verification code');
+        throw new Error('인증 실패');
       }
     } catch (error) {
       console.log(error);
@@ -137,25 +147,24 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
   };
 
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose} theme={theme}>
-        <h2 className="bounce mb-20">
-          <span style={{ color: '#28b381', fontWeight: '600' }}>메일 </span>
-          인증 코드를 입력하세요
-        </h2>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(5, 1fr)',
-            gap: '15px',
-            height: 'auto',
-            width: 'max-content',
-            padding: '0px 10px 0px 10px',
-          }}
-        >
-          {/* 스피너 제거 */}
-          <style>
-            {`
+    <Modal isOpen={isOpen} onClose={onClose} theme={theme}>
+      <h2 className="bounce mb-20">
+        <span style={{ color: '#28b381', fontWeight: '600' }}>메일 </span>
+        인증 코드를 입력하세요
+      </h2>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 1fr)',
+          gap: '15px',
+          height: 'auto',
+          width: 'max-content',
+          padding: '0px 10px 0px 10px',
+        }}
+      >
+        {/* 스피너 제거 */}
+        <style>
+          {`
           input[type='number']::-webkit-inner-spin-button,
           input[type='number']::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -166,29 +175,32 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
             -moz-appearance: textfield;
           }
         `}
-          </style>
-          {code.map((c, idx) => (
-            <input
-              key={idx}
-              ref={el => (inputRefs.current[idx] = el)}
-              type="number"
-              value={c}
-              maxLength={1}
-              style={{
-                textAlign: 'center',
-                height: '45px',
-                backgroundColor: '#d8dfe378',
-                width: '40px',
-              }}
-              onChange={e => handleInputChange(idx, e.target.value)}
-              onFocus={e => e.target.select()}
-            />
-          ))}
-        </div>
-        <p style={{ marginTop: '100px', fontSize: '16px' }}>남은 시간: {timeLeft}초</p>
-        <p className="text-sm text-red-500">{error}</p>
-      </Modal>
-    </>
+        </style>
+        {code.map((c, idx) => (
+          <input
+            key={idx}
+            ref={el => (inputRefs.current[idx] = el)}
+            type="number"
+            value={c}
+            maxLength={1}
+            style={{
+              textAlign: 'center',
+              height: '45px',
+              backgroundColor: '#d8dfe378',
+              width: '40px',
+            }}
+            onChange={e => handleInputChange(idx, e.target.value)}
+            onKeyDown={e => handleKeyDown(idx, e)}
+            onFocus={e => e.target.select()}
+          />
+        ))}
+      </div>
+      <p style={{ marginTop: '100px', fontSize: '16px' }}>
+        남은 시간: {minute > 0 ? `${minute}분 ` : ''}
+        {second}초
+      </p>
+      <p className="text-sm text-red-500">{error}</p>
+    </Modal>
   );
 };
 
