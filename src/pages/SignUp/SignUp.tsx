@@ -11,6 +11,7 @@ import { ReactComponent as User } from '../../assets/signUp_user.svg';
 import { ReactComponent as Nickname } from '../../assets/signUp_nickname.svg';
 import { ReactComponent as Pw } from '../../assets/signUp_pw.svg';
 import { ReactComponent as PwCheck } from '../../assets/pwCheck.svg';
+import address from '../../components/Address';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -84,10 +85,9 @@ const SignUp = () => {
       try {
         setIsModalOpen(true);
         //이메일 인증을 위해 서버로 이메일 보내기
-        const response = await axios.post(
-          `https://kede9a8620e03a.user-app.krampoline.com/api/members/emails/verification-requests?email=${email}`,
-          { email: email },
-        );
+        const response = await address.post(`/api/members/emails/verification-requests?email=${email}`, {
+          email: email,
+        });
         console.log(email);
         console.log(response.data);
       } catch (error) {
