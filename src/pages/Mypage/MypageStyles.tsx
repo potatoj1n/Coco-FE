@@ -13,8 +13,6 @@ export const AttendanceDiv = styled.div`
   background-color: ${({ theme }) => (theme.themeColor === 'light' ? '#e1f9f0' : '#23BE87')};
   height: 32%;
   width: 100%;
-  padding: 30px 50px;
-  padding: 30px 50px;
   display: flex;
   flex-direction: column;
   /* justify-content: center; */
