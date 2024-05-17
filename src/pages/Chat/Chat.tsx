@@ -52,6 +52,7 @@ const Chat = () => {
   const stompClient = useRef<Client | null>(null);
 
   const memberId = String(1);
+  const nickname = 'test';
 
   useEffect(() => {
     // 비동기 작업을 실행하는 함수
@@ -119,10 +120,10 @@ const Chat = () => {
     if (newMessage.trim() !== '') {
       stompClient.current?.publish({
         destination: '/app/message',
-        body: JSON.stringify({ memberId, message: newMessage }),
+        body: JSON.stringify({ memberId, message: newMessage, nickname: nickname }),
       });
       setNewMessage('');
-      console.log('send');
+      console.log('send', nickname);
     }
   };
   // 메시지 삭제 요청
@@ -160,14 +161,14 @@ const Chat = () => {
         <div style={{ flexGrow: 1 }}></div>
         {messages.map((msg, index) => (
           <div key={index}>
-            {msg.memberId === memberId ? (
+            {memberId === '1' ? (
               <MessageMine>
+                <MessageMinetext>{msg.message}</MessageMinetext>
+                <MyMessageTrash onClick={() => handleDeleteMessage} src={MessageTrash} />
                 <UserContainer>
                   <UserIcon src={profileMine} />
                   <UserName>Me</UserName>
                 </UserContainer>
-                <MessageMinetext>{msg.message}</MessageMinetext>
-                <MyMessageTrash onClick={() => handleDeleteMessage} src={MessageTrash} />
               </MessageMine>
             ) : (
               <MessageOther>
