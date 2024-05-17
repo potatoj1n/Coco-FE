@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import useProjectStore, { ProjectStore, Folder, File, Project } from '../../../state/IDE/ProjectState';
+import React, { useState } from 'react';
+import useProjectStore, { Folder, File, Project } from '../../../state/IDE/ProjectState';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import { Menu, MenuItem } from '@mui/material';
+import { Button, Dialog, DialogActions, Menu, MenuItem, TextField } from '@mui/material';
 import { FileTreeWrapper, FileWrapper } from '../IdeStyle';
+import { deleteFile, deleteFolder, updateFolderName, updateFileName } from '../ProjectApi';
 
 interface FileNode {
   name: string;
@@ -11,63 +12,200 @@ interface FileNode {
   parentId: string | null;
   type: string;
   onClick?: (id: string) => void;
-  onContextMenu?: (event: React.MouseEvent<HTMLElement>, id: string) => void;
+  onContextMenu?: (event: React.MouseEvent<HTMLElement>, id: string, type: string) => void;
   children?: FileNode[];
 }
 
 interface Props {
   isCreatingFolder: boolean;
-  toggleFolderCreation: () => void;
+  setIsCreatingFolder: React.Dispatch<React.SetStateAction<boolean>>;
+  isCreatingFile: boolean;
+  setIsCreatingFile: React.Dispatch<React.SetStateAction<boolean>>;
+  handleCreateFolder: (folderName: string, parentId: string | null) => void;
+  handleCreateFile: (fileName: string, folderId: string) => void;
   newFolderName: string;
   setNewFolderName: React.Dispatch<React.SetStateAction<string>>;
   newFileName: string;
   setNewFileName: React.Dispatch<React.SetStateAction<string>>;
-  handleCreateFolder: () => void;
-  handleCreateFile: () => void;
+  currentParentId: string | null;
+  setCurrentParentId: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const FileTree: React.FC<Props> = ({
-  toggleFolderCreation,
-  handleCreateFile,
   isCreatingFolder,
+  setIsCreatingFolder,
+  isCreatingFile,
+  setIsCreatingFile,
+  handleCreateFolder,
+  handleCreateFile,
   newFolderName,
   setNewFolderName,
   newFileName,
   setNewFileName,
-  handleCreateFolder,
+  currentParentId,
+  setCurrentParentId,
 }) => {
   const {
     projects,
     selectedProjectId,
+    selectProject,
     selectedFileContent,
-    // fetchFileContent
-  } = useProjectStore(state => ({
-    projects: state.projects,
-    selectedProjectId: state.selectedProjectId,
-    selectedFileContent: state.selectedFileContent,
-    // fetchFileContent: state.fetchFileContent,
-  }));
+    removeFolder,
+    removeFile,
+    fetchFileContent,
+  } = useProjectStore();
   const [contextMenuPosition, setContextMenuPosition] = useState<{ mouseX: number; mouseY: number } | null>(null);
-
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editNodeId, setEditNodeId] = useState('');
+  const [editNodeType, setEditNodeType] = useState('');
   const selectedProject = projects.find(project => project.id === selectedProjectId);
-
+  //메뉴
   const handleContextMenu = (event: React.MouseEvent<HTMLElement>, id: string) => {
     event.preventDefault();
     setContextMenuPosition({ mouseX: event.clientX - 2, mouseY: event.clientY - 4 });
+    setCurrentParentId(id);
   };
 
   const handleCloseContextMenu = () => {
     setContextMenuPosition(null);
   };
-
-  const handleCreateFolderMenuClick = () => {
-    toggleFolderCreation();
+  const refreshProject = async () => {
+    if (selectedProjectId) {
+      await selectProject(selectedProjectId);
+    }
   };
+  //생성하기
+  const handleCreateNewFolder = async () => {
+    await handleCreateFolder(newFolderName, currentParentId);
+    setNewFolderName('');
+    await refreshProject();
+  };
+
+  const handleCreateNewFile = async () => {
+    if (currentParentId) {
+      handleCreateFile(newFileName, currentParentId);
+      setNewFileName('');
+    }
+    await refreshProject();
+  };
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      if (isCreatingFolder) {
+        handleCreateNewFolder();
+      } else if (isCreatingFile) {
+        handleCreateNewFile();
+      }
+    }
+  };
+  //삭제하기
+  const handleDeleteFolder = async (folderId: string) => {
+    if (!selectedProjectId) return;
+    try {
+      await deleteFolder(selectedProjectId, folderId);
+      removeFolder(selectedProjectId, folderId);
+      await refreshProject();
+    } catch (error) {
+      console.error('Error deleting folder:', error);
+    }
+  };
+
+  const handleDeleteFile = async (folderId: string, fileId: string) => {
+    if (!selectedProjectId) return;
+    try {
+      await deleteFile(selectedProjectId, folderId, fileId);
+      removeFile(selectedProjectId, folderId, fileId);
+      await refreshProject();
+    } catch (error) {
+      console.error('Error deleting file:', error);
+    }
+  };
+  //수정하기
+  const handleEditName = () => {
+    if (editNodeType === 'folder') {
+      updateFolderName(selectedProjectId!, editNodeId, editName)
+        .then(() => {
+          refreshProject(); // 프로젝트 정보 새로고침
+          handleCloseEditDialog();
+        })
+        .catch(error => {
+          console.error('Failed to update folder name:', error);
+        });
+    } else if (editNodeType === 'file') {
+      updateFileName(selectedProjectId!, currentParentId!, editNodeId, editName)
+        .then(() => {
+          refreshProject(); // 프로젝트 정보 새로고침
+          handleCloseEditDialog();
+        })
+        .catch(error => {
+          console.error('Failed to update file name:', error);
+        });
+    }
+  };
+
+  const handleOpenEditDialog = (id: string, type: string, currentName: string) => {
+    setEditDialogOpen(true);
+    setEditName(currentName);
+    setEditNodeId(id);
+    setEditNodeType(type);
+  };
+
+  const handleCloseEditDialog = () => {
+    setEditDialogOpen(false);
+  };
+
+  // 파일 내용 요청
+  const handleFetchFile = (fileId: string) => {
+    const file = projects.flatMap(p => p.files).find(file => file.id === fileId);
+    if (file && file.type === 'file') {
+      if (selectedProjectId) {
+        fetchFileContent(selectedProjectId, file.parentId, fileId);
+      }
+    }
+  };
+  function renderNodes(nodes: FileNode[]): React.ReactNode {
+    return nodes.map(node => (
+      <Node
+        key={node.id}
+        name={node.name}
+        id={node.id}
+        parentId={node.parentId}
+        type={node.type}
+        onClick={() => (node.type === 'file' ? handleFetchFile(node.id) : null)}
+        onContextMenu={event => handleContextMenu(event, node.id)}
+        renderNodes={renderNodes}
+        // eslint-disable-next-line react/no-children-prop
+        children={node.children}
+      />
+    ));
+  }
 
   return (
     <main>
       {selectedProject && renderNodes(convertProjectToNodes(selectedProject, handleContextMenu))}
       <div>{selectedFileContent}</div>
+      {isCreatingFolder && (
+        <div>
+          <TextField
+            size="small"
+            value={newFolderName}
+            onChange={e => setNewFolderName(e.target.value)}
+            placeholder="폴더명 입력"
+            onKeyPress={handleKeyPress}
+          />
+        </div>
+      )}
+      {isCreatingFile && (
+        <div>
+          <TextField
+            size="small"
+            value={newFileName}
+            onChange={e => setNewFileName(e.target.value)}
+            placeholder="파일명 입력"
+            onKeyPress={handleKeyPress}
+          />
+        </div>
+      )}
 
       <Menu
         open={contextMenuPosition !== null}
@@ -79,11 +217,50 @@ const FileTree: React.FC<Props> = ({
             : undefined
         }
       >
-        <MenuItem onClick={handleCreateFolderMenuClick}>폴더 생성</MenuItem>
-        <MenuItem onClick={handleCreateFile}>파일 생성</MenuItem>
-        <MenuItem onClick={handleCloseContextMenu}>삭제하기</MenuItem>
-        <MenuItem onClick={handleCloseContextMenu}>수정하기</MenuItem>
+        <MenuItem onClick={() => setIsCreatingFolder(true)}>폴더 생성</MenuItem>
+        <MenuItem onClick={() => setIsCreatingFile(true)}>파일 생성</MenuItem>
+        <MenuItem onClick={() => handleDeleteFolder(currentParentId!)}>폴더 삭제</MenuItem>
+        <MenuItem onClick={() => handleDeleteFile(currentParentId!, currentParentId!)}>파일 삭제</MenuItem>
+        <MenuItem
+          onClick={() =>
+            handleOpenEditDialog(
+              currentParentId!,
+              'folder',
+              selectedProject?.folders.find(f => f.id === currentParentId)?.name || '',
+            )
+          }
+        >
+          폴더 이름 수정
+        </MenuItem>
+        <MenuItem
+          onClick={() =>
+            handleOpenEditDialog(
+              currentParentId!,
+              'file',
+              selectedProject?.files.find(f => f.id === currentParentId)?.name || '',
+            )
+          }
+        >
+          파일 이름 수정
+        </MenuItem>
       </Menu>
+      {editDialogOpen && (
+        <Dialog open={editDialogOpen} onClose={handleCloseEditDialog}>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="New Name"
+            type="text"
+            fullWidth
+            value={editName}
+            onChange={e => setEditName(e.target.value)}
+          />
+          <DialogActions>
+            <Button onClick={handleCloseEditDialog}>Cancel</Button>
+            <Button onClick={handleEditName}>Update</Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </main>
   );
 };
@@ -91,21 +268,31 @@ const FileTree: React.FC<Props> = ({
 //프로젝트를 노드로 만드는 함수
 function convertProjectToNodes(
   project: Project,
-  handleContextMenu: (event: React.MouseEvent<HTMLElement>, id: string) => void,
+  handleContextMenu: (event: React.MouseEvent<HTMLElement>, id: string, type: string) => void,
 ): FileNode[] {
-  // 루트 폴더
+  // 루트 레벨의 폴더와 파일을 모두 처리
   const rootFolders = project.folders.filter(folder => folder.parentId === null);
+  const rootFiles = project.files.filter(file => file.parentId === null);
 
-  // 각 루트 폴더에서부터 파일 트리를 구성
-  return rootFolders.map(rootFolder => ({
-    name: rootFolder.name,
-    id: rootFolder.id,
-    parentId: rootFolder.parentId,
+  const rootFolderNodes = rootFolders.map(folder => ({
+    name: folder.name,
+    id: folder.id,
+    parentId: folder.parentId,
     type: 'folder',
-    onClick: (id: string) => handleNodeClick(id, project.files), // 노드 클릭 이벤트 처리
-    onContextMenu: (event: React.MouseEvent<HTMLElement>) => handleContextMenu(event, rootFolder.id),
-    children: convertFolderToNodes(project.folders, project.files, rootFolder.id),
+    onContextMenu: (event: React.MouseEvent<HTMLElement>) => handleContextMenu(event, folder.id, 'folder'),
+    children: convertFolderToNodes(project.folders, project.files, folder.id),
   }));
+
+  const rootFileNodes = rootFiles.map(file => ({
+    name: file.name,
+    id: file.id,
+    parentId: file.parentId,
+    type: 'file',
+    onContextMenu: (event: React.MouseEvent<HTMLElement>) => handleContextMenu(event, file.id, 'file'),
+  }));
+
+  // 폴더 노드와 파일 노드를 합친 배열을 반환
+  return [...rootFolderNodes, ...rootFileNodes];
 }
 
 //폴더를 노드로 바꾸는 함수
@@ -118,7 +305,7 @@ function convertFolderToNodes(folders: Folder[], files: File[], parentId: string
     id: folder.id,
     parentId: folder.parentId,
     type: 'folder',
-    onClick: (id: string) => handleNodeClick(id, files), // 노드 클릭 이벤트 처리
+    //onClick: (id: string) => handleNodeClick(id, files), // 노드 클릭 이벤트 처리
     children: convertFolderToNodes(folders, files, folder.id),
   }));
 
@@ -127,19 +314,27 @@ function convertFolderToNodes(folders: Folder[], files: File[], parentId: string
     id: file.id,
     parentId: file.parentId,
     type: 'file',
-    onClick: (id: string) => handleNodeClick(id, files), // 노드 클릭 이벤트 처리
+    //onClick: (id: string) => handleNodeClick(id, files), // 노드 클릭 이벤트 처리
   }));
 
   return [...folderNodes, ...fileNodes];
 }
 
 //노드 렌더링
-function Node({ name, id, type, onClick, onContextMenu, children }: FileNode) {
+function Node({
+  name,
+  id,
+  type,
+  onClick,
+  onContextMenu,
+  children,
+  renderNodes,
+}: FileNode & { renderNodes: (nodes: FileNode[]) => React.ReactNode }) {
   const handleClick = () => {
     if (onClick) onClick(id);
   };
   const handleContextMenu = (event: React.MouseEvent<HTMLElement>) => {
-    if (onContextMenu) onContextMenu(event, id);
+    if (onContextMenu) onContextMenu(event, id, type);
   };
   return (
     <FileTreeWrapper>
@@ -155,36 +350,11 @@ function Node({ name, id, type, onClick, onContextMenu, children }: FileNode) {
             <FolderOpenOutlinedIcon fontSize="medium" />
           )}{' '}
           {name}
-          {children && <div>{renderNodes(children)}</div>}{' '}
+          {children && <div>{renderNodes(children)}</div>}
         </article>
       </FileWrapper>
     </FileTreeWrapper>
   );
-}
-
-// 재귀적으로 노드를 렌더링하는 함수
-function renderNodes(nodes: FileNode[]) {
-  return nodes.map(node => (
-    <Node
-      key={node.id}
-      name={node.name}
-      id={node.id}
-      parentId={node.parentId}
-      type={node.type}
-      onClick={node.onClick}
-      onContextMenu={node.onContextMenu}
-      // eslint-disable-next-line react/no-children-prop
-      children={node.children}
-    />
-  ));
-}
-
-function handleNodeClick(id: string, files: File[]) {
-  // 클릭된 노드의 ID를 기반으로 파일의 내용을 가져오거나 에디터에 표시하는 로직을 추가할 수 있습니다.
-  const clickedFile = files.find(file => file.id === id);
-  if (clickedFile) {
-    // 클릭된 파일의 내용을 가져오는 로직을 추가합니다.
-  }
 }
 
 export default FileTree;
