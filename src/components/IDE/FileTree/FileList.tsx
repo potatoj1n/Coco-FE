@@ -1,4 +1,4 @@
-import { IconButton, TextField } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { ReactComponent as FileAddLightIcon } from '../../../assets/file-addlight.svg';
 import { ReactComponent as FileAddDarkIcon } from '../../../assets/file-adddark.svg';
 import { ReactComponent as FolderAddLightIcon } from '../../../assets/folder-addlight.svg';
@@ -6,7 +6,7 @@ import { ReactComponent as FolderAddDarkIcon } from '../../../assets/folder-addd
 import { useTheTheme } from '../../Theme';
 import useProjectStore from '../../../state/IDE/ProjectState';
 import { useState } from 'react';
-import { FolderWrapper, ProjectWrapper, Title } from '../IdeStyle';
+import { ProjectWrapper, Title } from '../IdeStyle';
 import { createFolder, createFile } from '../ProjectApi';
 import FileTree from './FileTree';
 
@@ -16,15 +16,13 @@ export default function FileList() {
   const selectedProjectId = useProjectStore(state => state.selectedProjectId);
   const { addFolder, addFile } = useProjectStore();
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+  const [isCreatingFile, setIsCreatingFile] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [newFileName, setNewFileName] = useState('');
+  const [currentParentId, setCurrentParentId] = useState<string | null>(null);
 
-  const toggleFolderCreation = () => {
-    setIsCreatingFolder(prevState => !prevState);
-  };
-
-  const handleCreateFolder = async () => {
-    if (newFolderName.trim() === '') {
+  const handleCreateFolder = async (folderName: string, parentId: string | null) => {
+    if (folderName.trim() === '') {
       alert('폴더명을 입력하세요.');
       return;
     }
@@ -33,8 +31,9 @@ export default function FileList() {
       return;
     }
     try {
-      const createdFolder = await createFolder(selectedProjectId, newFolderName);
+      const createdFolder = await createFolder(selectedProjectId, folderName, parentId);
       addFolder(selectedProjectId, createdFolder);
+      setIsCreatingFolder(false);
       setNewFolderName('');
     } catch (error) {
       console.error('Error creating folder:', error);
@@ -42,8 +41,8 @@ export default function FileList() {
     }
   };
 
-  const handleCreateFile = async () => {
-    if (newFileName.trim() === '') {
+  const handleCreateFile = async (fileName: string, folderId: string) => {
+    if (fileName.trim() === '') {
       alert('파일명을 입력하세요.');
       return;
     }
@@ -51,28 +50,24 @@ export default function FileList() {
       alert('프로젝트를 선택하세요.');
       return;
     }
+    try {
+      const newFile = {
+        name: fileName,
+        content: '',
+        type: 'file',
+        parentId: folderId,
+      };
 
-    const selectedProject = projects.find(project => project.id === selectedProjectId);
-    if (selectedProject && selectedProject.folders.length > 0) {
-      const folderId = selectedProject.folders[0].id;
-      try {
-        const newFile = {
-          id: Math.random().toString(),
-          name: newFileName,
-          content: '',
-          type: 'file',
-          parentId: folderId,
-        };
-
-        await createFile(selectedProjectId, folderId, newFileName);
-        addFile(selectedProjectId, folderId, newFile);
-        setNewFileName('');
-      } catch (error) {
-        console.error('Error creating file:', error);
-        alert('Failed to create file');
-      }
+      const createdFile = await createFile(selectedProjectId, folderId, fileName, newFile.content);
+      addFile(selectedProjectId, folderId, createdFile);
+      setIsCreatingFile(false);
+      setNewFileName('');
+    } catch (error) {
+      console.error('Error creating file:', error);
+      alert('Failed to create file');
     }
   };
+
   const selectedProject = projects.find(project => project.id === selectedProjectId);
 
   return (
@@ -80,40 +75,41 @@ export default function FileList() {
       <Title>
         {selectedProject && <span className="mr-3">{selectedProject.name}</span>}
         <span>
-          <IconButton size="small" onClick={handleCreateFolder}>
+          <IconButton
+            size="small"
+            onClick={() => {
+              setIsCreatingFolder(true);
+              setCurrentParentId('0');
+            }}
+          >
             {themeColor === 'light' ? <FolderAddLightIcon /> : <FolderAddDarkIcon />}
           </IconButton>
-          <IconButton size="small" onClick={handleCreateFile}>
+          <IconButton
+            size="small"
+            onClick={() => {
+              setIsCreatingFile(true);
+              setCurrentParentId('0');
+            }}
+          >
             {themeColor === 'light' ? <FileAddLightIcon /> : <FileAddDarkIcon />}
           </IconButton>
         </span>
       </Title>
 
-      <FolderWrapper>
-        <TextField
-          size="small"
-          value={newFolderName}
-          onChange={e => setNewFolderName(e.target.value)}
-          placeholder="폴더명 입력"
-          disabled={!isCreatingFolder}
-        />
-        <TextField
-          size="small"
-          value={newFileName}
-          onChange={e => setNewFileName(e.target.value)}
-          placeholder="파일명 입력"
-        />
-        <FileTree
-          isCreatingFolder={isCreatingFolder}
-          toggleFolderCreation={toggleFolderCreation}
-          newFolderName={newFolderName}
-          setNewFolderName={setNewFolderName}
-          newFileName={newFileName}
-          setNewFileName={setNewFileName}
-          handleCreateFolder={handleCreateFolder}
-          handleCreateFile={handleCreateFile}
-        />
-      </FolderWrapper>
+      <FileTree
+        isCreatingFolder={isCreatingFolder}
+        setIsCreatingFolder={setIsCreatingFolder}
+        setIsCreatingFile={setIsCreatingFile}
+        isCreatingFile={isCreatingFile}
+        handleCreateFolder={handleCreateFolder}
+        handleCreateFile={handleCreateFile}
+        newFolderName={newFolderName}
+        setNewFolderName={setNewFolderName}
+        newFileName={newFileName}
+        setNewFileName={setNewFileName}
+        currentParentId={currentParentId}
+        setCurrentParentId={setCurrentParentId}
+      />
     </ProjectWrapper>
   );
 }
