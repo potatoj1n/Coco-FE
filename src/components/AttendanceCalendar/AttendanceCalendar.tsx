@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
-import axios from 'axios';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
-import './AttendanceCalendar.css'; // CSS 파일 추가
+import './AttendanceCalendar.css';
+import address from '../Address';
 
 interface Attendance {
   date: string;
@@ -49,7 +49,7 @@ const AttendanceCalendar = () => {
     // 서버에서 출석 정보를 가져와 병합합니다
     const fetchAttendance = async () => {
       try {
-        const response = await axios.get('/api/attendance'); // 실제 API 엔드포인트로 변경
+        const response = await address.get('/api/attendance');
         const serverData = response.data;
 
         // 서버 데이터를 기본 날짜 배열에 병합
