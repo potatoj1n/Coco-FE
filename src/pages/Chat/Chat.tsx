@@ -40,7 +40,6 @@ import {
 } from './ChatStyles';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://43.201.76.117:8080/api';
 const userName = 'coco';
 const userPassword = 'coco';
 const Token = btoa(`${userName}:${userPassword}`);
@@ -63,11 +62,15 @@ const Chat = () => {
     try {
       // 기존 채팅 데이터 요청 (토큰 없이)
       const response = await axios.get(
-        'API_BASE_URL/messages',
+        `http://43.201.76.117:8080/messages`,
         // 데이터를 성공적으로 받아왔다면 화면에 표시하는 로직
         { headers: { Authorization: `Basic ${Token}` } },
       );
-      addMessage(response.data);
+      response.data.forEach((msg: any) => {
+        addMessage(msg);
+      });
+      console.log('Get messages:', response.data);
+      setLoading(false); // 로딩 상태 업데이트
     } catch (error) {
       console.error('Failed to load initial messages:', error);
     }
@@ -87,7 +90,14 @@ const Chat = () => {
             loadInitialMessages().then(() => {
               // 실시간 메시지를 받기 위한 구독 설정
               stompClient.current?.subscribe('/topic/chat', message => {
-                addMessage(JSON.parse(message.body));
+                console.log('Received message:', message);
+                const receivedMessage = JSON.parse(message.body);
+                if (receivedMessage.message && receivedMessage.memberId && receivedMessage.nickname) {
+                  addMessage(receivedMessage);
+                  console.log('Message added:', receivedMessage);
+                } else {
+                  console.error('Invalid message format:', receivedMessage);
+                }
               });
             });
           },
