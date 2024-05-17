@@ -156,13 +156,24 @@ const FileTree: React.FC<Props> = ({
 
   // 파일 내용 요청
   const handleFetchFile = (fileId: string) => {
+    console.log('Trying to fetch file with ID:', fileId);
     const file = projects.flatMap(p => p.files).find(file => file.id === fileId);
-    if (file && file.type === 'file') {
+    console.log('File search result:', file);
+
+    const fileType = file?.type || 'file';
+    if (file && fileType === 'file') {
+      console.log('File found and is treated as a file');
       if (selectedProjectId) {
+        console.log('Selected Project ID is set:', selectedProjectId);
         fetchFileContent(selectedProjectId, file.parentId, fileId);
+      } else {
+        console.log('Selected Project ID is not set.');
       }
+    } else {
+      console.log('File not found or is not a file type');
     }
   };
+
   function renderNodes(nodes: FileNode[]): React.ReactNode {
     return nodes.map(node => (
       <Node
@@ -330,10 +341,17 @@ function Node({
   children,
   renderNodes,
 }: FileNode & { renderNodes: (nodes: FileNode[]) => React.ReactNode }) {
-  const handleClick = () => {
-    if (onClick) onClick(id);
+  const handleClick = (event: { stopPropagation: () => void }) => {
+    event.stopPropagation(); // 이벤트 버블링을 중단
+    console.log(`Click detected on type: ${type} with ID: ${id}`);
+    if (type === 'file') {
+      if (onClick) {
+        onClick(id);
+      }
+    }
   };
   const handleContextMenu = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
     if (onContextMenu) onContextMenu(event, id, type);
   };
   return (
