@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import SockJS from 'sockjs-client';
-import { Client } from '@stomp/stompjs';
+import { Client, IMessage } from '@stomp/stompjs';
+
 import { ThemeProvider } from 'styled-components';
 import profileOther from '../../assets/profileOther.svg';
 import profileMine from '../../assets/profileMine.svg';
@@ -37,6 +38,7 @@ import {
   SearchInput,
   StyledDiv,
 } from './ChatStyles';
+
 const Chat = () => {
   const { messages, addMessage, deleteMessage } = useChatStore();
   const [newMessage, setNewMessage] = useState<string>('');
@@ -44,21 +46,13 @@ const Chat = () => {
   const [searchMessage, setSearchMessage] = useState<string>('');
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const { themeColor } = useTheTheme();
-  const [Messages, setMessages] = useState([]);
 
   // 메시지 리스트의 끝을 가리킬 ref 생성
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const stompClient = useRef<Client | null>(null);
+
   const memberId = String(1);
-  const nickname = 'test';
-  const showMessage = (message: Message) => {
-    // 메시지 추가 후 스크롤 다운 처리
-    setTimeout(() => {
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100); // 스크롤 애니메이션을 위해 100ms의 딜레이를 추가
-  };
+
   useEffect(() => {
     // 비동기 작업을 실행하는 함수
     const connectStomp = async () => {
@@ -71,14 +65,7 @@ const Chat = () => {
 
             // 실시간 메시지를 받기 위한 구독 설정
             stompClient.current?.subscribe('/topic/chat', message => {
-              const parsedMessage = JSON.parse(message.body);
-              addMessage(parsedMessage);
-              showMessage(parsedMessage);
-            });
-            // 서버에 기존 메시지 요청하기
-            stompClient.current?.publish({
-              destination: '/app/history',
-              body: '', // 필요하다면 여기에 추가 데이터를 넣어서 서버에 보냄
+              addMessage(JSON.parse(message.body));
             });
           },
           onStompError: frame => {
@@ -120,10 +107,10 @@ const Chat = () => {
     if (newMessage.trim() !== '') {
       stompClient.current?.publish({
         destination: '/app/message',
-        body: JSON.stringify({ memberId, message: newMessage, nickname: nickname }),
+        body: JSON.stringify({ memberId, message: newMessage }),
       });
       setNewMessage('');
-      console.log('send', nickname);
+      console.log('send');
     }
   };
   // 메시지 삭제 요청
@@ -161,14 +148,14 @@ const Chat = () => {
         <div style={{ flexGrow: 1 }}></div>
         {messages.map((msg, index) => (
           <div key={index}>
-            {memberId === '1' ? (
+            {msg.memberId === memberId ? (
               <MessageMine>
-                <MessageMinetext>{msg.message}</MessageMinetext>
-                <MyMessageTrash onClick={() => handleDeleteMessage} src={MessageTrash} />
                 <UserContainer>
                   <UserIcon src={profileMine} />
                   <UserName>Me</UserName>
                 </UserContainer>
+                <MessageMinetext>{msg.message}</MessageMinetext>
+                <MyMessageTrash onClick={() => handleDeleteMessage} src={MessageTrash} />
               </MessageMine>
             ) : (
               <MessageOther>
