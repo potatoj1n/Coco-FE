@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useProjectStore, { Folder, File, Project } from '../../../state/IDE/ProjectState';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import { Dialog, DialogActions, Menu, TextField } from '@mui/material';
+import { Dialog, DialogActions, InputAdornment, Menu, TextField } from '@mui/material';
 import CreateNewFolderRoundedIcon from '@mui/icons-material/CreateNewFolderRounded';
 import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
 import FolderDeleteRoundedIcon from '@mui/icons-material/FolderDeleteRounded';
@@ -205,10 +205,38 @@ const FileTree: React.FC<Props> = ({
         <div>
           <TextField
             size="small"
+            variant="standard"
             value={newFolderName}
             onChange={e => setNewFolderName(e.target.value)}
             placeholder="폴더명 입력"
             onKeyPress={handleKeyPress}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <FolderOpenOutlinedIcon />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              fontSize: '14px',
+              padding: '0px 10px',
+              '& .MuiInput-root': {
+                '&:before': {
+                  borderBottomColor: '#28b381',
+                },
+                '&:after': {
+                  borderBottomColor: '#28b381',
+                },
+                backgroundColor: themeColor === 'light' ? '#ffffff' : '#243B56',
+                color: themeColor === 'light' ? 'black' : '#76ECC2',
+              },
+              '& .MuiInput-input': {
+                color: themeColor === 'light' ? 'black' : 'white',
+              },
+              '& .MuiInputAdornment-root svg': {
+                color: themeColor === 'light' ? 'black' : '#76ECC2',
+              },
+            }}
           />
         </div>
       )}
@@ -217,9 +245,37 @@ const FileTree: React.FC<Props> = ({
           <TextField
             size="small"
             value={newFileName}
+            variant="standard"
             onChange={e => setNewFileName(e.target.value)}
             placeholder="파일명 입력"
             onKeyPress={handleKeyPress}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <InsertDriveFileOutlinedIcon />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              fontSize: '14px',
+              padding: '0px 10px',
+              '& .MuiInput-root': {
+                '&:before': {
+                  borderBottomColor: '#28b381',
+                },
+                '&:after': {
+                  borderBottomColor: '#28b381',
+                },
+                backgroundColor: themeColor === 'light' ? '#ffffff' : '#243B56',
+                color: themeColor === 'light' ? 'black' : '#76ECC2',
+              },
+              '& .MuiInput-input': {
+                color: themeColor === 'light' ? 'black' : 'white',
+              },
+              '& .MuiInputAdornment-root svg': {
+                color: themeColor === 'light' ? 'black' : '#76ECC2',
+              },
+            }}
           />
         </div>
       )}

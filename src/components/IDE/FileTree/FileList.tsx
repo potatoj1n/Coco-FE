@@ -78,7 +78,7 @@ export default function FileList() {
           <IconButton
             size="small"
             onClick={() => {
-              setIsCreatingFolder(true);
+              setIsCreatingFolder(!isCreatingFile);
               setCurrentParentId('0');
             }}
           >
@@ -87,7 +87,7 @@ export default function FileList() {
           <IconButton
             size="small"
             onClick={() => {
-              setIsCreatingFile(true);
+              setIsCreatingFile(!isCreatingFile);
               setCurrentParentId('0');
             }}
           >
