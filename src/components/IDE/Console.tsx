@@ -6,6 +6,8 @@ import { ButtonWrapper, ConsoleButton, ConsoleWrapper } from './IdeStyle';
 import { useTheTheme } from '../Theme';
 import { ThemeProvider } from 'styled-components';
 
+const WEBSOCKET_URL = 'ws://43.201.76.117:8080/execute';
+
 interface Props {
   editorRef: React.MutableRefObject<any>;
   language: string;
@@ -16,6 +18,7 @@ interface Props {
   snackbarMessage: string;
   consoleOpen: boolean;
   setConsoleOpen: (consoleOpen: boolean) => void;
+  setOutput: (output: string[]) => void;
 }
 
 const Console = forwardRef((props: Props, ref) => {
@@ -41,7 +44,7 @@ const Console = forwardRef((props: Props, ref) => {
   };
   const connectWebSocket = async () => {
     try {
-      const newSocket = new WebSocket('ws://3.37.87.232:8080/execute');
+      const newSocket = new WebSocket(WEBSOCKET_URL);
       newSocket.onopen = () => {
         console.log('WebSocket connection opened');
         if (inputDisabled) {
@@ -125,8 +128,8 @@ const Console = forwardRef((props: Props, ref) => {
             <ButtonWrapper>
               <ConsoleButton>
                 console
-                <IconButton size="small">
-                  <CloseIcon fontSize="small" onClick={closeConsole} />
+                <IconButton size="small" onClick={closeConsole}>
+                  <CloseIcon fontSize="small" />
                 </IconButton>
               </ConsoleButton>
             </ButtonWrapper>
