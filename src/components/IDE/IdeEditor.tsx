@@ -86,17 +86,17 @@ export const IdeEditor: React.FC = () => {
           <CloseIcon fontSize="small" />
         </IconButton>
       </EditorButton>
-      {/* {selectedFileId && ( */}
-      <Editor
-        language={language || 'javascript'}
-        theme={themeColor === 'light' ? 'tomorrow' : 'nightOwl'}
-        value={selectedFileContent || ''}
-        path={selectedFileId || ''}
-        defaultValue={selectedFileContent || CODE_SNIPPETS[language]}
-        onMount={onMount}
-        options={MONACO_OPTIONS}
-      />
-      {/* )} */}
+      {selectedFileId && (
+        <Editor
+          language={language || 'javascript'}
+          theme={themeColor === 'light' ? 'tomorrow' : 'nightOwl'}
+          value={selectedFileContent || ''}
+          path={selectedFileId || ''}
+          defaultValue={selectedFileContent || CODE_SNIPPETS[language]}
+          onMount={onMount}
+          options={MONACO_OPTIONS}
+        />
+      )}
     </div>
   );
 };
