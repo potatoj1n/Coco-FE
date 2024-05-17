@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://k100f7af4f18ea.user-app.krampoline.com/api';
+const API_BASE_URL = 'https://k9fd9d0fe072aa.user-app.krampoline.com/api';
 
 export const saveCode = async (sourceCode, fileId) => {
   try {
@@ -78,8 +78,8 @@ export const deleteFile = async (projectId, folderId, fileId) => {
 
 export const updateFolderName = async (projectId, folderId, newName) => {
   try {
-    const response = await axios.patch(`/api/projects/${projectId}/folders/${folderId}`, {
-      name: newName,
+    const response = await axios.patch(`${API_BASE_URL}/projects/${projectId}/folders/${folderId}/name`, {
+      newName: newName,
     });
     console.log('폴더명 수정 완료', response.data);
     return response.data;
@@ -90,9 +90,12 @@ export const updateFolderName = async (projectId, folderId, newName) => {
 
 export const updateFileName = async (projectId, folderId, fileId, newName) => {
   try {
-    const response = await axios.patch(`/api/projects/${projectId}/folders/${folderId}/files/${fileId}`, {
-      name: newName,
-    });
+    const response = await axios.patch(
+      `${API_BASE_URL}/projects/${projectId}/folders/${folderId}/files/${fileId}/name`,
+      {
+        newName: newName,
+      },
+    );
     console.log('파일명 수정 완료', response.data);
     return response.data;
   } catch (error) {
