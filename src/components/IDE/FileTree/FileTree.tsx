@@ -2,8 +2,13 @@ import React, { useState } from 'react';
 import useProjectStore, { Folder, File, Project } from '../../../state/IDE/ProjectState';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import { Dialog, DialogActions, Menu, MenuItem, TextField } from '@mui/material';
-import { CreateCustomButton, FileTreeWrapper, FileWrapper, FontColor } from '../IdeStyle';
+import { Dialog, DialogActions, Menu, TextField } from '@mui/material';
+import CreateNewFolderRoundedIcon from '@mui/icons-material/CreateNewFolderRounded';
+import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
+import FolderDeleteRoundedIcon from '@mui/icons-material/FolderDeleteRounded';
+import ContentPasteOffRoundedIcon from '@mui/icons-material/ContentPasteOffRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import { CreateCustomButton, FileTreeWrapper, FileWrapper, FontColor, MenuText, PopItem } from '../IdeStyle';
 import { deleteFile, deleteFolder, updateFolderName, updateFileName } from '../ProjectApi';
 import { useTheTheme } from '../../Theme';
 
@@ -228,12 +233,29 @@ const FileTree: React.FC<Props> = ({
             ? { top: contextMenuPosition.mouseY, left: contextMenuPosition.mouseX }
             : undefined
         }
+        sx={{
+          '& .MuiMenu-paper': {
+            backgroundColor: themeColor === 'light' ? 'white' : '#1C2631',
+          },
+        }}
       >
-        <MenuItem onClick={() => setIsCreatingFolder(true)}>폴더 생성</MenuItem>
-        <MenuItem onClick={() => setIsCreatingFile(true)}>파일 생성</MenuItem>
-        <MenuItem onClick={() => handleDeleteFolder(currentParentId!)}>폴더 삭제</MenuItem>
-        <MenuItem onClick={() => handleDeleteFile(currentParentId!, currentParentId!)}>파일 삭제</MenuItem>
-        <MenuItem
+        <PopItem onClick={() => setIsCreatingFolder(true)}>
+          <CreateNewFolderRoundedIcon fontSize="small" />
+          <MenuText>폴더 생성</MenuText>
+        </PopItem>
+        <PopItem onClick={() => setIsCreatingFile(true)}>
+          <NoteAddRoundedIcon fontSize="small" />
+          <MenuText>파일 생성 </MenuText>
+        </PopItem>
+        <PopItem onClick={() => handleDeleteFolder(currentParentId!)}>
+          <FolderDeleteRoundedIcon fontSize="small" />
+          <MenuText>폴더 삭제 </MenuText>
+        </PopItem>
+        <PopItem onClick={() => handleDeleteFile(currentParentId!, currentParentId!)}>
+          <ContentPasteOffRoundedIcon fontSize="small" />
+          <MenuText>파일 삭제</MenuText>
+        </PopItem>
+        <PopItem
           onClick={() =>
             handleOpenEditDialog(
               currentParentId!,
@@ -242,9 +264,10 @@ const FileTree: React.FC<Props> = ({
             )
           }
         >
-          폴더 이름 수정
-        </MenuItem>
-        <MenuItem
+          <EditRoundedIcon fontSize="small" />
+          <MenuText>폴더 이름 수정</MenuText>
+        </PopItem>
+        <PopItem
           onClick={() =>
             handleOpenEditDialog(
               currentParentId!,
@@ -253,8 +276,9 @@ const FileTree: React.FC<Props> = ({
             )
           }
         >
-          파일 이름 수정
-        </MenuItem>
+          <EditRoundedIcon fontSize="small" />
+          <MenuText>파일 이름 수정 </MenuText>
+        </PopItem>
       </Menu>
 
       {editDialogOpen && (
