@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react';
 import { AttendanceDiv, UserInfo, MainPageWrapper, UserInput, EditUser, Edit, Save } from './MypageStyles';
-import api from '../../components/Api';
+// import api from '../../components/Api';
 import { useNavigate } from 'react-router-dom';
 import Confirmpassword from '../../components/ConfirmPw/ConfirmPw';
 import { useTheTheme } from '../../components/Theme';
 import useAuthStore from '../../state/AuthStore';
 import address from '../../components/Address';
+import AttendanceCalendar from '../../components/AttendanceCalendar/AttendanceCalendar';
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -65,8 +66,20 @@ const MyPage = () => {
     <MainPageWrapper>
       <span className="text-2xl font-semibold mt-5">My Page</span>
       <AttendanceDiv className="mt-3">
-        {/* 닉네임 정보 불러오기 */}
-        <span className="text-xl font-semibold">어서오세요, {nickname}님</span>
+        <span className="text-xl font-semibold" style={{ padding: '15px' }}>
+          어서오세요, {nickname}님
+        </span>
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <AttendanceCalendar />
+        </div>
       </AttendanceDiv>
       <UserInfo>
         <span className="text-lg mt-4 font-semibold">회원정보</span>
