@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://kd8514eb63fc1a.user-app.krampoline.com/api';
+const API_BASE_URL = 'http://43.201.76.117:8080/api';
 
 export const saveCode = async (sourceCode, fileId) => {
   try {
