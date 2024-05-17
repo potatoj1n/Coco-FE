@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import SockJS from 'sockjs-client';
 import { Client, IMessage } from '@stomp/stompjs';
+import { useLocation } from 'react-router-dom';
 
 import { ThemeProvider } from 'styled-components';
 import profileOther from '../../assets/profileOther.svg';
@@ -52,11 +53,14 @@ const Chat = () => {
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const { themeColor } = useTheTheme();
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  //const memberId = searchParams.get('memberId') || String(Math.floor(Math.random() * 3) + 1);
+  const memberId = String(1);
   // 메시지 리스트의 끝을 가리킬 ref 생성
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const stompClient = useRef<Client | null>(null);
 
-  const memberId = String(1);
   // 채팅 데이터를 불러오는 함수
   const loadInitialMessages = async () => {
     try {
@@ -75,7 +79,20 @@ const Chat = () => {
       console.error('Failed to load initial messages:', error);
     }
   };
-
+  //내 채팅 삭제하는 함수
+  const handleDeleteMessage = async (messageId: any) => {
+    try {
+      // 서버에 삭제 요청을 보냄
+      await axios.delete(`http://43.201.76.117:8080/${messageId}`, {
+        headers: { Authorization: `Basic ${Token}` },
+      });
+      // UI에서 메시지 삭제
+      deleteMessage(messageId);
+      console.log('Message deleted:', messageId);
+    } catch (error) {
+      console.error('Failed to delete message:', messageId, error);
+    }
+  };
   useEffect(() => {
     // 비동기 작업을 실행하는 함수
     const connectStomp = async () => {
@@ -84,7 +101,7 @@ const Chat = () => {
         stompClient.current = new Client({
           webSocketFactory: () => socket,
           onConnect: () => {
-            console.log('Connected');
+            console.log('Connected', memberId);
             // 실시간 채팅 구독 설정 및 초기 메시지 불러오기
             // 먼저 기존 데이터를 불러옵니다
             loadInitialMessages().then(() => {
@@ -140,21 +157,31 @@ const Chat = () => {
     if (newMessage.trim() !== '') {
       stompClient.current?.publish({
         destination: '/app/message',
-        body: JSON.stringify({ memberId, message: newMessage }),
+        body: JSON.stringify({ memberId: memberId, message: newMessage, nickname: 'test' }),
       });
       setNewMessage('');
       console.log('send');
     }
   };
   // 메시지 삭제 요청
-  const handleDeleteMessage = (memberId: string) => {
+  const handleDeleteMessagesock = (memberId: string) => {
     deleteMessage(memberId);
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (searchMessage.trim() !== '') {
-      console.log('Search query:', searchMessage);
-      setSearchMessage('');
+      try {
+        const response = await axios.get(`http://43.201.76.117:8080/message`, {
+          headers: { Authorization: `Basic ${Token}` },
+          params: { search: searchMessage }, // 서버에 검색어 전달
+        });
+        console.log('Search results:', response.data);
+        // 검색 결과로 메시지 목록을 업데이트
+        //setMessages(response.data);
+        setSearchMessage('');
+      } catch (error) {
+        console.error('Failed to search messages:', error);
+      }
     }
   };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -181,14 +208,14 @@ const Chat = () => {
         <div style={{ flexGrow: 1 }}></div>
         {messages.map((msg, index) => (
           <div key={index}>
-            {msg.memberId === memberId ? (
+            {msg.memberId == memberId ? (
               <MessageMine>
+                <UserName>{msg.createdAt}</UserName>
+                <MessageMinetext>{msg.message}</MessageMinetext>
+                <MyMessageTrash onClick={() => handleDeleteMessage(msg.memberId)} src={MessageTrash} />
                 <UserContainer>
                   <UserIcon src={profileMine} />
-                  <UserName>Me</UserName>
                 </UserContainer>
-                <MessageMinetext>{msg.message}</MessageMinetext>
-                <MyMessageTrash onClick={() => handleDeleteMessage} src={MessageTrash} />
               </MessageMine>
             ) : (
               <MessageOther>
