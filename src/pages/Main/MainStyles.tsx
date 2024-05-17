@@ -74,6 +74,7 @@ export const PjButton = styled.button`
   transition: background-color 0.3s;
   width: 11vw;
   min-width: 120px;
+  transition: background-color 0.2s ease;
   &:hover {
     background-color: #76c1af; /* 호버 시 배경색 변경 */
 
@@ -101,6 +102,7 @@ export const FolderButton = styled.button`
   align-items: center;
   justify-content: space-between;
   height: 40px;
+  transition: background-color 0.6s ease;
 
   margin-top: 10px;
   &:hover {
@@ -123,6 +125,8 @@ export const ChatButton = styled(Link)`
   display: flex;
   align-items: center;
   height: 40px;
+  transition: background-color 0.6s ease;
+
   &:hover {
     background-color: rgba(118, 193, 175, 0.3);
   }
@@ -167,7 +171,6 @@ export const Maincontainer = styled.div`
   transition: margin-left 0.6s ease; /* 부드러운 전환 효과 추가 */
   z-index: 0;
   position: relative;
-  /* 미디어 쿼리를 사용하여 뷰포트 너비가 600px 이하일 때 반응형으로 변경 */
   @media (max-width: 1250px) {
     grid-template-columns: 1fr; /* 한 열로 변경 */
     padding: 20px 20px;
@@ -188,6 +191,9 @@ export const Maincontainer = styled.div`
   @media (max-width: 600px) {
     margin-left: 25vw;
   }
+  @media (max-width: 550px) {
+    margin-left: 142.5px;
+  }
 `;
 export const Hicontainer = styled.div`
   background-color: ${({ theme }) => theme.HiColor};
@@ -204,11 +210,18 @@ export const Hicontainer = styled.div`
   justify-self: left; // 그리드 셀 내 중앙 정렬
   position: relative;
   z-index: 0;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+
   @media (max-width: 1250px) {
     width: 66vw;
   }
   @media (max-width: 900px) {
     width: 370px;
+  }
+  &:hover {
+    transform: scale(1.05); // 호버 시 살짝 커지도록 설정
   }
 `;
 
@@ -255,8 +268,11 @@ export const Attendancecontainer = styled.div`
   justify-self: left;
   z-index: 0;
   position: relative;
-
-  @media (max-width: 1250px) {
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+  &:hover {
+    transform: scale(1.05);
   }
 `;
 export const AttendButton = styled.button`
@@ -268,7 +284,11 @@ export const AttendButton = styled.button`
   font-style: normal;
   font-weight: 600;
   border-radius: 5px;
+  transition: color 0.3s ease;
   margin: 20px 0 0 0;
+  &:hover {
+    color: #000;
+  }
 `;
 export const Date = styled.div`
   background-color: white;
@@ -321,13 +341,18 @@ export const Pjcontainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 240px;
-  width: 200px;
+  width: 170px;
   margin: 10px;
   align-self: start;
   justify-self: left;
   z-index: 0;
   position: relative;
-
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
   @media (max-width: 1250px) {
     margin-left: 45vw;
     margin-top: -330px;
@@ -349,7 +374,6 @@ export const ModifyPjBtn = styled(Link)`
 background-color: white;
 padding: 20px;
 border-radius: 5px;
-transition: background-color 0.3s;
 border: 1px solid #A9B5BC;
 margin-top: 10px;
 display: flex;
@@ -357,6 +381,8 @@ justify-content: center;
 align-items: center;
 width: 140px;
 height: 160px;
+transition: background-color 0.3s ease;
+
 &:hover {
   background-color: #d8dfe3;`;
 
@@ -374,7 +400,12 @@ export const ChatContainer = styled.div`
   justify-self: left;
   z-index: 0;
   position: relative;
-
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
   @media (max-width: 1250px) {
     width: 66vw;
   }

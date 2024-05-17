@@ -211,7 +211,7 @@ const Main = () => {
           <Attendancecontainer>
             <Date>
               <Day>{currentDate?.day}</Day>
-              <Month>|{currentDate?.month}|</Month>
+              <Month>|DAY|</Month>
             </Date>
             <div>
               <AttendButton onClick={handleButtonClick} disabled={clicked}>
