@@ -173,7 +173,7 @@ const Chat = () => {
               <MessageOther>
                 <UserContainer>
                   <UserIcon src={profileOther} />
-                  <UserName>Other</UserName>
+                  <UserName>{msg.nickname}</UserName>
                 </UserContainer>
                 <MessageOthertext>{msg.message}</MessageOthertext>
               </MessageOther>
