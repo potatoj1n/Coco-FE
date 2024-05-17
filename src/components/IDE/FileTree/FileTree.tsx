@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import useProjectStore, { Folder, File, Project } from '../../../state/IDE/ProjectState';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
-import { Button, Dialog, DialogActions, Menu, MenuItem, TextField } from '@mui/material';
-import { FileTreeWrapper, FileWrapper } from '../IdeStyle';
+import { Dialog, DialogActions, Menu, MenuItem, TextField } from '@mui/material';
+import { CreateCustomButton, FileTreeWrapper, FileWrapper, FontColor } from '../IdeStyle';
 import { deleteFile, deleteFolder, updateFolderName, updateFileName } from '../ProjectApi';
+import { useTheTheme } from '../../Theme';
 
 interface FileNode {
   name: string;
@@ -60,6 +61,8 @@ const FileTree: React.FC<Props> = ({
   const [editNodeId, setEditNodeId] = useState('');
   const [editNodeType, setEditNodeType] = useState('');
   const selectedProject = projects.find(project => project.id === selectedProjectId);
+  const { themeColor } = useTheTheme();
+
   //메뉴
   const handleContextMenu = (event: React.MouseEvent<HTMLElement>, id: string) => {
     event.preventDefault();
@@ -164,7 +167,6 @@ const FileTree: React.FC<Props> = ({
     if (file && fileType === 'file') {
       console.log('File found and is treated as a file');
       if (selectedProjectId) {
-        console.log('Selected Project ID is set:', selectedProjectId);
         fetchFileContent(selectedProjectId, file.parentId, fileId);
       } else {
         console.log('Selected Project ID is not set.');
@@ -194,7 +196,6 @@ const FileTree: React.FC<Props> = ({
   return (
     <main>
       {selectedProject && renderNodes(convertProjectToNodes(selectedProject, handleContextMenu))}
-      <div>{selectedFileContent}</div>
       {isCreatingFolder && (
         <div>
           <TextField
@@ -255,20 +256,52 @@ const FileTree: React.FC<Props> = ({
           파일 이름 수정
         </MenuItem>
       </Menu>
+
       {editDialogOpen && (
-        <Dialog open={editDialogOpen} onClose={handleCloseEditDialog}>
+        <Dialog
+          open={editDialogOpen}
+          onClose={handleCloseEditDialog}
+          maxWidth="md"
+          PaperProps={{
+            style: {
+              minWidth: '30%',
+              minHeight: '30%',
+              padding: '25px',
+              backgroundColor: themeColor === 'light' ? 'white' : '#1C2631',
+              border: '0.5px solid',
+              borderColor: themeColor === 'light' ? 'black' : 'white',
+            },
+          }}
+        >
+          <FontColor className="text-xl font-semibold mb-3">수정하기</FontColor>
           <TextField
             autoFocus
             margin="dense"
-            label="New Name"
             type="text"
-            fullWidth
+            size="small"
             value={editName}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#28b381',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#28b381',
+                },
+
+                backgroundColor: themeColor === 'light' ? '#ffffff' : '#243B56',
+                color: themeColor === 'light' ? 'black' : '#76ECC2',
+              },
+            }}
             onChange={e => setEditName(e.target.value)}
           />
           <DialogActions>
-            <Button onClick={handleCloseEditDialog}>Cancel</Button>
-            <Button onClick={handleEditName}>Update</Button>
+            <CreateCustomButton onClick={handleCloseEditDialog} className="bg-green-500 font-pretendard font-normal">
+              취소하기
+            </CreateCustomButton>
+            <CreateCustomButton onClick={handleEditName} className="text-green-500 font-pretendard font-normal">
+              수정하기
+            </CreateCustomButton>
           </DialogActions>
         </Dialog>
       )}
@@ -316,7 +349,6 @@ function convertFolderToNodes(folders: Folder[], files: File[], parentId: string
     id: folder.id,
     parentId: folder.parentId,
     type: 'folder',
-    //onClick: (id: string) => handleNodeClick(id, files), // 노드 클릭 이벤트 처리
     children: convertFolderToNodes(folders, files, folder.id),
   }));
 
@@ -325,7 +357,6 @@ function convertFolderToNodes(folders: Folder[], files: File[], parentId: string
     id: file.id,
     parentId: file.parentId,
     type: 'file',
-    //onClick: (id: string) => handleNodeClick(id, files), // 노드 클릭 이벤트 처리
   }));
 
   return [...folderNodes, ...fileNodes];
@@ -342,7 +373,7 @@ function Node({
   renderNodes,
 }: FileNode & { renderNodes: (nodes: FileNode[]) => React.ReactNode }) {
   const handleClick = (event: { stopPropagation: () => void }) => {
-    event.stopPropagation(); // 이벤트 버블링을 중단
+    event.stopPropagation();
     console.log(`Click detected on type: ${type} with ID: ${id}`);
     if (type === 'file') {
       if (onClick) {
@@ -366,7 +397,7 @@ function Node({
             <InsertDriveFileOutlinedIcon fontSize="medium" />
           ) : (
             <FolderOpenOutlinedIcon fontSize="medium" />
-          )}{' '}
+          )}
           {name}
           {children && <div>{renderNodes(children)}</div>}
         </article>

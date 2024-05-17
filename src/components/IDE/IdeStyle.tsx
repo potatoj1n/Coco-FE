@@ -2,6 +2,7 @@ import { styled } from 'styled-components';
 
 export const Title = styled.div`
   border-bottom: 0.3px solid #a3a3a3;
+  margin-bottom: 8px;
   padding: 7px 10px;
   display: flex;
   justify-content: space-between;
@@ -10,12 +11,11 @@ export const Title = styled.div`
   font-size: 18px;
 `;
 export const ProjectWrapper = styled.div`
-  width: max-content;
+  width: 180px;
   display: flex;
   flex-direction: column;
 `;
 export const FolderWrapper = styled.div`
-  width: max-content;
   display: flex;
   flex-direction: column;
 `;
@@ -82,4 +82,7 @@ export const FileWrapper = styled.div`
   //   background-color: rgba(118, 193, 175, 0.3);
   //   border-radius: 4px;
   // }
+`;
+export const FontColor = styled.h1`
+  color: ${({ theme }) => (theme.themeColor === 'dark' ? '#FFFFFF' : '#000000')};
 `;
