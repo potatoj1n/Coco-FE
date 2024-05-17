@@ -38,6 +38,12 @@ import {
   SearchInput,
   StyledDiv,
 } from './ChatStyles';
+import axios from 'axios';
+
+const API_BASE_URL = 'http://43.201.76.117:8080/api';
+const userName = 'coco';
+const userPassword = 'coco';
+const Token = btoa(`${userName}:${userPassword}`);
 
 const Chat = () => {
   const { messages, addMessage, deleteMessage } = useChatStore();
@@ -52,6 +58,20 @@ const Chat = () => {
   const stompClient = useRef<Client | null>(null);
 
   const memberId = String(1);
+  // 채팅 데이터를 불러오는 함수
+  const loadInitialMessages = async () => {
+    try {
+      // 기존 채팅 데이터 요청 (토큰 없이)
+      const response = await axios.get(
+        'API_BASE_URL/messages',
+        // 데이터를 성공적으로 받아왔다면 화면에 표시하는 로직
+        { headers: { Authorization: `Basic ${Token}` } },
+      );
+      addMessage(response.data);
+    } catch (error) {
+      console.error('Failed to load initial messages:', error);
+    }
+  };
 
   useEffect(() => {
     // 비동기 작업을 실행하는 함수
@@ -62,10 +82,13 @@ const Chat = () => {
           webSocketFactory: () => socket,
           onConnect: () => {
             console.log('Connected');
-
-            // 실시간 메시지를 받기 위한 구독 설정
-            stompClient.current?.subscribe('/topic/chat', message => {
-              addMessage(JSON.parse(message.body));
+            // 실시간 채팅 구독 설정 및 초기 메시지 불러오기
+            // 먼저 기존 데이터를 불러옵니다
+            loadInitialMessages().then(() => {
+              // 실시간 메시지를 받기 위한 구독 설정
+              stompClient.current?.subscribe('/topic/chat', message => {
+                addMessage(JSON.parse(message.body));
+              });
             });
           },
           onStompError: frame => {
@@ -164,6 +187,7 @@ const Chat = () => {
                   <UserName>{msg.nickname}</UserName>
                 </UserContainer>
                 <MessageOthertext>{msg.message}</MessageOthertext>
+                <UserName>{msg.createdAt}</UserName>
               </MessageOther>
             )}
           </div>
