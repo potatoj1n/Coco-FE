@@ -57,7 +57,7 @@ const Chat = () => {
     // 비동기 작업을 실행하는 함수
     const connectStomp = async () => {
       try {
-        const socket = new SockJS('https://kd8514eb63fc1a.user-app.krampoline.com/ws');
+        const socket = new SockJS('http://43.201.76.117:8080/ws');
         stompClient.current = new Client({
           webSocketFactory: () => socket,
           onConnect: () => {

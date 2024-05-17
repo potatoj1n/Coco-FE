@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { create } from 'zustand';
-const API_BASE_URL = 'https://kd8514eb63fc1a.user-app.krampoline.com/api';
+const API_BASE_URL = 'http://43.201.76.117:8080/api';
 
 interface Project {
   id: string;
@@ -211,6 +211,7 @@ const useProjectStore = create<ProjectStore>(set => ({
       const response = await axios.get(`${API_BASE_URL}/projects/${projectId}/folders/${folderId}/files/${fileId}`);
       const fileContent = response.data.content;
       set({ selectedFileContent: fileContent });
+      console.log(fileContent);
     } catch (error) {
       console.error('Error fetching file content:', error);
       set({ selectedFileContent: 'Failed to fetch content' });
