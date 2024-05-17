@@ -1,12 +1,24 @@
-import React from 'react';
 import './styles/App.css';
-import { RouterProvider } from 'react-router-dom';
-import Routers from './Router';
+import Routers from './routes/Router';
+import { createGlobalStyle } from 'styled-components';
+import reset from 'styled-reset';
+import { ThemeProvider } from './components/Theme';
+
+const AppStyles = createGlobalStyle`
+  ${reset};
+  body {
+    background-color: ${({ theme }) => theme.backgroundColor};
+    /* cursor: pointer; */
+  }
+`;
 
 export default function App() {
   return (
-    <div className="App">
-      <RouterProvider router={Routers}></RouterProvider>
-    </div>
+    <ThemeProvider>
+      <AppStyles />
+      <div className="App">
+        <Routers />
+      </div>
+    </ThemeProvider>
   );
 }
