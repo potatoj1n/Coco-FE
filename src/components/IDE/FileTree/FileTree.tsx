@@ -94,8 +94,10 @@ const FileTree: React.FC<Props> = ({
     if (currentParentId) {
       handleCreateFile(newFileName, currentParentId);
       setNewFileName('');
+      await refreshProject();
+      const project = useProjectStore.getState().projects.find(project => project.id === selectedProjectId);
+      console.log('Updated project after file creation:', project);
     }
-    await refreshProject();
   };
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
@@ -142,12 +144,12 @@ const FileTree: React.FC<Props> = ({
     } else if (editNodeType === 'file') {
       updateFileName(selectedProjectId!, currentParentId!, editNodeId, editName)
         .then(() => {
-          refreshProject(); // 프로젝트 정보 새로고침
           handleCloseEditDialog();
         })
         .catch(error => {
           console.error('Failed to update file name:', error);
-        });
+        })
+        .finally(() => refreshProject()); // 프로젝트 정보 새로고침
     }
   };
 
