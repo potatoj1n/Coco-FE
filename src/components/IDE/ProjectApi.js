@@ -23,7 +23,7 @@ export const saveCode = async (projectId, folderId, fileId, sourceCode) => {
 export const fetchRunCode = async (projectId, folderId, fileId, language, sourceCode) => {
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/api/projects/${projectId}/folders/${folderId}/files/${fileId}`,
+      `${API_BASE_URL}/projects/${projectId}/folders/${folderId}/files/${fileId}`,
       {
         language: language,
         input: sourceCode,
@@ -33,6 +33,7 @@ export const fetchRunCode = async (projectId, folderId, fileId, language, source
           Authorization: `Basic ${Token}`,
           'Content-Type': 'application/json',
         },
+        withCredentials: true,
       },
     );
     console.log('Success');
@@ -42,12 +43,15 @@ export const fetchRunCode = async (projectId, folderId, fileId, language, source
     throw error;
   }
 };
-export const createProject = async projectData => {
+export const createProject = async newProject => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/projects`, {
-      header: { Authorization: `Basic ${Token}` },
-      projectData,
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/projects`,
+
+      newProject,
+
+      { headers: { Authorization: `Basic ${Token}` }, withCredentials: true },
+    );
     return response.data;
   } catch (error) {
     console.error('Error creating project:', error);
@@ -58,11 +62,14 @@ export const createProject = async projectData => {
 
 export const createFolder = async (projectId, folderName, parentId) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/projects/${projectId}/folders`, {
-      header: { Authorization: `Basic ${Token}` },
-      name: folderName,
-      parentId: parentId,
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/projects/${projectId}/folders`,
+      {
+        name: folderName,
+        parentId: parentId,
+      },
+      { headers: { Authorization: `Basic ${Token}` }, withCredentials: true },
+    );
     console.log('새로운 폴더가 생성되었습니다:', response.data);
     return response.data;
   } catch (error) {
@@ -73,12 +80,15 @@ export const createFolder = async (projectId, folderName, parentId) => {
 
 export const createFile = async (projectId, folderId, fileName, fileContent) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/projects/${projectId}/folders/${folderId}/files`, {
-      header: { Authorization: `Basic ${Token}` },
-      name: fileName,
-      content: fileContent,
-      parentId: folderId,
-    });
+    const response = await axios.post(
+      `${API_BASE_URL}/projects/${projectId}/folders/${folderId}/files`,
+      {
+        name: fileName,
+        content: fileContent,
+        parentId: folderId,
+      },
+      { headers: { Authorization: `Basic ${Token}` }, withCredentials: true },
+    );
     console.log('새로운 파일이 생성되었습니다:', response.data);
     return response.data;
   } catch (error) {
@@ -89,7 +99,7 @@ export const createFile = async (projectId, folderId, fileName, fileContent) => 
 export const deleteFolder = async (projectId, folderId) => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/projects/${projectId}/folders/${folderId}`, {
-      header: { Authorization: `Basic ${Token}` },
+      headers: { Authorization: `Basic ${Token}` },
     });
     console.log('폴더가 삭제되었습니다:', response.data);
     return response.data;
@@ -102,7 +112,7 @@ export const deleteFolder = async (projectId, folderId) => {
 export const deleteFile = async (projectId, folderId, fileId) => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/projects/${projectId}/folders/${folderId}/files/${fileId}`, {
-      header: { Authorization: `Basic ${Token}` },
+      headers: { Authorization: `Basic ${Token}` },
     });
     console.log('파일이 삭제되었습니다:', response.data);
     return response.data;
@@ -114,10 +124,11 @@ export const deleteFile = async (projectId, folderId, fileId) => {
 
 export const updateFolderName = async (projectId, folderId, newName) => {
   try {
-    const response = await axios.patch(`${API_BASE_URL}/projects/${projectId}/folders/${folderId}/name`, {
-      header: { Authorization: `Basic ${Token}` },
-      newName: newName,
-    });
+    const response = await axios.patch(
+      `${API_BASE_URL}/projects/${projectId}/folders/${folderId}/name`,
+      { newName: newName },
+      { headers: { Authorization: `Basic ${Token}` } },
+    );
     console.log('폴더명 수정 완료', response.data);
     return response.data;
   } catch (error) {
@@ -129,7 +140,8 @@ export const updateFileName = async (projectId, folderId, fileId, newName) => {
   try {
     const response = await axios.patch(
       `${API_BASE_URL}/projects/${projectId}/folders/${folderId}/files/${fileId}/name`,
-      { header: { Authorization: `Basic ${Token}` }, newName: newName },
+      { newName: newName },
+      { headers: { Authorization: `Basic ${Token}` } },
     );
     console.log('파일명 수정 완료', response.data);
     return response.data;
