@@ -3,6 +3,8 @@ import { create } from 'zustand';
 export interface Message {
   memberId: string;
   message: string;
+  nickname: string;
+  createdAt: string;
 }
 
 interface ChatState {
