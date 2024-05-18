@@ -61,68 +61,14 @@ import { getCurrentDate } from '../../components/Date';
 const Main = () => {
   const [messages, setMessages] = useState([
     {
-      id: 1,
-      username: '내 이름',
-      text: '안녕! 나는 잘 지내1. 너는 어때?',
-      owner: 'mine',
+      memberId: '2',
+      nickname: 'user',
+      message: '화이팅',
+      createdAt: '2024-05-17T08:00:18.317335',
     },
-    {
-      id: 2,
-      username: '상대방 이름',
-      text: '안녕하세요1, 어떻게 지내세요?',
-      owner: 'other',
-    },
-    {
-      id: 1,
-      username: '내 이름',
-      text: '안녕! 나는 잘 지내. 너는 어때?',
-      owner: 'mine',
-    },
-    {
-      id: 2,
-      username: '상대방 이름',
-      text: '안녕하세요, 어떻게 지내세요?',
-      owner: 'other',
-    },
-    {
-      id: 2,
-      username: '상대방 이름',
-      text: '안녕하세요, 어떻게 지내세요?',
-      owner: 'other',
-    },
-    {
-      id: 2,
-      username: '상대방 이름',
-      text: '안녕하세요, 어떻게 지내세요?',
-      owner: 'other',
-    },
-    {
-      id: 2,
-      username: '상대방 이름',
-      text: '안녕하세요, 어떻게 지내세요?',
-      owner: 'other',
-    },
-    {
-      id: 1,
-      username: '내 이름',
-      text: '안녕! 나는 잘 지내. 너는 어때?',
-      owner: 'mine',
-    },
-    {
-      id: 2,
-      username: '상대방 이름',
-      text: '코코다스팀의 코코 웹프로젝트 채팅방입니다. 다 같이 화이팅합시다! 프로젝트 잘 마무리해봐요. 오늘도 출석체크 잊지마시고 exp도 잊지마세요~ 입퇴실 체크는 필수~~',
-      owner: 'other',
-    },
-    {
-      id: 1,
-      username: '내 이름',
-      text: '안녕! 나는 잘 지내. 너는 어때?',
-      owner: 'mine',
-    }, // ... 퍼블리싱만
   ]);
   const [newMessage, setNewMessage] = useState<string>('');
-
+  const memberId = String(1);
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [languageSelector, setLanguageSelector] = useState(false);
   const [showPjList, setshowPjList] = useState(false);
@@ -235,24 +181,27 @@ const Main = () => {
             </Chatnav>
             <Chatmain>
               <div style={{ flexGrow: 1 }}></div>
-              {messages.map(message =>
-                message.owner === 'other' ? (
-                  <MessageOther key={message.id}>
-                    <UserContainer>
-                      <UserIcon src={profileOther} />
-                      <UserName>{message.username}</UserName>
-                    </UserContainer>
-                    <MessageOthertext>{message.text}</MessageOthertext>
-                  </MessageOther>
-                ) : (
-                  <MessageMine key={message.id}>
-                    <MessageMinetext>{message.text}</MessageMinetext>
-                    <UserContainer>
-                      <UserIcon src={profileMine} />
-                    </UserContainer>
-                  </MessageMine>
-                ),
-              )}
+              {messages.map((msg, index) => (
+                <div key={index}>
+                  {msg.memberId == memberId ? (
+                    <MessageMine>
+                      <MessageMinetext>{msg.message}</MessageMinetext>
+                      <UserContainer>
+                        <UserIcon src={profileMine} />
+                      </UserContainer>
+                    </MessageMine>
+                  ) : (
+                    <MessageOther>
+                      <UserContainer>
+                        <UserIcon src={profileOther} />
+                        <UserName>{msg.nickname}</UserName>
+                      </UserContainer>
+                      <MessageOthertext>{msg.message}</MessageOthertext>
+                      <UserName>{msg.createdAt}</UserName>
+                    </MessageOther>
+                  )}
+                </div>
+              ))}
               <div ref={messagesEndRef} /> {/* 스크롤을 아래로 이동하기 위한 빈 div */}
             </Chatmain>
           </ChatContainer>

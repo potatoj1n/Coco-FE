@@ -24,6 +24,7 @@ import {
   MessageContainer,
   MessageFlexContainer,
   UserContainer,
+  MyUserContainer,
   MessageOther,
   UserIcon,
   UserName,
@@ -38,6 +39,7 @@ import {
   SearchButton,
   SearchInput,
   StyledDiv,
+  Timestamp,
 } from './ChatStyles';
 import axios from 'axios';
 
@@ -79,6 +81,7 @@ const Chat = () => {
       console.error('Failed to load initial messages:', error);
     }
   };
+
   //내 채팅 삭제하는 함수
   const handleDeleteMessage = async (messageId: any) => {
     try {
@@ -193,6 +196,18 @@ const Chat = () => {
     console.log('Toggle Search:', !showSearch); // Debugging
     setShowSearch(!showSearch);
   };
+  function formatKoreanTime(isoString: any) {
+    const date = new Date(isoString);
+    // 한국 시간대로 설정 (UTC+9)
+    const koreanTime = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+    // AM/PM, 시간, 분 형식으로 변환
+    return koreanTime.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  }
+
   return (
     <ThemeProvider theme={currentTheme}>
       <StyledDiv>
@@ -209,23 +224,27 @@ const Chat = () => {
         {messages.map((msg, index) => (
           <div key={index}>
             {msg.memberId == memberId ? (
-              <MessageMine>
-                <UserName>{msg.createdAt}</UserName>
-                <MessageMinetext>{msg.message}</MessageMinetext>
-                <MyMessageTrash onClick={() => handleDeleteMessage(msg.memberId)} src={MessageTrash} />
-                <UserContainer>
-                  <UserIcon src={profileMine} />
-                </UserContainer>
-              </MessageMine>
+              <MessageFlexContainer>
+                <MessageMine>
+                  <Timestamp>{formatKoreanTime(msg.createdAt)}</Timestamp>
+                  <MessageMinetext>{msg.message}</MessageMinetext>
+                  <MyMessageTrash onClick={() => handleDeleteMessage(msg.memberId)} src={MessageTrash} />
+                  <MyUserContainer>
+                    <UserIcon src={profileMine} />
+                  </MyUserContainer>
+                </MessageMine>
+              </MessageFlexContainer>
             ) : (
-              <MessageOther>
-                <UserContainer>
-                  <UserIcon src={profileOther} />
-                  <UserName>{msg.nickname}</UserName>
-                </UserContainer>
-                <MessageOthertext>{msg.message}</MessageOthertext>
-                <UserName>{msg.createdAt}</UserName>
-              </MessageOther>
+              <MessageFlexContainer>
+                <MessageOther>
+                  <UserContainer>
+                    <UserIcon src={profileOther} />
+                    <UserName>{msg.nickname}</UserName>
+                  </UserContainer>
+                  <MessageOthertext>{msg.message}</MessageOthertext>
+                  <Timestamp>{formatKoreanTime(msg.createdAt)}</Timestamp>
+                </MessageOther>
+              </MessageFlexContainer>
             )}
           </div>
         ))}
