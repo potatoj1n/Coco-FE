@@ -57,16 +57,11 @@ import profileMine from '../../assets/profileMine.svg';
 import mypageIconlight from '../../assets/mypageIconlight.svg';
 import mypageIcondark from '../../assets/mypageIcondark.svg';
 import { getCurrentDate } from '../../components/Date';
+import useChatStore from '../../state/Chat/ChatStore';
 
 const Main = () => {
-  const [messages, setMessages] = useState([
-    {
-      memberId: '2',
-      nickname: 'user',
-      message: '화이팅',
-      createdAt: '2024-05-17T08:00:18.317335',
-    },
-  ]);
+  const { messages } = useChatStore();
+
   const [newMessage, setNewMessage] = useState<string>('');
   const memberId = String(1);
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
