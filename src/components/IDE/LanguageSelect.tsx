@@ -50,6 +50,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
       memberId: 1,
     };
     try {
+      console.log(newProject);
       const createdProject = await createProject(newProject);
       console.log(createdProject);
       // 백엔드에서 생성된 실제 프로젝트 ID 사용
