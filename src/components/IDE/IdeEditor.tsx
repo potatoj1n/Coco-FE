@@ -63,7 +63,7 @@ export const IdeEditor: React.FC = () => {
     monaco.editor.defineTheme('tomorrow', tomorrowTheme as monaco.editor.IStandaloneThemeData);
     monaco.editor.defineTheme('nightOwl', tomorrowDarkTheme as monaco.editor.IStandaloneThemeData);
     monaco.editor.setTheme('tomorrow');
-  }, [monaco]);
+  }, [monaco, themeColor]);
   //언어 선택
   useEffect(() => {
     setLanguage(language);
@@ -97,12 +97,14 @@ export const IdeEditor: React.FC = () => {
 
   return (
     <div className="h-3/5 w-screen overflow-scroll">
-      <EditorButton>
-        {selectedFileName ? `${selectedFileName}` : 'Untitled'}
-        <IconButton size="small" onClick={handleCloseFile}>
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </EditorButton>
+      {selectedFileId && (
+        <EditorButton>
+          {selectedFileName ? `${selectedFileName}` : 'Untitled'}
+          <IconButton size="small" onClick={handleCloseFile}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </EditorButton>
+      )}
       {selectedFileId && (
         <Editor
           language={language || 'javascript'}
