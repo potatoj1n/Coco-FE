@@ -16,6 +16,7 @@ interface Props {
   snackbarMessage: string;
   consoleOpen: boolean;
   setConsoleOpen: (consoleOpen: boolean) => void;
+  setOutput: (output: string[]) => void;
 }
 
 const Console = forwardRef((props: Props, ref) => {
@@ -30,7 +31,10 @@ const Console = forwardRef((props: Props, ref) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useImperativeHandle(ref, () => ({
-    connectWebSocket,
+    connectWebSocket: (newSocket: WebSocket) => {
+      setSocket(newSocket);
+      setupWebSocketListeners(newSocket);
+    },
   }));
 
   const handleCloseSnackbar = () => {
@@ -39,48 +43,35 @@ const Console = forwardRef((props: Props, ref) => {
   const closeConsole = () => {
     setConsoleOpen(!consoleOpen);
   };
-  const connectWebSocket = async () => {
-    try {
-      const newSocket = new WebSocket('ws://3.37.87.232:8080/execute');
-      newSocket.onopen = () => {
-        console.log('WebSocket connection opened');
-        if (inputDisabled) {
-          enableInput();
-        }
-      };
-
-      newSocket.onmessage = event => {
-        console.log('Received from server:', event.data);
-        if (event.data.startsWith('SessionId:')) {
-          setSessionId(event.data.split(':')[1]);
-        } else if (event.data === 'InputStreamClosed') {
-          console.log('Input stream closed by server.');
-          disableInput();
-          newSocket.close();
-        }
-        setOutput((prevOutput: string[] | null) => {
-          if (prevOutput !== null) {
-            return [...prevOutput, event.data];
-          } else {
-            return [event.data];
-          }
-        });
-      };
-
-      newSocket.onerror = error => {
-        console.error('WebSocket error:', error);
-      };
-
-      newSocket.onclose = () => {
-        console.log('WebSocket connection closed');
+  const setupWebSocketListeners = (newSocket: WebSocket) => {
+    newSocket.onmessage = event => {
+      console.log('Received from server:', event.data);
+      if (event.data.startsWith('SessionId:')) {
+        setSessionId(event.data.split(':')[1]);
+      } else if (event.data === 'InputStreamClosed') {
+        console.log('Input stream closed by server.');
         disableInput();
-      };
+        newSocket.close();
+      }
+      setOutput((prevOutput: string[] | null) => {
+        if (prevOutput !== null) {
+          return [...prevOutput, event.data];
+        } else {
+          return [event.data];
+        }
+      });
+    };
 
-      setSocket(newSocket);
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    newSocket.onerror = error => {
+      console.error('WebSocket error:', error);
+    };
+
+    newSocket.onclose = () => {
+      console.log('WebSocket connection closed');
+      disableInput();
+    };
   };
+
   const handleKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
@@ -125,8 +116,8 @@ const Console = forwardRef((props: Props, ref) => {
             <ButtonWrapper>
               <ConsoleButton>
                 console
-                <IconButton size="small">
-                  <CloseIcon fontSize="small" onClick={closeConsole} />
+                <IconButton size="small" onClick={closeConsole}>
+                  <CloseIcon fontSize="small" />
                 </IconButton>
               </ConsoleButton>
             </ButtonWrapper>
