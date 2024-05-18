@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import useProjectStore, { Folder, File, Project } from '../../../state/IDE/ProjectState';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
@@ -9,7 +9,7 @@ import FolderDeleteRoundedIcon from '@mui/icons-material/FolderDeleteRounded';
 import ContentPasteOffRoundedIcon from '@mui/icons-material/ContentPasteOffRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import { CreateCustomButton, FileTreeWrapper, FileWrapper, FontColor, MenuText, PopItem } from '../IdeStyle';
-import { deleteFile, deleteFolder, updateFolderName, updateFileName } from '../ProjectApi';
+import { deleteFile, deleteFolder, updateFolderName, updateFileName, moveFile } from '../ProjectApi';
 import { useTheTheme } from '../../Theme';
 
 interface FileNode {
@@ -20,6 +20,10 @@ interface FileNode {
   onClick?: (id: string) => void;
   onContextMenu?: (event: React.MouseEvent<HTMLElement>, id: string, type: string) => void;
   children?: FileNode[];
+  draggable?: boolean;
+  onDragStart?: (event: React.DragEvent) => void;
+  onDragOver?: (event: React.DragEvent) => void;
+  onDrop?: (event: React.DragEvent) => void;
 }
 
 interface Props {
@@ -65,6 +69,7 @@ const FileTree: React.FC<Props> = ({
   const [editName, setEditName] = useState('');
   const [editNodeId, setEditNodeId] = useState('');
   const [editNodeType, setEditNodeType] = useState('');
+  const [draggedFileId, setDraggedFileId] = useState<string | null>(null);
   const selectedProject = projects.find(project => project.id === selectedProjectId);
   const { themeColor } = useTheTheme();
 
@@ -182,6 +187,37 @@ const FileTree: React.FC<Props> = ({
       console.log('File not found or is not a file type');
     }
   };
+  // 드래그 시작 핸들러
+  const handleDragStart = (event: React.DragEvent, fileId: string) => {
+    setDraggedFileId(fileId);
+  };
+
+  // 드롭 핸들러
+  const handleDrop = async (event: React.DragEvent, targetFolderId: string | null) => {
+    event.preventDefault();
+    console.log(draggedFileId);
+
+    if (draggedFileId && selectedProjectId) {
+      const draggedFile: File | undefined = projects
+        .flatMap(project => project.files)
+        .find(file => file.id === draggedFileId);
+      if (draggedFile) {
+        const currentParentId = draggedFile.parentId;
+        try {
+          await moveFile(selectedProjectId, currentParentId, draggedFileId, targetFolderId);
+
+          await refreshProject();
+        } catch (error) {
+          console.error('Error moving file:', error);
+        }
+      }
+    }
+    setDraggedFileId(null);
+  };
+
+  const handleDragOver = (event: React.DragEvent) => {
+    event.preventDefault();
+  };
 
   function renderNodes(nodes: FileNode[]): React.ReactNode {
     return nodes.map(node => (
@@ -194,6 +230,11 @@ const FileTree: React.FC<Props> = ({
         onClick={() => (node.type === 'file' ? handleFetchFile(node.id) : null)}
         onContextMenu={event => handleContextMenu(event, node.id)}
         renderNodes={renderNodes}
+        // 드래그 앤 드랍 이벤트 핸들러 추가
+        draggable
+        onDragStart={event => handleDragStart(event, node.id)}
+        onDragOver={handleDragOver}
+        onDrop={event => handleDrop(event, node.id)}
         // eslint-disable-next-line react/no-children-prop
         children={node.children}
       />
@@ -453,7 +494,17 @@ function Node({
   onContextMenu,
   children,
   renderNodes,
-}: FileNode & { renderNodes: (nodes: FileNode[]) => React.ReactNode }) {
+  draggable,
+  onDragStart,
+  onDragOver,
+  onDrop,
+}: FileNode & {
+  renderNodes: (nodes: FileNode[]) => React.ReactNode;
+  draggable?: boolean;
+  onDragStart?: (event: React.DragEvent) => void;
+  onDragOver?: (event: React.DragEvent) => void;
+  onDrop?: (event: React.DragEvent) => void;
+}) {
   const handleClick = (event: { stopPropagation: () => void }) => {
     event.stopPropagation();
     console.log(`Click detected on type: ${type} with ID: ${id}`);
@@ -469,7 +520,7 @@ function Node({
   };
   return (
     <FileTreeWrapper>
-      <FileWrapper>
+      <FileWrapper draggable={draggable} onDragStart={onDragStart} onDragOver={onDragOver} onDrop={onDrop}>
         <article
           className={type === 'file' ? 'file' : 'folder'}
           onClick={handleClick}
