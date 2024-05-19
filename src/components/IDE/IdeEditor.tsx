@@ -1,7 +1,7 @@
-import Editor, { EditorProps, loader, useMonaco } from '@monaco-editor/react';
-import * as monaco from 'monaco-editor';
+import Editor, { EditorProps, loader } from '@monaco-editor/react';
 import tomorrowTheme from 'monaco-themes/themes/Tomorrow.json';
 import tomorrowDarkTheme from 'monaco-themes/themes/Night Owl.json';
+import * as monaco from 'monaco-editor';
 import { useEffect, useRef } from 'react';
 import useLanguageStore from '../../state/IDE/IdeStore';
 import { useTheTheme } from '../Theme';
@@ -56,14 +56,19 @@ export const IdeEditor: React.FC = () => {
 
   //테마
   const { themeColor } = useTheTheme();
-  const monaco = useMonaco();
-  // 테마 설정
   useEffect(() => {
-    if (!monaco) return;
-    monaco.editor.defineTheme('tomorrow', tomorrowTheme as monaco.editor.IStandaloneThemeData);
-    monaco.editor.defineTheme('nightOwl', tomorrowDarkTheme as monaco.editor.IStandaloneThemeData);
-    monaco.editor.setTheme('tomorrow');
-  }, [monaco, themeColor]);
+    loader.init().then(monacoInstance => {
+      try {
+        monacoInstance.editor.defineTheme('tomorrow', tomorrowTheme as monaco.editor.IStandaloneThemeData);
+        monacoInstance.editor.defineTheme('nightOwl', tomorrowDarkTheme as monaco.editor.IStandaloneThemeData);
+        monacoInstance.editor.setTheme(themeColor === 'light' ? 'tomorrow' : 'nightOwl');
+      } catch (error) {
+        console.error('Error setting theme:', error);
+        monacoInstance.editor.setTheme('vs-dark');
+      }
+    });
+  }, [themeColor]);
+
   //언어 선택
   useEffect(() => {
     setLanguage(language);

@@ -20,22 +20,15 @@ export const saveCode = async (projectId, folderId, fileId, sourceCode) => {
     throw error;
   }
 };
-export const fetchRunCode = async (projectId, folderId, fileId, language, sourceCode) => {
+export const fetchRunCode = async (projectId, folderId, fileId) => {
   try {
-    const response = await axios.post(
-      `${API_BASE_URL}/projects/${projectId}/folders/${folderId}/files/${fileId}`,
-      {
-        language: language,
-        input: sourceCode,
+    const response = await axios.get(`${API_BASE_URL}/projects/${projectId}/folders/${folderId}/files/${fileId}/run`, {
+      headers: {
+        Authorization: `Basic ${Token}`,
+        'Content-Type': 'application/json',
       },
-      {
-        headers: {
-          Authorization: `Basic ${Token}`,
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      },
-    );
+      withCredentials: true,
+    });
     console.log('Success');
     return response.data;
   } catch (error) {
