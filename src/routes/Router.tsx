@@ -21,9 +21,9 @@ const router = createBrowserRouter([
       {
         path: '/mypage/:memberId',
         element: (
-          // <ProtectedRoute>
-          <MyPage />
-          // </ProtectedRoute>
+          <ProtectedRoute>
+            <MyPage />
+          </ProtectedRoute>
         ),
       },
       { path: '/chat', element: <Chat /> },

@@ -37,11 +37,14 @@ const MyPage = () => {
   const onCloseModal = () => {
     setIsModalOpen(false); // 모달을 닫아줍니다
   };
+  const handlePasswordChange = (newPassword: string) => {
+    setPassword(newPassword);
+  };
   //저장버튼 눌렀을 때 현재 상태 서버로 전송
   const handleSaveClick = async () => {
     try {
       // 서버에 데이터를 POST 요청으로 보내는 예시
-      const response = await address.post('/api/user/update', {
+      const response = await address.post('api/members/myPage', {
         nickname: nickName,
         newPassword: password,
       });
@@ -66,7 +69,7 @@ const MyPage = () => {
     <MainPageWrapper>
       <span className="text-2xl font-semibold mt-5">My Page</span>
       <AttendanceDiv className="mt-3">
-        <span className="text-xl font-semibold" style={{ padding: '15px' }}>
+        <span className="text-xl font-semibold" style={{ marginLeft: '30px', marginTop: '15px' }}>
           어서오세요, {nickname}님
         </span>
         <div
@@ -142,7 +145,12 @@ const MyPage = () => {
                 onChange={OnChange}
               />
               <Edit onClick={() => handleEditClick()} />
-              <Confirmpassword isOpen={isModalOpen} onClose={onCloseModal} theme={themeColor} pw={password} />
+              <Confirmpassword
+                isOpen={isModalOpen}
+                onClose={onCloseModal}
+                theme={themeColor}
+                onPasswordChange={handlePasswordChange}
+              />
             </div>
           </div>
           <Save onClick={handleSaveClick}>저장</Save>
