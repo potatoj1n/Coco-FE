@@ -1,9 +1,7 @@
-import { MenuItem } from '@mui/material';
 import { styled } from 'styled-components';
 
 export const Title = styled.div`
   border-bottom: 0.3px solid #a3a3a3;
-  margin-bottom: 8px;
   padding: 7px 10px;
   display: flex;
   justify-content: space-between;
@@ -61,21 +59,31 @@ export const ConsoleButton = styled.div`
   font-weight: 600;
   padding: 8px;
   font-size: 16px;
+  border: 0.5px solid black;
 `;
 
 export const ConsoleWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  color: #23be87;
+  background-color: '#243B56';
 `;
 export const ButtonWrapper = styled.div`
   background-color: ${props => props.theme.ButtonWrapperBackground};
+`;
+export const TreeWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: ${({ theme }) => (theme.themeColor === 'light' ? '#f4f4f4' : '#18293D')};
 `;
 export const FileTreeWrapper = styled.div`
   font-size: 16px;
   padding-left: 10px;
   padding-right: 10px;
-  padding-bottom: 3px;
+  margin-top: 3px;
 `;
 export const FileWrapper = styled.div`
   border: none;

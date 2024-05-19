@@ -97,21 +97,24 @@ const FileTree: React.FC<Props> = ({
 
   const handleCreateNewFile = async () => {
     if (currentParentId) {
+      console.log('파일 생성 요청 시작');
       handleCreateFile(newFileName, currentParentId);
       setNewFileName('');
-      await refreshProject();
       const project = useProjectStore.getState().projects.find(project => project.id === selectedProjectId);
+      await refreshProject();
       console.log('Updated project after file creation:', project);
     }
   };
-  const handleKeyPress = (event: React.KeyboardEvent) => {
+  const handleKeyPress = async (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       if (isCreatingFolder) {
         handleCreateNewFolder();
       } else if (isCreatingFile) {
         handleCreateNewFile();
+        await refreshProject();
       }
     }
+    await refreshProject();
   };
   //삭제하기
   const handleDeleteFolder = async (folderId: string) => {
@@ -527,9 +530,9 @@ function Node({
           onContextMenu={handleContextMenu}
         >
           {type === 'file' ? (
-            <InsertDriveFileOutlinedIcon fontSize="medium" />
+            <InsertDriveFileOutlinedIcon color="success" fontSize="medium" />
           ) : (
-            <FolderOpenOutlinedIcon fontSize="medium" />
+            <FolderOpenOutlinedIcon color="primary" fontSize="medium" />
           )}
           {name}
           {children && <div>{renderNodes(children)}</div>}
