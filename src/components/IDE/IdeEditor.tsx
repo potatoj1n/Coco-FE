@@ -157,7 +157,7 @@ export const IdeEditor: React.FC = () => {
   };
 
   return (
-    <div className="h-3/5 w-screen overflow-scroll" style={{ display: 'flex', flexDirection: 'column' }}>
+    <div className="flex flex-col w-screen overflow-scroll" style={{ height: '55%' }}>
       <div style={{ display: 'flex', flexDirection: 'row' }}>
         {openFiles.map(file => (
           <EditorButton key={file.id} active={activeFile === file.id} onClick={() => handleFileClick(file.id)}>
