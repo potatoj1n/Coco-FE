@@ -71,7 +71,7 @@ const Console = forwardRef((props: Props, ref) => {
                 height: '200px',
                 padding: '20px',
                 color: isError ? 'error.main' : '',
-                border: '2px solid #28B381',
+                border: '1px solid #28B381',
                 borderColor: isError ? 'error.main' : 'text.primary',
                 backgroundColor: themeColor === 'light' ? '#f4f4f4' : '#1C2631',
                 overflow: 'auto',
