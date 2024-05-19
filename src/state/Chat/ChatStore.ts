@@ -5,6 +5,7 @@ export interface Message {
   message: string;
   nickname: string;
   createdAt: string;
+  chatId: string;
 }
 
 interface ChatState {
@@ -18,14 +19,16 @@ const useChatStore = create<ChatState>(set => ({
 
   // 메시지 추가 함수
   addMessage: (message: Message) =>
-    set(state => ({
-      messages: [...state.messages, message],
-    })),
+    set(state => {
+      const newMessages = [...state.messages, message];
+      console.log('Messages after adding:', newMessages);
+      return { messages: newMessages };
+    }),
 
   // 메시지 삭제 함수
-  deleteMessage: memberId =>
+  deleteMessage: chatId =>
     set(state => ({
-      messages: state.messages.filter(message => message.memberId !== memberId),
+      messages: state.messages.filter(message => message.chatId !== chatId),
     })),
 }));
 

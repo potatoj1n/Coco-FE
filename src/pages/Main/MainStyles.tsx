@@ -326,8 +326,8 @@ const Stamp = keyframes`
     opacity: 1;
   }
 `;
-export const AttendanceImage = styled.img<{ show: boolean }>`
-  display: ${({ show }) => (show ? 'block' : 'none')};
+export const AttendanceImage = styled.img<{ $show: boolean }>`
+  display: ${({ $show }) => ($show ? 'block' : 'none')};
   height: 150px;
   width: 150px;
   position: absolute; // 스크롤에 따라 이동하지 않도록 위치 설정

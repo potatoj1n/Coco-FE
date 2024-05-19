@@ -122,11 +122,17 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
           ))}
         </Select>
         <span className="flex justify-end gap-3">
-          <CreateCustomButton className="bg-green-500 font-pretendard font-normal" onClick={handleCreateProject}>
+          <CreateCustomButton
+            className="bg-green-500 font-pretendard font-normal cursor-pointer"
+            onClick={handleCreateProject}
+          >
             생성 하기
           </CreateCustomButton>
 
-          <CreateCustomButton className="text-green-500 font-pretendard font-normal" onClick={handleClose}>
+          <CreateCustomButton
+            className="text-green-500 font-pretendard font-normal cursor-pointer"
+            onClick={handleClose}
+          >
             취소 하기
           </CreateCustomButton>
         </span>
