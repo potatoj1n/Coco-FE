@@ -64,6 +64,7 @@ const Chat = () => {
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const { themeColor } = useTheTheme();
   const { memberId } = useAuthStore();
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const location = useLocation();
   // 메시지 리스트의 끝을 가리킬 ref 생성
@@ -159,7 +160,11 @@ const Chat = () => {
           webSocketFactory: () => socket,
           onConnect: () => {
             console.log('Connected', memberId);
-            deleteAllMessages(); // 이전 메시지 삭제
+            if (chatContainerRef.current) {
+              const scrollPosition = chatContainerRef.current.scrollTop;
+              deleteAllMessages(); // 이전 메시지 삭제
+              chatContainerRef.current.scrollTop = scrollPosition;
+            }
             loadInitialMessages(); // 초기 데이터 로드를 여기로 옮깁니다
             // 실시간 채팅 구독 설정 및 초기 메시지 불러오기
             // 먼저 기존 데이터를 불러옵니다
