@@ -58,6 +58,14 @@ export const Timestamp = styled.h1`
   font-size: 12px;
   margin-bottom: 10px;
 `;
+export const Timestampmine = styled.h1`
+  font-size: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+`;
 
 export const UserIcon = styled.img`
   width: 40px;
@@ -104,7 +112,7 @@ export const MessageMinetext = styled.div`
   overflow-wrap: break-word;
   font-size: 16px;
   color: black;
-  max-width: calc(100% - 250px);
+  max-width: calc(100% - 200px);
 `;
 export const MessageOthertext = styled(MessageMinetext)`
   background-color: #fff;

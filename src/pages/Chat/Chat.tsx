@@ -46,6 +46,7 @@ import {
   SearchInput,
   StyledDiv,
   Pointerimg,
+  Timestampmine,
   Timestamp,
 } from './ChatStyles';
 import axios from 'axios';
@@ -259,14 +260,16 @@ const Chat = () => {
   };
   function formatKoreanTime(isoString: any) {
     const date = new Date(isoString);
-    // 한국 시간대로 설정 (UTC+9)
-    const koreanTime = new Date(date.getTime() + 9 * 60 * 60 * 1000);
-    // AM/PM, 시간, 분 형식으로 변환
-    return koreanTime.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
+    const koreanDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // 한국 시간대로 설정 (UTC+9)
+    return {
+      date: koreanDate.toLocaleDateString('en-CA'), // YYYY-MM-DD 형식
+      time: koreanDate.toLocaleTimeString('en-US', {
+        // 12시간 AM/PM 형식
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      }),
+    };
   }
   // 위/아래 버튼 클릭 핸들러
   const handleSearchDown = () => {
@@ -312,7 +315,10 @@ const Chat = () => {
                 {msg.memberId == memberId ? (
                   <MessageFlexContainer>
                     <MessageMine>
-                      <Timestamp>{formatKoreanTime(msg.createdAt)}</Timestamp>
+                      <Timestampmine>
+                        <div>{formatKoreanTime(msg.createdAt).date}</div>
+                        <div>{formatKoreanTime(msg.createdAt).time}</div>
+                      </Timestampmine>
                       <MessageMinetext>{msg.message}</MessageMinetext>
                       <MyMessageTrash onClick={() => handleDeleteMessage(msg.chatId)} src={messageTrash} />
                       <MyUserContainer>
@@ -328,7 +334,10 @@ const Chat = () => {
                         <UserName>{msg.nickname}</UserName>
                       </UserContainer>
                       <MessageOthertext>{msg.message}</MessageOthertext>
-                      <Timestamp>{formatKoreanTime(msg.createdAt)}</Timestamp>
+                      <Timestamp>
+                        <div>{formatKoreanTime(msg.createdAt).date}</div>
+                        <div>{formatKoreanTime(msg.createdAt).time}</div>
+                      </Timestamp>
                     </MessageOther>
                   </MessageFlexContainer>
                 )}
