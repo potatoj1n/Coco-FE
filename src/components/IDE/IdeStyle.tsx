@@ -38,12 +38,13 @@ export const CreateCustomButton = styled.div`
   margin-top: 20px;
 `;
 
-export const EditorButton = styled.div`
+export const EditorButton = styled.button<{ active: boolean }>`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border: 0.5px solid;
-  border-top-right-radius: 20px;
-  background-color: #28b381;
+  border-top-right-radius: 18px;
+  background-color: ${({ active }) => (active ? '#28b381' : '#ffffff')};
   color: black;
   font-size: 16px;
   font-weight: 600;
