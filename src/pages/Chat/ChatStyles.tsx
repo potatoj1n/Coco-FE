@@ -16,7 +16,9 @@ export const darkTheme = {
   borderColor: '#444', // 다크 모드 보더 색상
   background: '#243B56',
 };
-
+export const Container = styled.div`
+  overflow: hidden;
+`;
 export const StyledDiv = styled.div`
   background: ${({ theme }) => theme.background};
   border-right: 1px solid ${({ theme }) => theme.borderColor};

@@ -63,7 +63,7 @@ const userName = 'coco';
 const userPassword = 'coco';
 const Token = btoa(`${userName}:${userPassword}`);
 const Main = () => {
-  const { messages } = useChatStore();
+  const messages = useChatStore(state => state.messages);
 
   const [newMessage, setNewMessage] = useState<string>('');
   const memberId = String(1);
@@ -123,7 +123,7 @@ const Main = () => {
   const sendAttendance = async (memberId: any) => {
     try {
       const response = await axios.post(
-        'http://43.201.76.117:8080/api/attendance',
+        'http://43.201.76.117:8080/api/attend',
         {
           memberId: memberId,
         },
@@ -136,6 +136,9 @@ const Main = () => {
       console.error('Failed to record attendance:', error);
     }
   };
+  useEffect(() => {
+    console.log('Messages updated:', messages);
+  }, [messages]);
   return (
     <ThemeProvider theme={currentTheme}>
       <Container>
@@ -178,7 +181,7 @@ const Main = () => {
               <AttendButton onClick={handleButtonClick} disabled={clicked}>
                 {clicked ? '출석 완료' : '출석하기'}
               </AttendButton>
-              {showImage && <AttendanceImage src={attend} show={showImage} />}
+              <AttendanceImage $show={showImage} src={attend} />
             </div>
           </Attendancecontainer>
           <Pjcontainer>
