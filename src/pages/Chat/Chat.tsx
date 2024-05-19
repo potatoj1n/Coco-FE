@@ -8,7 +8,9 @@ import profileOther from '../../assets/profileOther.svg';
 import profileMine from '../../assets/profileMine.svg';
 import Chatsend from '../../assets/chatsend.svg';
 import Chatsearch from '../../assets/chatsearch.svg';
-import MessageTrash from '../../assets/messageTrash.svg';
+import messageTrash from '../../assets/messageTrash.svg';
+import pointerup from '../../assets/pointerup.svg';
+import searchDown from '../../assets/searchDown.svg';
 import { useTheTheme } from '../../components/Theme';
 import { Link } from 'react-router-dom';
 import { IconButton } from '@mui/material';
@@ -17,9 +19,12 @@ import { ReactComponent as FolderLightIcon } from '../../assets/folderlight.svg'
 import { ReactComponent as FolderDarkIcon } from '../../assets/folderdark.svg';
 import { ReactComponent as ChatDarkIcon } from '../../assets/chatdark.svg';
 import useChatStore, { Message } from '../../state/Chat/ChatStore';
+import useAuthStore from '../../state/AuthStore';
 
 import {
   lightTheme,
+  SearchUp,
+  SearchDown,
   darkTheme,
   Container,
   MessageContainer,
@@ -40,6 +45,8 @@ import {
   SearchButton,
   SearchInput,
   StyledDiv,
+  Pointerimg,
+  Timestampmine,
   Timestamp,
 } from './ChatStyles';
 import axios from 'axios';
@@ -55,13 +62,21 @@ const Chat = () => {
   const [searchMessage, setSearchMessage] = useState<string>('');
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const { themeColor } = useTheTheme();
+  const { memberId } = useAuthStore();
 
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const memberId = String(1);
   // 메시지 리스트의 끝을 가리킬 ref 생성
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const lastScrollTop = useRef(0); // 스크롤 위치 저장을 위한 ref
+  const [messageCount, setMessageCount] = useState(messages.length); // 메시지 개수 상태 추가
+  const messageRefs = useRef<(HTMLElement | null)[]>([]); // 각 메시지에 대한 참조를 저장할 배열
+
   const stompClient = useRef<Client | null>(null);
+  // 검색 결과와 현재 선택된 인덱스 상태
+  // 상태 변수 선언 부분
+  const [searchResults, setSearchResults] = useState<Message[]>([]);
+
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   // 채팅 데이터를 불러오는 함수
   const loadInitialMessages = async () => {
@@ -81,21 +96,88 @@ const Chat = () => {
       console.error('Failed to load initial messages:', error);
     }
   };
+  useEffect(() => {
+    if (messageCount < messages.length) {
+      // 메시지 개수가 증가했을 때만 스크롤을 아래로 이동
+      scrollToBottom();
+    }
+    setMessageCount(messages.length); // 메시지 개수 업데이트
+  }, [messages.length]);
 
   //내 채팅 삭제하는 함수
   const handleDeleteMessage = async (messageId: any) => {
-    try {
-      // 서버에 삭제 요청을 보냄
-      await axios.delete(`http://43.201.76.117:8080/message?messageId=${messageId}`, {
-        headers: { Authorization: `Basic ${Token}` },
-      });
-      // UI에서 메시지 삭제
-      deleteMessage(messageId);
-      console.log('Message deleted:', messageId);
-    } catch (error) {
-      console.error('Failed to delete message:', messageId, error);
+    if (window.confirm(`메세지를 삭제할건가요?`)) {
+      saveScrollPosition();
+      try {
+        // 서버에 삭제 요청을 보냄
+        await axios.delete(`http://43.201.76.117:8080/message?messageId=${messageId}`, {
+          headers: { Authorization: `Basic ${Token}` },
+        });
+        // UI에서 메시지 삭제
+        deleteMessage(messageId);
+        console.log('Message deleted:', messageId);
+        setTimeout(restoreScrollPosition, 0);
+      } catch (error) {
+        console.error('Failed to delete message:', messageId, error);
+      }
+      restoreScrollPosition(); // 삭제 후 스크롤 위치 복원
     }
   };
+
+  //채팅 검색하는 함수
+  const handleSearch = async (searchMessage: string) => {
+    if (searchMessage.trim() === '') {
+      alert('검색어를 입력해주세요.');
+      return;
+    }
+    if (searchMessage.trim() !== '') {
+      try {
+        const response = await axios.get(`http://43.201.76.117:8080/message?search=${searchMessage}`, {
+          headers: { Authorization: `Basic ${Token}` },
+          params: { search: searchMessage }, // 서버에 검색어 전달
+        });
+        const searchResults: Message[] = response.data;
+
+        if (searchResults.length === 0) {
+          searchResults.forEach(result => {
+            console.log(result); // 각 검색 결과의 상세 정보 확인
+          });
+          alert('해당 단어를 찾을 수 없습니다.');
+        } else {
+          setSearchResults(searchResults);
+          setActiveIndex(0); // 첫 번째 검색 결과로 초기 설정
+          scrollToMessage(0); // 첫 번째 검색 결과로 스크롤
+        }
+      } catch (error) {
+        console.error('Failed to search messages:', error);
+      }
+    }
+  };
+
+  const scrollToMessage = (index: number) => {
+    const element = messageRefs.current[index];
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
+  useEffect(() => {
+    // 메시지 목록이 변경될 때 스크롤 복원
+    restoreScrollPosition();
+  }, [messages.length]);
+  // 스크롤 위치를 저장하고 복원하는 함수
+  const saveScrollPosition = () => {
+    if (messagesEndRef.current) {
+      lastScrollTop.current = messagesEndRef.current.scrollTop;
+    }
+  };
+
+  const restoreScrollPosition = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = lastScrollTop.current;
+    }
+  };
+
   useEffect(() => {
     // 비동기 작업을 실행하는 함수
     const connectStomp = async () => {
@@ -166,27 +248,7 @@ const Chat = () => {
       console.log('send');
     }
   };
-  // 메시지 삭제 요청
-  const handleDeleteMessagesock = (memberId: string) => {
-    deleteMessage(memberId);
-  };
 
-  const handleSearch = async () => {
-    if (searchMessage.trim() !== '') {
-      try {
-        const response = await axios.get(`http://43.201.76.117:8080/message`, {
-          headers: { Authorization: `Basic ${Token}` },
-          params: { search: searchMessage }, // 서버에 검색어 전달
-        });
-        console.log('Search results:', response.data);
-        // 검색 결과로 메시지 목록을 업데이트
-        //setMessages(response.data);
-        setSearchMessage('');
-      } catch (error) {
-        console.error('Failed to search messages:', error);
-      }
-    }
-  };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSendMessage();
@@ -198,57 +260,89 @@ const Chat = () => {
   };
   function formatKoreanTime(isoString: any) {
     const date = new Date(isoString);
-    // 한국 시간대로 설정 (UTC+9)
-    const koreanTime = new Date(date.getTime() + 9 * 60 * 60 * 1000);
-    // AM/PM, 시간, 분 형식으로 변환
-    return koreanTime.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
+    const koreanDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // 한국 시간대로 설정 (UTC+9)
+    return {
+      date: koreanDate.toLocaleDateString('en-CA'), // YYYY-MM-DD 형식
+      time: koreanDate.toLocaleTimeString('en-US', {
+        // 12시간 AM/PM 형식
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      }),
+    };
   }
+  // 위/아래 버튼 클릭 핸들러
+  const handleSearchDown = () => {
+    if (activeIndex < searchResults.length - 1) {
+      setActiveIndex((prev: any) => prev + 1);
+      scrollToMessage(activeIndex + 1);
+    } else {
+      alert('더 이상 메시지가 없습니다.');
+    }
+  };
 
+  const handleSearchUp = () => {
+    if (activeIndex > 0) {
+      setActiveIndex((prev: any) => prev - 1);
+      scrollToMessage(activeIndex - 1);
+    } else {
+      alert('더 이상 메시지가 없습니다.');
+    }
+  };
   return (
     <ThemeProvider theme={currentTheme}>
       <Container>
         <StyledDiv>
           <IconButton>
-            <Link to="/ide/1">{themeColor === 'light' ? <FolderLightIcon /> : <FolderDarkIcon />}</Link>
+            <Link to={`/ide/${memberId}`}>{themeColor === 'light' ? <FolderLightIcon /> : <FolderDarkIcon />}</Link>
           </IconButton>
-          <IconButton>
-            <Link to="/chat">{themeColor === 'light' ? <ChatLightIcon /> : <ChatDarkIcon />}</Link>
-          </IconButton>
+          <IconButton>{themeColor === 'light' ? <ChatLightIcon /> : <ChatDarkIcon />}</IconButton>
         </StyledDiv>
         {isLoading && <p>Loading messages...</p>}
         <MessageContainer>
           <div style={{ flexGrow: 1 }}></div>
-          {messages.map((msg, index) => (
-            <div key={index}>
-              {msg.memberId == memberId ? (
-                <MessageFlexContainer>
-                  <MessageMine>
-                    <Timestamp>{formatKoreanTime(msg.createdAt)}</Timestamp>
-                    <MessageMinetext>{msg.message}</MessageMinetext>
-                    <MyMessageTrash onClick={() => handleDeleteMessage(msg.chatId)} src={MessageTrash} />
-                    <MyUserContainer>
-                      <UserIcon src={profileMine} />
-                    </MyUserContainer>
-                  </MessageMine>
-                </MessageFlexContainer>
-              ) : (
-                <MessageFlexContainer>
-                  <MessageOther>
-                    <UserContainer>
-                      <UserIcon src={profileOther} />
-                      <UserName>{msg.nickname}</UserName>
-                    </UserContainer>
-                    <MessageOthertext>{msg.message}</MessageOthertext>
-                    <Timestamp>{formatKoreanTime(msg.createdAt)}</Timestamp>
-                  </MessageOther>
-                </MessageFlexContainer>
-              )}
-            </div>
-          ))}
+          {messages
+            .filter(msg => !msg.isDeleted)
+            .map((msg, index) => (
+              <div
+                key={index}
+                ref={(el: any) => (messageRefs.current[index] = el)}
+                style={{
+                  fontWeight: searchResults.includes(msg) && index === activeIndex ? 'bold' : 'normal',
+                  textDecoration: searchResults.includes(msg) && index === activeIndex ? 'underline' : 'none',
+                }}
+              >
+                {msg.memberId == memberId ? (
+                  <MessageFlexContainer>
+                    <MessageMine>
+                      <Timestampmine>
+                        <div>{formatKoreanTime(msg.createdAt).date}</div>
+                        <div>{formatKoreanTime(msg.createdAt).time}</div>
+                      </Timestampmine>
+                      <MessageMinetext>{msg.message}</MessageMinetext>
+                      <MyMessageTrash onClick={() => handleDeleteMessage(msg.chatId)} src={messageTrash} />
+                      <MyUserContainer>
+                        <UserIcon src={profileMine} />
+                      </MyUserContainer>
+                    </MessageMine>
+                  </MessageFlexContainer>
+                ) : (
+                  <MessageFlexContainer>
+                    <MessageOther>
+                      <UserContainer>
+                        <UserIcon src={profileOther} />
+                        <UserName>{msg.nickname}</UserName>
+                      </UserContainer>
+                      <MessageOthertext>{msg.message}</MessageOthertext>
+                      <Timestamp>
+                        <div>{formatKoreanTime(msg.createdAt).date}</div>
+                        <div>{formatKoreanTime(msg.createdAt).time}</div>
+                      </Timestamp>
+                    </MessageOther>
+                  </MessageFlexContainer>
+                )}
+              </div>
+            ))}
           <div ref={messagesEndRef} /> {/* 스크롤을 아래로 이동하기 위한 빈 div */}
         </MessageContainer>
         <ChatContainer>
@@ -264,20 +358,28 @@ const Chat = () => {
               <img src={Chatsend} />
             </SendButton>
           </ChatInputContainer>
-          <SearchButton onClick={toggleSearch}>
-            <img src={Chatsearch} />
-          </SearchButton>
-          {showSearch && (
+        </ChatContainer>
+        <SearchButton onClick={toggleSearch}>
+          <img src={Chatsearch} />
+        </SearchButton>
+        {showSearch && (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <SearchInput
               show={showSearch}
               value={searchMessage}
               type="text"
-              onChange={e => setSearchMessage(e.target.value)}
-              onKeyPress={e => e.key === 'Enter' && handleSearch()}
+              onChange={(e: any) => setSearchMessage(e.target.value)}
+              onKeyPress={(e: any) => e.key === 'Enter' && handleSearch(searchMessage)}
               placeholder="검색"
             />
-          )}
-        </ChatContainer>
+            <SearchDown onClick={handleSearchDown}>
+              <Pointerimg src={searchDown} />
+            </SearchDown>
+            <SearchUp onClick={handleSearchUp}>
+              <Pointerimg src={pointerup} />
+            </SearchUp>
+          </div>
+        )}
       </Container>
     </ThemeProvider>
   );
