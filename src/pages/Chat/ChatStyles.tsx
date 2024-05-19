@@ -16,7 +16,9 @@ export const darkTheme = {
   borderColor: '#444', // 다크 모드 보더 색상
   background: '#243B56',
 };
-
+export const Container = styled.div`
+  overflow: hidden;
+`;
 export const StyledDiv = styled.div`
   background: ${({ theme }) => theme.background};
   border-right: 1px solid ${({ theme }) => theme.borderColor};
@@ -44,12 +46,19 @@ export const UserContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0px 10px 0px 10px;
+`;
+export const MyUserContainer = styled(UserContainer)`
   margin: 0px 10px 20px 10px;
 `;
 
 export const UserName = styled.h1`
   font-size: 12px;
   margin-top: 0.6rem;
+`;
+export const Timestamp = styled.h1`
+  font-size: 12px;
+  margin-bottom: 10px;
 `;
 
 export const UserIcon = styled.img`
@@ -60,9 +69,9 @@ export const UserIcon = styled.img`
 
 export const MessageFlexContainer = styled.div`
   display: flex;
-  flex-direction: row; // 아이템을 가로로 배열
-  align-items: flex-end; // 아이템을 컨테이너의 하단에 정렬
   width: 100%;
+  flex-direction: row;
+  justify-content: flex-end;
 `;
 export const MyMessageTrash = styled.img`
   width: 15px;
@@ -75,11 +84,14 @@ export const MessageOther = styled.div`
   align-self: flex-start;
   display: flex;
   margin: 9px 0px;
+  align-items: flex-end;
+  width: 100%;
 `;
 
 export const MessageMine = styled(MessageOther)`
-  align-self: flex-end;
-  margin-right: -5px;
+  margin-right: 10px;
+  align-items: flex-end;
+  justify-content: flex-end;
 `;
 
 export const MessageMinetext = styled.div`
@@ -94,11 +106,10 @@ export const MessageMinetext = styled.div`
   overflow-wrap: break-word;
   font-size: 16px;
   color: black;
-  max-width: 60vw;
+  max-width: calc(100% - 250px);
 `;
 export const MessageOthertext = styled(MessageMinetext)`
   background-color: #fff;
-  margin-bottom: 28px;
 `;
 
 export const ChatContainer = styled.div`

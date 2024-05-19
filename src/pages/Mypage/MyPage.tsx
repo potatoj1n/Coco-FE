@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react';
 import { AttendanceDiv, UserInfo, MainPageWrapper, UserInput, EditUser, Edit, Save } from './MypageStyles';
-import api from '../../components/Api';
+// import api from '../../components/Api';
 import { useNavigate } from 'react-router-dom';
 import Confirmpassword from '../../components/ConfirmPw/ConfirmPw';
 import { useTheTheme } from '../../components/Theme';
 import useAuthStore from '../../state/AuthStore';
 import address from '../../components/Address';
+import AttendanceCalendar from '../../components/AttendanceCalendar/AttendanceCalendar';
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -36,11 +37,14 @@ const MyPage = () => {
   const onCloseModal = () => {
     setIsModalOpen(false); // 모달을 닫아줍니다
   };
+  const handlePasswordChange = (newPassword: string) => {
+    setPassword(newPassword);
+  };
   //저장버튼 눌렀을 때 현재 상태 서버로 전송
   const handleSaveClick = async () => {
     try {
       // 서버에 데이터를 POST 요청으로 보내는 예시
-      const response = await address.post('/api/user/update', {
+      const response = await address.post('api/members/myPage', {
         nickname: nickName,
         newPassword: password,
       });
@@ -65,8 +69,20 @@ const MyPage = () => {
     <MainPageWrapper>
       <span className="text-2xl font-semibold mt-5">My Page</span>
       <AttendanceDiv className="mt-3">
-        {/* 닉네임 정보 불러오기 */}
-        <span className="text-xl font-semibold">어서오세요, {nickname}님</span>
+        <span className="text-xl font-semibold" style={{ marginLeft: '30px', marginTop: '15px' }}>
+          어서오세요, {nickname}님
+        </span>
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            justifyContent: 'center',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <AttendanceCalendar />
+        </div>
       </AttendanceDiv>
       <UserInfo>
         <span className="text-lg mt-4 font-semibold">회원정보</span>
@@ -129,7 +145,12 @@ const MyPage = () => {
                 onChange={OnChange}
               />
               <Edit onClick={() => handleEditClick()} />
-              <Confirmpassword isOpen={isModalOpen} onClose={onCloseModal} theme={themeColor} pw={password} />
+              <Confirmpassword
+                isOpen={isModalOpen}
+                onClose={onCloseModal}
+                theme={themeColor}
+                onPasswordChange={handlePasswordChange}
+              />
             </div>
           </div>
           <Save onClick={handleSaveClick}>저장</Save>

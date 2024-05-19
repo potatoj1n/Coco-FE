@@ -27,7 +27,6 @@ const router = createBrowserRouter([
         ),
       },
       { path: '/chat', element: <Chat /> },
-      { path: '/mypage', element: <MyPage /> },
       { path: '/chat', element: <Chat /> },
       {
         path: '/ide/:memberId',

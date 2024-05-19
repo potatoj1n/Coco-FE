@@ -50,6 +50,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
       memberId: 1,
     };
     try {
+      console.log(newProject);
       const createdProject = await createProject(newProject);
       console.log(createdProject);
       // 백엔드에서 생성된 실제 프로젝트 ID 사용
@@ -121,11 +122,17 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
           ))}
         </Select>
         <span className="flex justify-end gap-3">
-          <CreateCustomButton className="bg-green-500 font-pretendard font-normal" onClick={handleCreateProject}>
+          <CreateCustomButton
+            className="bg-green-500 font-pretendard font-normal cursor-pointer"
+            onClick={handleCreateProject}
+          >
             생성 하기
           </CreateCustomButton>
 
-          <CreateCustomButton className="text-green-500 font-pretendard font-normal" onClick={handleClose}>
+          <CreateCustomButton
+            className="text-green-500 font-pretendard font-normal cursor-pointer"
+            onClick={handleClose}
+          >
             취소 하기
           </CreateCustomButton>
         </span>

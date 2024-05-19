@@ -16,6 +16,7 @@ interface Props {
   snackbarMessage: string;
   consoleOpen: boolean;
   setConsoleOpen: (consoleOpen: boolean) => void;
+  setOutput: (output: string[]) => void;
 }
 
 const Console = forwardRef((props: Props, ref) => {
@@ -25,13 +26,6 @@ const Console = forwardRef((props: Props, ref) => {
   };
   const { output, setOutput, isError, openSnackbar, snackbarMessage, setOpenSnackbar, consoleOpen, setConsoleOpen } =
     useConsoleStore();
-  const [sessionId, setSessionId] = useState<string>('');
-  const [inputDisabled, setInputDisabled] = useState<boolean>(false);
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-
-  useImperativeHandle(ref, () => ({
-    connectWebSocket,
-  }));
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -39,83 +33,24 @@ const Console = forwardRef((props: Props, ref) => {
   const closeConsole = () => {
     setConsoleOpen(!consoleOpen);
   };
-  const connectWebSocket = async () => {
-    try {
-      const newSocket = new WebSocket('ws://3.37.87.232:8080/execute');
-      newSocket.onopen = () => {
-        console.log('WebSocket connection opened');
-        if (inputDisabled) {
-          enableInput();
-        }
-      };
 
-      newSocket.onmessage = event => {
-        console.log('Received from server:', event.data);
-        if (event.data.startsWith('SessionId:')) {
-          setSessionId(event.data.split(':')[1]);
-        } else if (event.data === 'InputStreamClosed') {
-          console.log('Input stream closed by server.');
-          disableInput();
-          newSocket.close();
-        }
-        setOutput((prevOutput: string[] | null) => {
-          if (prevOutput !== null) {
-            return [...prevOutput, event.data];
-          } else {
-            return [event.data];
-          }
-        });
-      };
-
-      newSocket.onerror = error => {
-        console.error('WebSocket error:', error);
-      };
-
-      newSocket.onclose = () => {
-        console.log('WebSocket connection closed');
-        disableInput();
-      };
-
-      setSocket(newSocket);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
   const handleKeyPress = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       const inputLine = event.currentTarget.innerText.trim();
-      if (socket && sessionId) {
-        socket.send(JSON.stringify({ command: 'input', data: inputLine, sessionId }));
-        setOutput((prevOutput: string[] | null) => {
-          if (prevOutput !== null) {
-            return [...prevOutput, inputLine];
-          } else {
-            return [inputLine];
-          }
-        });
-        event.currentTarget.innerText = '';
-      } else {
-        console.error('WebSocket is not connected or sessionId is missing.');
-      }
+
+      setOutput((prevOutput: string[] | null) => {
+        if (prevOutput !== null) {
+          return [...prevOutput, inputLine];
+        } else {
+          return [inputLine];
+        }
+      });
+      event.currentTarget.innerText = '';
+    } else {
+      console.error('WebSocket is not connected or sessionId is missing.');
     }
   };
-
-  const disableInput = () => {
-    setInputDisabled(true);
-  };
-
-  const enableInput = () => {
-    setInputDisabled(false);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (socket) {
-        socket.close();
-      }
-    };
-  }, [socket]);
 
   return (
     <ThemeProvider theme={themeObject}>
@@ -125,8 +60,8 @@ const Console = forwardRef((props: Props, ref) => {
             <ButtonWrapper>
               <ConsoleButton>
                 console
-                <IconButton size="small">
-                  <CloseIcon fontSize="small" onClick={closeConsole} />
+                <IconButton size="small" onClick={closeConsole}>
+                  <CloseIcon fontSize="small" />
                 </IconButton>
               </ConsoleButton>
             </ButtonWrapper>
@@ -134,12 +69,13 @@ const Console = forwardRef((props: Props, ref) => {
               style={{
                 width: '100%',
                 height: '200px',
-                padding: '8px',
+                padding: '20px',
                 color: isError ? 'error.main' : '',
-                border: '0.5px solid',
+                border: '2px solid #28B381',
                 borderColor: isError ? 'error.main' : 'text.primary',
+                backgroundColor: themeColor === 'light' ? '#f4f4f4' : '#1C2631',
                 overflow: 'auto',
-                fontSize: '18px',
+                fontSize: '20px',
               }}
             >
               {output

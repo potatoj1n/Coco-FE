@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import * as monaco from 'monaco-editor';
@@ -14,34 +14,40 @@ import PlayArrowOutlinedIcon from '@mui/icons-material/PlayArrowOutlined';
 import { Button, IconButton } from '@mui/material';
 import { ButtonContainer, Container, CustomButton, IconContainer, FileListContainer, IDEContainer } from './IdeStyles';
 import useLanguageStore from '../../state/IDE/IdeStore';
-import { saveCode } from '../../components/IDE/ProjectApi';
+import { fetchRunCode, saveCode } from '../../components/IDE/ProjectApi';
 import useConsoleStore from '../../state/IDE/ConsoleStore';
+import useProjectStore from '../../state/IDE/ProjectState';
 
 export default function IDE() {
   const consoleRef = useRef<any>(null);
+
   const { themeColor } = useTheTheme();
   const themeObject = {
     buttonBackground: themeColor === 'light' ? '#f4f4f4' : '#18293D',
     fileListBackground: themeColor === 'light' ? '#fffff' : '#243B56',
     ideBackground: themeColor === 'light' ? '#fffff' : '#243B56',
   };
-
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const language = useLanguageStore(state => state.language);
-  const { output, isLoading, isError, openSnackbar, snackbarMessage, consoleOpen, setConsoleOpen } = useConsoleStore();
+  const { output, isLoading, isError, openSnackbar, snackbarMessage, consoleOpen, setConsoleOpen, setOutput } =
+    useConsoleStore();
+  const { selectedProjectId, selectedFolderId, selectedFileId, selectedFileContent } = useProjectStore(state => ({
+    selectedProjectId: state.selectedProjectId,
+    selectedFolderId: state.selectedFolderId,
+    selectedFileId: state.selectedFileId,
+    selectedFileContent: state.selectedFileContent,
+  }));
 
-  //save 버튼
-  const handleSave = () => {
-    if (!editorRef.current) return;
-
-    const sourceCode = editorRef.current.getValue();
-    if (!sourceCode) return;
-
-    saveCode(language, sourceCode)
-      .then(() => console.log('저장되었습니다.'))
-      .catch(error => console.error('저장에 실패했습니다.', error));
+  const handleSave = async () => {
+    const sourceCode = selectedFileContent;
+    try {
+      await saveCode(selectedProjectId, selectedFolderId, selectedFileId, sourceCode);
+      console.log('코드가 성공적으로 저장되었습니다.');
+    } catch (error) {
+      console.error('코드 저장에 실패했습니다.', error);
+    }
   };
-  //단축키 이벤트 핸들러
+
   useEffect(() => {
     const handleSaveShortcut = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key === 's') {
@@ -56,40 +62,19 @@ export default function IDE() {
       document.removeEventListener('keydown', handleSaveShortcut);
     };
   }, []);
-  //Run 버튼
+
   const runCode = async () => {
     setConsoleOpen(true);
-    if (!editorRef.current) return;
-
-    const sourceCode = editorRef.current.getValue();
-    if (!sourceCode) return;
+    setOutput(() => []);
 
     try {
       useConsoleStore.setState({ isLoading: true });
-      // WebSocket 연결
-      const sessionId = await consoleRef.current.connectWebSocket();
-      // 코드 실행 요청 데이터 생성
-      const fixedFilePath = '1/23/';
-      const data = { command: 'run', filePath: fixedFilePath, sessionId: sessionId };
-      // 코드 실행 요청 보내기
-      const response = await fetch(`http://3.37.87.232:8080/api`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      // 서버로부터 받은 결과 처리
-      const text = await response.text();
-      useConsoleStore.setState({
-        output: text.split('\n'),
-        isError: false,
-        snackbarMessage: '',
-        openSnackbar: false,
-      });
+      const response = await fetchRunCode(selectedProjectId, selectedFolderId, selectedFileId);
+      console.log('Received from server:', response);
+      setOutput(prevOutput => (prevOutput ? [...prevOutput, response] : [response]));
     } catch (error) {
-      console.error('Error:', error);
-      useConsoleStore.setState({ snackbarMessage: '코드 실행에 실패했습니다.', openSnackbar: true });
+      console.log(error);
+      useConsoleStore.setState({ snackbarMessage: 'Unable to run code', openSnackbar: true });
     } finally {
       useConsoleStore.setState({ isLoading: false });
     }
@@ -144,6 +129,7 @@ export default function IDE() {
           <IDEContainer>
             <IdeEditor />
             <Console
+              ref={consoleRef}
               editorRef={editorRef}
               language={language}
               output={output}
@@ -153,6 +139,7 @@ export default function IDE() {
               snackbarMessage={snackbarMessage}
               consoleOpen={consoleOpen}
               setConsoleOpen={setConsoleOpen}
+              setOutput={(newOutput: string[]) => setOutput(() => newOutput)}
             />
           </IDEContainer>
         </div>

@@ -4,7 +4,7 @@ export const LanguageOptions = [
   { id: 'python', value: '3.10.0', label: 'Python' },
   { id: 'java', value: '15.0.2', label: 'Java' },
   { id: 'c', value: '6.12.0', label: 'C' },
-  { id: 'cpp', value: '8.2.3', label: 'C++' },
+  { id: 'cpp', value: '8.2.3', label: 'cpp' },
 ];
 
 export const CODE_SNIPPETS: { [key: string]: string } = {
