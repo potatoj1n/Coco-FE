@@ -119,6 +119,8 @@ const FileTree: React.FC<Props> = ({
   //삭제하기
   const handleDeleteFolder = async (folderId: string) => {
     if (!selectedProjectId) return;
+    const confirmation = window.confirm('정말로 폴더를 삭제하시겠습니까?');
+    if (!confirmation) return;
     try {
       await deleteFolder(selectedProjectId, folderId);
       removeFolder(selectedProjectId, folderId);
@@ -130,6 +132,8 @@ const FileTree: React.FC<Props> = ({
 
   const handleDeleteFile = async (folderId: string, fileId: string) => {
     if (!selectedProjectId) return;
+    const confirmation = window.confirm('정말로 파일을 삭제하시겠습니까?');
+    if (!confirmation) return;
     try {
       await deleteFile(selectedProjectId, folderId, fileId);
       removeFile(selectedProjectId, folderId, fileId);
