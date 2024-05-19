@@ -56,7 +56,8 @@ const userPassword = 'coco';
 const Token = btoa(`${userName}:${userPassword}`);
 
 const Chat = () => {
-  const { messages, addMessage, deleteMessage } = useChatStore();
+  const { messages, addMessage, deleteMessage, deleteAllMessages } = useChatStore();
+
   const [newMessage, setNewMessage] = useState<string>('');
   const [isLoading, setLoading] = useState(true);
   const [searchMessage, setSearchMessage] = useState<string>('');
@@ -78,24 +79,6 @@ const Chat = () => {
 
   const [activeIndex, setActiveIndex] = useState(-1);
 
-  // 채팅 데이터를 불러오는 함수
-  const loadInitialMessages = async () => {
-    try {
-      // 기존 채팅 데이터 요청 (토큰 없이)
-      const response = await axios.get(
-        `http://43.201.76.117:8080/messages`,
-        // 데이터를 성공적으로 받아왔다면 화면에 표시하는 로직
-        { headers: { Authorization: `Basic ${Token}` } },
-      );
-      response.data.forEach((msg: any) => {
-        addMessage(msg);
-      });
-      console.log('Get messages:', response.data);
-      setLoading(false); // 로딩 상태 업데이트
-    } catch (error) {
-      console.error('Failed to load initial messages:', error);
-    }
-  };
   useEffect(() => {
     if (messageCount < messages.length) {
       // 메시지 개수가 증가했을 때만 스크롤을 아래로 이동
@@ -125,32 +108,21 @@ const Chat = () => {
   };
 
   //채팅 검색하는 함수
-  const handleSearch = async (searchMessage: string) => {
-    if (searchMessage.trim() === '') {
+  const handleSearch = (searchMessage: any) => {
+    if (!searchMessage.trim()) {
       alert('검색어를 입력해주세요.');
       return;
     }
-    if (searchMessage.trim() !== '') {
-      try {
-        const response = await axios.get(`http://43.201.76.117:8080/message?search=${searchMessage}`, {
-          headers: { Authorization: `Basic ${Token}` },
-          params: { search: searchMessage }, // 서버에 검색어 전달
-        });
-        const searchResults: Message[] = response.data;
 
-        if (searchResults.length === 0) {
-          searchResults.forEach(result => {
-            console.log(result); // 각 검색 결과의 상세 정보 확인
-          });
-          alert('해당 단어를 찾을 수 없습니다.');
-        } else {
-          setSearchResults(searchResults);
-          setActiveIndex(0); // 첫 번째 검색 결과로 초기 설정
-          scrollToMessage(0); // 첫 번째 검색 결과로 스크롤
-        }
-      } catch (error) {
-        console.error('Failed to search messages:', error);
-      }
+    const filteredResults = messages.filter(msg => msg.message.toLowerCase().includes(searchMessage.toLowerCase()));
+
+    if (!filteredResults.length) {
+      alert('해당 단어를 찾을 수 없습니다.');
+      setSearchResults([]);
+    } else {
+      setSearchResults(filteredResults);
+      setActiveIndex(0);
+      scrollToMessage(0);
     }
   };
 
@@ -187,20 +159,20 @@ const Chat = () => {
           webSocketFactory: () => socket,
           onConnect: () => {
             console.log('Connected', memberId);
+            deleteAllMessages(); // 이전 메시지 삭제
+            loadInitialMessages(); // 초기 데이터 로드를 여기로 옮깁니다
             // 실시간 채팅 구독 설정 및 초기 메시지 불러오기
             // 먼저 기존 데이터를 불러옵니다
-            loadInitialMessages().then(() => {
-              // 실시간 메시지를 받기 위한 구독 설정
-              stompClient.current?.subscribe('/topic/chat', message => {
-                console.log('Received message:', message);
-                const receivedMessage = JSON.parse(message.body);
-                if (receivedMessage.message && receivedMessage.memberId && receivedMessage.nickname) {
-                  addMessage(receivedMessage);
-                  console.log('Message added:', receivedMessage);
-                } else {
-                  console.error('Invalid message format:', receivedMessage);
-                }
-              });
+            // 실시간 메시지를 받기 위한 구독 설정
+            stompClient.current?.subscribe('/topic/chat', message => {
+              console.log('Received message:', message);
+              const receivedMessage = JSON.parse(message.body);
+              if (receivedMessage.message && receivedMessage.memberId && receivedMessage.nickname) {
+                addMessage(receivedMessage);
+                console.log('Message added:', receivedMessage);
+              } else {
+                console.error('Invalid message format:', receivedMessage);
+              }
             });
           },
           onStompError: frame => {
@@ -213,7 +185,25 @@ const Chat = () => {
         console.error('Connection error:', error);
       }
     };
+    // 채팅 데이터를 불러오는 함수
+    const loadInitialMessages = async () => {
+      try {
+        // 기존 채팅 데이터 요청 (토큰 없이)
+        const response = await axios.get(
+          `http://43.201.76.117:8080/messages`,
+          // 데이터를 성공적으로 받아왔다면 화면에 표시하는 로직
+          { headers: { Authorization: `Basic ${Token}` } },
+        );
 
+        response.data.forEach((msg: any) => {
+          addMessage(msg);
+        });
+        console.log('Get messages:', response.data);
+        setLoading(false); // 로딩 상태 업데이트
+      } catch (error) {
+        console.error('Failed to load initial messages:', error);
+      }
+    };
     // 비동기 함수 호출
     connectStomp();
 
@@ -224,7 +214,7 @@ const Chat = () => {
         console.log('Disconnected'); // 비동기 작업 없이 STOMP 클라이언트 비활성화
       }
     };
-  }, []); // 의존성 배열, 필요에 따라 변수 포함
+  }, [deleteAllMessages]); // 의존성 배열, 필요에 따라 변수 포함
 
   useEffect(() => {
     scrollToBottom();

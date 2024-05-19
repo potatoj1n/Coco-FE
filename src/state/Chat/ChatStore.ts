@@ -13,6 +13,7 @@ interface ChatState {
   messages: Message[];
   addMessage: (message: Message) => void;
   deleteMessage: (id: string) => void;
+  deleteAllMessages: () => void;
 }
 
 const useChatStore = create<ChatState>(set => ({
@@ -22,7 +23,6 @@ const useChatStore = create<ChatState>(set => ({
   addMessage: (message: Message) =>
     set(state => {
       const newMessages = [...state.messages, message];
-      console.log('Messages after adding:', newMessages);
       return { messages: newMessages };
     }),
 
@@ -31,6 +31,8 @@ const useChatStore = create<ChatState>(set => ({
     set(state => ({
       messages: state.messages.filter(message => message.chatId !== chatId),
     })),
+  // 모든 메시지를 삭제하는 함수
+  deleteAllMessages: () => set({ messages: [] }), // 모든 메시지를 비우는 로직
 }));
 
 export default useChatStore;
