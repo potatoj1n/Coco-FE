@@ -6,6 +6,7 @@ export interface Message {
   nickname: string;
   createdAt: string;
   chatId: string;
+  isDeleted: boolean;
 }
 
 interface ChatState {

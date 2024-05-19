@@ -41,6 +41,7 @@ import {
   MessageOthertext,
   MessageMine,
   MessageMinetext,
+  AttendCalender,
 } from './MainStyles';
 import { ThemeProvider } from 'styled-components';
 import useLanguageStore from '../../state/IDE/IdeStore';
@@ -59,14 +60,17 @@ import mypageIcondark from '../../assets/mypageIcondark.svg';
 import { getCurrentDate } from '../../components/Date';
 import useChatStore from '../../state/Chat/ChatStore';
 import axios from 'axios';
+import useAuthStore from '../../state/AuthStore';
+
 const userName = 'coco';
 const userPassword = 'coco';
 const Token = btoa(`${userName}:${userPassword}`);
 const Main = () => {
+  const { memberId, nickname } = useAuthStore();
+
   const messages = useChatStore(state => state.messages);
 
   const [newMessage, setNewMessage] = useState<string>('');
-  const memberId = String(1);
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [languageSelector, setLanguageSelector] = useState(false);
   const [showPjList, setshowPjList] = useState(false);
@@ -132,8 +136,17 @@ const Main = () => {
         },
       );
       console.log('Attendance recorded:', response.data);
-    } catch (error) {
-      console.error('Failed to record attendance:', error);
+    } catch (error: any) {
+      if (error.response) {
+        // 서버에서 응답을 받았지만, 오류 응답이 발생한 경우
+        console.error('Failed to record attendance:', error.response.status, error.response.data);
+      } else if (error.request) {
+        // 요청이 이루어졌지만 응답을 받지 못한 경우
+        console.error('No response received:', error.request);
+      } else {
+        // 요청 설정 중에 문제가 발생한 경우
+        console.error('Error setting up request:', error.message);
+      }
     }
   };
   useEffect(() => {
@@ -157,18 +170,18 @@ const Main = () => {
             {showPjList && <PjList onClose={() => setshowPjList(false)} />}
           </div>
 
-          <ChatButton to="/chat">
+          <ChatButton to={`/chat/${memberId}`}>
             <Iconchat src={themeColor === 'light' ? chatLight : chatDark} />
             <Menuname>chat</Menuname>
           </ChatButton>
-          <ChatButton to="/mypage">
+          <ChatButton to={`/mypage/${memberId}`}>
             <Iconmypage src={themeColor === 'light' ? mypageIconlight : mypageIcondark} />
             <Menuname>my page</Menuname>
           </ChatButton>
         </Sidecontainer>
         <Maincontainer>
           <Hicontainer>
-            <Hione>어서오세요 내 닉네임 님,</Hione>
+            <Hione>어서오세요 {nickname} 님,</Hione>
             <Hitwo>오늘 하루도 힘내세요!</Hitwo>
             <MainImg src={mainimg} />
           </Hicontainer>
@@ -183,6 +196,7 @@ const Main = () => {
               </AttendButton>
               <AttendanceImage $show={showImage} src={attend} />
             </div>
+            <AttendCalender to={`/mypage/${memberId}`}>출석현황</AttendCalender>
           </Attendancecontainer>
           <Pjcontainer>
             <Icon src={themeColor === 'light' ? folderLight : folderDark} />
@@ -195,7 +209,7 @@ const Main = () => {
             <Chatnav>
               <Iconchat src={themeColor === 'light' ? chatLight : chatDark} />
               <Chatname> Chat </Chatname>
-              <Chatmore to="/chat"> 더보기... </Chatmore>
+              <Chatmore to={`/chat/${memberId}`}> 더보기... </Chatmore>
             </Chatnav>
             <Chatmain>
               <div style={{ flexGrow: 1 }}></div>

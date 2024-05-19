@@ -293,7 +293,7 @@ export const AttendButton = styled.button`
 export const Date = styled.div`
   background-color: white;
   height: 150px;
-  width: 150px;
+  width: 130px;
   border-radius: 50%;
   position: relative; // AttendanceImage의 부모 요소가 됨
 `;
@@ -302,7 +302,7 @@ export const Month = styled.p`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 45px;
+  margin-top: 40px;
 `;
 export const Day = styled.p`
   color: black;
@@ -310,7 +310,7 @@ export const Day = styled.p`
   justify-content: center;
   align-items: center;
   margin-bottom: -30px;
-  margin-top: 50px;
+  margin-top: 40px;
 `;
 const Stamp = keyframes`
   0% {
@@ -328,11 +328,11 @@ const Stamp = keyframes`
 `;
 export const AttendanceImage = styled.img<{ $show: boolean }>`
   display: ${({ $show }) => ($show ? 'block' : 'none')};
-  height: 150px;
-  width: 150px;
+  height: 140px;
+  width: 140px;
   position: absolute; // 스크롤에 따라 이동하지 않도록 위치 설정
-  margin-top: -210px;
-  margin-left: 25px;
+  margin-top: -200px;
+  margin-left: 30px;
   z-index: 1; // Date 위에 위치하기 위해 z-index 사용
   animation: ${Stamp} 0.5s ease-out forwards;
 `;
@@ -436,8 +436,20 @@ export const Chatmore = styled(Link)`
   margin-top: 20px;
   margin-right: 10px;
   font-size: 8px;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
-
+export const AttendCalender = styled(Link)`
+  color: ${({ theme }) => theme.text};
+  font-style: normal;
+  font-weight: 500;
+  margin-top: 20px;
+  font-size: 10px;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 export const Chatmain = styled.div`
   border-top: 1px solid rgba(102, 102, 102, 0.6);
   border-bottom: 1px solid rgba(102, 102, 102, 0.6);
