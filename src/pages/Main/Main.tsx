@@ -132,8 +132,17 @@ const Main = () => {
         },
       );
       console.log('Attendance recorded:', response.data);
-    } catch (error) {
-      console.error('Failed to record attendance:', error);
+    } catch (error: any) {
+      if (error.response) {
+        // 서버에서 응답을 받았지만, 오류 응답이 발생한 경우
+        console.error('Failed to record attendance:', error.response.status, error.response.data);
+      } else if (error.request) {
+        // 요청이 이루어졌지만 응답을 받지 못한 경우
+        console.error('No response received:', error.request);
+      } else {
+        // 요청 설정 중에 문제가 발생한 경우
+        console.error('Error setting up request:', error.message);
+      }
     }
   };
   useEffect(() => {

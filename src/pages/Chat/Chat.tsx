@@ -19,6 +19,7 @@ import { ReactComponent as FolderLightIcon } from '../../assets/folderlight.svg'
 import { ReactComponent as FolderDarkIcon } from '../../assets/folderdark.svg';
 import { ReactComponent as ChatDarkIcon } from '../../assets/chatdark.svg';
 import useChatStore, { Message } from '../../state/Chat/ChatStore';
+import useAuthStore from '../../state/AuthStore';
 
 import {
   lightTheme,
@@ -60,16 +61,21 @@ const Chat = () => {
   const [searchMessage, setSearchMessage] = useState<string>('');
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const { themeColor } = useTheTheme();
+  const { memberId } = useAuthStore();
 
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const memberId = String(1);
   // 메시지 리스트의 끝을 가리킬 ref 생성
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastScrollTop = useRef(0); // 스크롤 위치 저장을 위한 ref
   const [messageCount, setMessageCount] = useState(messages.length); // 메시지 개수 상태 추가
+  const messageRefs = useRef<(HTMLElement | null)[]>([]); // 각 메시지에 대한 참조를 저장할 배열
 
   const stompClient = useRef<Client | null>(null);
+  // 검색 결과와 현재 선택된 인덱스 상태
+  // 상태 변수 선언 부분
+  const [searchResults, setSearchResults] = useState<Message[]>([]);
+
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   // 채팅 데이터를 불러오는 함수
   const loadInitialMessages = async () => {
@@ -116,6 +122,44 @@ const Chat = () => {
       restoreScrollPosition(); // 삭제 후 스크롤 위치 복원
     }
   };
+
+  //채팅 검색하는 함수
+  const handleSearch = async (searchMessage: string) => {
+    if (searchMessage.trim() === '') {
+      alert('검색어를 입력해주세요.');
+      return;
+    }
+    if (searchMessage.trim() !== '') {
+      try {
+        const response = await axios.get(`http://43.201.76.117:8080/message?search=${searchMessage}`, {
+          headers: { Authorization: `Basic ${Token}` },
+          params: { search: searchMessage }, // 서버에 검색어 전달
+        });
+        const searchResults: Message[] = response.data;
+
+        if (searchResults.length === 0) {
+          searchResults.forEach(result => {
+            console.log(result); // 각 검색 결과의 상세 정보 확인
+          });
+          alert('해당 단어를 찾을 수 없습니다.');
+        } else {
+          setSearchResults(searchResults);
+          setActiveIndex(0); // 첫 번째 검색 결과로 초기 설정
+          scrollToMessage(0); // 첫 번째 검색 결과로 스크롤
+        }
+      } catch (error) {
+        console.error('Failed to search messages:', error);
+      }
+    }
+  };
+
+  const scrollToMessage = (index: number) => {
+    const element = messageRefs.current[index];
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   useEffect(() => {
     // 메시지 목록이 변경될 때 스크롤 복원
     restoreScrollPosition();
@@ -203,27 +247,7 @@ const Chat = () => {
       console.log('send');
     }
   };
-  // 메시지 삭제 요청
-  const handleDeleteMessagesock = (memberId: string) => {
-    deleteMessage(memberId);
-  };
 
-  const handleSearch = async () => {
-    if (searchMessage.trim() !== '') {
-      try {
-        const response = await axios.get(`http://43.201.76.117:8080/message`, {
-          headers: { Authorization: `Basic ${Token}` },
-          params: { search: searchMessage }, // 서버에 검색어 전달
-        });
-        console.log('Search results:', response.data);
-        // 검색 결과로 메시지 목록을 업데이트
-        //setMessages(response.data);
-        setSearchMessage('');
-      } catch (error) {
-        console.error('Failed to search messages:', error);
-      }
-    }
-  };
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSendMessage();
@@ -244,11 +268,23 @@ const Chat = () => {
       hour12: true,
     });
   }
-  const handleSearchUp = () => {
-    console.log('Search Up');
-  };
+  // 위/아래 버튼 클릭 핸들러
   const handleSearchDown = () => {
-    console.log('Search Down');
+    if (activeIndex < searchResults.length - 1) {
+      setActiveIndex((prev: any) => prev + 1);
+      scrollToMessage(activeIndex + 1);
+    } else {
+      alert('더 이상 메시지가 없습니다.');
+    }
+  };
+
+  const handleSearchUp = () => {
+    if (activeIndex > 0) {
+      setActiveIndex((prev: any) => prev - 1);
+      scrollToMessage(activeIndex - 1);
+    } else {
+      alert('더 이상 메시지가 없습니다.');
+    }
   };
   return (
     <ThemeProvider theme={currentTheme}>
@@ -267,7 +303,14 @@ const Chat = () => {
           {messages
             .filter(msg => !msg.isDeleted)
             .map((msg, index) => (
-              <div key={index}>
+              <div
+                key={index}
+                ref={(el: any) => (messageRefs.current[index] = el)}
+                style={{
+                  fontWeight: searchResults.includes(msg) && index === activeIndex ? 'bold' : 'normal',
+                  textDecoration: searchResults.includes(msg) && index === activeIndex ? 'underline' : 'none',
+                }}
+              >
                 {msg.memberId == memberId ? (
                   <MessageFlexContainer>
                     <MessageMine>
@@ -319,7 +362,7 @@ const Chat = () => {
               value={searchMessage}
               type="text"
               onChange={(e: any) => setSearchMessage(e.target.value)}
-              onKeyPress={(e: any) => e.key === 'Enter' && handleSearch()}
+              onKeyPress={(e: any) => e.key === 'Enter' && handleSearch(searchMessage)}
               placeholder="검색"
             />
             <SearchDown onClick={handleSearchDown}>
