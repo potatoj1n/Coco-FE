@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { memberId } = useParams<{ memberId: string }>();
   const storedMemberId = useAuthStore(state => state.memberId);
 
-  if (!storedMemberId || storedMemberId !== memberId) {
+  if (!storedMemberId || storedMemberId != memberId) {
     console.log('다름');
     return <Navigate to="/login" replace />;
   }
