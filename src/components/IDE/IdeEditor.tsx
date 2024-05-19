@@ -7,7 +7,7 @@ import useLanguageStore from '../../state/IDE/IdeStore';
 import { useTheTheme } from '../Theme';
 import useProjectStore from '../../state/IDE/ProjectState';
 import { EditorButton } from './IdeStyle';
-import { Button, IconButton } from '@mui/material';
+import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 loader.config({
