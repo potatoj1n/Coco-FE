@@ -3,6 +3,7 @@ import LanguageSelector from '../../components/IDE/LanguageSelect';
 import PjList from '../../components/PjList';
 import SockJS from 'sockjs-client';
 import { Client, IMessage } from '@stomp/stompjs';
+import address from '../../components/Address';
 
 import {
   lightTheme,
@@ -64,7 +65,10 @@ import { getCurrentDate } from '../../components/Date';
 import useChatStore from '../../state/Chat/ChatStore';
 import axios from 'axios';
 import useAuthStore from '../../state/AuthStore';
-
+interface Attendance {
+  date: string;
+  present: boolean;
+}
 const userName = 'coco';
 const userPassword = 'coco';
 const Token = btoa(`${userName}:${userPassword}`);
@@ -95,7 +99,6 @@ const Main = () => {
       sendAttendance(memberId);
     }
   };
-
   useEffect(() => {
     // 비동기 작업을 실행하는 함수
     const connectStomp = async () => {
