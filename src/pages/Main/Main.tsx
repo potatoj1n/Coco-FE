@@ -58,7 +58,10 @@ import mypageIconlight from '../../assets/mypageIconlight.svg';
 import mypageIcondark from '../../assets/mypageIcondark.svg';
 import { getCurrentDate } from '../../components/Date';
 import useChatStore from '../../state/Chat/ChatStore';
-
+import axios from 'axios';
+const userName = 'coco';
+const userPassword = 'coco';
+const Token = btoa(`${userName}:${userPassword}`);
 const Main = () => {
   const { messages } = useChatStore();
 
@@ -81,6 +84,7 @@ const Main = () => {
       setClicked(true); // 버튼이 클릭되었다고 상태 업데이트
       alert('출석하였습니다.'); // 사용자에게 알림 표시
       console.log('attend success');
+      sendAttendance(memberId);
     }
   };
   // 메시지 배열이 변경될 때마다 실행되어 스크롤을 맨 아래로 이동
@@ -116,6 +120,22 @@ const Main = () => {
     setCurrentDate(date);
   }, []);
 
+  const sendAttendance = async (memberId: any) => {
+    try {
+      const response = await axios.post(
+        'http://43.201.76.117:8080/api/attendance',
+        {
+          memberId: memberId,
+        },
+        {
+          headers: { Authorization: `Basic ${Token}` },
+        },
+      );
+      console.log('Attendance recorded:', response.data);
+    } catch (error) {
+      console.error('Failed to record attendance:', error);
+    }
+  };
   return (
     <ThemeProvider theme={currentTheme}>
       <Container>
