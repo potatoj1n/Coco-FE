@@ -15,4 +15,4 @@ spec:
             pathType: Prefix
             backend:
               serviceName: frontend
-              servicePort: 3000
+              servicePort: 80

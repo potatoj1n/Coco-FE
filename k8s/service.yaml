@@ -4,7 +4,9 @@ metadata:
   name: frontend
 spec:
   ports:
-    - port: 3000
-      targetPort: 3000
+   - protocol: TCP
+      port: 80 # 외부에 노출되는 포트
+      targetPort: 80 # 컨테이너 내부의 포트 (Nginx가 80 포트로 서빙)
   selector:
     app: frontend
+  type: LoadBalancer
