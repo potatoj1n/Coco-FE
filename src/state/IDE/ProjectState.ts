@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import axios from 'axios';
 import { create } from 'zustand';
 const API_BASE_URL = 'http://43.201.76.117:8080/api';
@@ -113,8 +114,9 @@ const useProjectStore = create<ProjectStore>(set => ({
       ),
     })),
   loadProjects: async () => {
+    let memberId = 1;
     try {
-      const response = await axios.get<ProjectData[]>(`${API_BASE_URL}/projects`, {
+      const response = await axios.get<ProjectData[]>(`${API_BASE_URL}/projects?memberId=${memberId}`, {
         headers: { Authorization: `Basic ${Token}` },
       });
       const projects = response.data.map(
@@ -144,19 +146,20 @@ const useProjectStore = create<ProjectStore>(set => ({
         id: folder.folderId,
         name: folder.folderName,
         files: [],
-        parentId: folder.parentId,
+        parentId: folder.parentId || null,
       }));
       const projectFiles: File[] = files.map((file: FileData) => ({
         id: file.fileId,
         name: file.fileName,
         type: file.type,
         code: file.code,
-        parentId: file.parentId,
+        parentId: file.parentId || null,
       }));
 
       // 프로젝트의 폴더와 파일 목록을 업데이트
       set(state => ({
         selectedProjectId: projectId,
+        selectedFolderId: projectFolders.length > 0 ? projectFolders[0].id : null,
         projects: state.projects.map(project => {
           if (project.id === projectId) {
             return {
