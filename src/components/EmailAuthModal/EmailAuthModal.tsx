@@ -10,7 +10,7 @@ interface ModalProps {
 import React, { useEffect, useRef, useState } from 'react';
 import '../../components/Animation.css';
 import address from '../Address';
-import { EmailDiv } from './EmailAuthModalStyles';
+import { EmailDiv, ModalContent } from './EmailAuthModalStyles';
 
 const Modal: React.FC<ModalProps> = ({ isOpen, children, theme, onClose }) => {
   const backgroundColor = theme === 'light' ? 'white' : '#1C2631';
@@ -23,20 +23,13 @@ const Modal: React.FC<ModalProps> = ({ isOpen, children, theme, onClose }) => {
     }
   };
   return (
-    <EmailDiv
-      style={{
-        position: 'fixed',
-        height: '100%',
-        width: '100%',
-        zIndex: '10',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        backdropFilter: 'blur(2px)',
-      }}
-      onClick={handleBackgroundClick}
-    >
-      <EmailDiv
+    <EmailDiv onClick={handleBackgroundClick}>
+      <ModalContent
         style={{
           position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
           padding: '20px',
           background: backgroundColor,
           borderRadius: '5px',
@@ -50,7 +43,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, children, theme, onClose }) => {
         onClick={e => e.stopPropagation()}
       >
         {children}
-      </EmailDiv>
+      </ModalContent>
     </EmailDiv>
   );
 };

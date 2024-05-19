@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
-import { Tooltip as ReactTooltip } from 'react-tooltip';
-import 'react-tooltip/dist/react-tooltip.css';
 import './AttendanceCalendar.css';
 import address from '../Address';
+import useAuthStore from '../../state/AuthStore';
 
 interface Attendance {
   date: string;
@@ -32,7 +31,9 @@ const generateDateArray = (startDate: Date, endDate: Date): Attendance[] => {
 
 const AttendanceCalendar = () => {
   const [attendance, setAttendance] = useState<Attendance[]>([]);
-
+  const { memberId } = useAuthStore(state => ({
+    memberId: state.memberId,
+  }));
   useEffect(() => {
     const startDate = new Date('2024-01-01');
     const endDate = new Date('2024-12-31');
@@ -41,32 +42,34 @@ const AttendanceCalendar = () => {
     const initialDates = generateDateArray(startDate, endDate);
     setAttendance(initialDates);
 
-    // 서버에서 출석 정보를 가져와 병합합니다
-    // const fetchAttendance = async () => {
-    //   try {
-    //     const response = await address.get('/api/attendance');
-    //     const serverData = response.data;
+    // 서버에서 출석 정보를 가져와 병합
+    const fetchAttendance = async () => {
+      try {
+        const response = await address.get('/api/attend', {
+          memberId: memberId,
+        });
+        const serverData = response.data;
+        console.log('Server Data:', serverData);
+        // 서버 데이터를 기본 날짜 배열에 병합
+        const attendDates = serverData[0].attendDate;
+        const mergedData = initialDates.map(dateItem => {
+          return {
+            ...dateItem,
+            present: attendDates.includes(dateItem.date),
+          };
+        });
 
-    //     // 서버 데이터를 기본 날짜 배열에 병합
-    //     const mergedData = initialDates.map(dateItem => {
-    //       const matchingData = serverData.find(
-    //         (item: { date: string; present: boolean }) => item.date === dateItem.date,
-    //       );
-    //       return matchingData ? { ...dateItem, present: matchingData.present } : dateItem;
-    //     });
+        // 디버깅 로그
+        console.log('Initial Dates:', initialDates);
+        console.log('Merged Data:', mergedData);
 
-    //     // 디버깅 로그 추가
-    //     console.log('Initial Dates:', initialDates);
-    //     console.log('Server Data:', serverData);
-    //     console.log('Merged Data:', mergedData);
+        setAttendance(mergedData);
+      } catch (error) {
+        console.error('Error fetching attendance data:', error);
+      }
+    };
 
-    //     setAttendance(mergedData);
-    //   } catch (error) {
-    //     console.error('Error fetching attendance data:', error);
-    //   }
-    // };
-
-    // fetchAttendance();
+    fetchAttendance();
   }, []);
 
   const today = new Date();
@@ -107,7 +110,6 @@ const AttendanceCalendar = () => {
         }}
         showWeekdayLabels
       />
-      <ReactTooltip id="tooltip" />
     </div>
   );
 };
