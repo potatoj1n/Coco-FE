@@ -47,7 +47,9 @@ const Half2 = styled.div`
 
 const MenuContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.borderColor};
+  background-color: ${({ theme }) => (theme.themeColor === 'dark' ? theme.darkColor : theme.lightColor)};
   display: flex;
+  z-index: 5;
   flex-direction: column;
   gap: 0.5rem;
   border-radius: 0.5rem;
@@ -83,9 +85,13 @@ export default function Header() {
     clearAuthInfo();
     alert('로그아웃되었습니다.');
     setMenu(false);
-    navigate('/login');
+    navigate('/');
   };
+
   const isLoggedIn = memberId !== '';
+  const OnClick = () => {
+    setMenu(false);
+  };
 
   return (
     <Container>
@@ -103,22 +109,26 @@ export default function Header() {
               )}
             </IconButton>
           )}
-          {showIcons && (
-            <IconButton
-              onClick={() => {
-                setMenu(!menu);
-              }}
-            >
-              <UserIcon />
-            </IconButton>
-          )}
-          {menu === true ? (
-            <MenuContainer>
-              <p onClick={Logout}>Logout</p>
-              <hr></hr>
-              <Link to={`/mypage/${memberId}`}>my Page</Link>
-            </MenuContainer>
-          ) : null}
+          <>
+            {showIcons && (
+              <IconButton
+                onClick={() => {
+                  setMenu(!menu);
+                }}
+              >
+                <UserIcon />
+              </IconButton>
+            )}
+            {menu === true ? (
+              <MenuContainer>
+                <p onClick={Logout}>Logout</p>
+                <hr></hr>
+                <Link to={`/mypage/${memberId}`} onClick={OnClick}>
+                  my Page
+                </Link>
+              </MenuContainer>
+            ) : null}
+          </>
         </span>
       </Half2>
     </Container>

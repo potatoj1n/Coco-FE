@@ -29,8 +29,11 @@ export const LoginPart = styled.div`
   height: 100%;
   align-items: center;
   justify-content: center;
+  color: black;
   @media (max-width: 800px) {
     width: 100%;
+    background-color: ${({ theme }) => (theme.themeColor === 'dark' ? theme.darkColor : 'transparent')};
+    color: white;
   }
   background-color: ${({ theme }) => (theme.themeColor === 'dark' ? theme.lightColor : 'transparent')};
 `;
