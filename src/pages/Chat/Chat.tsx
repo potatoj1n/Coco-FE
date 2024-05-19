@@ -291,11 +291,9 @@ const Chat = () => {
       <Container>
         <StyledDiv>
           <IconButton>
-            <Link to="/ide/1">{themeColor === 'light' ? <FolderLightIcon /> : <FolderDarkIcon />}</Link>
+            <Link to={`/ide/${memberId}`}>{themeColor === 'light' ? <FolderLightIcon /> : <FolderDarkIcon />}</Link>
           </IconButton>
-          <IconButton>
-            <Link to="/chat">{themeColor === 'light' ? <ChatLightIcon /> : <ChatDarkIcon />}</Link>
-          </IconButton>
+          <IconButton>{themeColor === 'light' ? <ChatLightIcon /> : <ChatDarkIcon />}</IconButton>
         </StyledDiv>
         {isLoading && <p>Loading messages...</p>}
         <MessageContainer>
