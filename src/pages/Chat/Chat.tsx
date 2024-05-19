@@ -61,6 +61,9 @@ const Chat = () => {
   const memberId = String(1);
   // 메시지 리스트의 끝을 가리킬 ref 생성
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const lastScrollTop = useRef(0); // 스크롤 위치 저장을 위한 ref
+  const [messageCount, setMessageCount] = useState(messages.length); // 메시지 개수 상태 추가
+
   const stompClient = useRef<Client | null>(null);
 
   // 채팅 데이터를 불러오는 함수
@@ -81,9 +84,17 @@ const Chat = () => {
       console.error('Failed to load initial messages:', error);
     }
   };
+  useEffect(() => {
+    if (messageCount < messages.length) {
+      // 메시지 개수가 증가했을 때만 스크롤을 아래로 이동
+      scrollToBottom();
+    }
+    setMessageCount(messages.length); // 메시지 개수 업데이트
+  }, [messages.length]);
 
   //내 채팅 삭제하는 함수
   const handleDeleteMessage = async (messageId: any) => {
+    saveScrollPosition();
     try {
       // 서버에 삭제 요청을 보냄
       await axios.delete(`http://43.201.76.117:8080/message?messageId=${messageId}`, {
@@ -92,10 +103,29 @@ const Chat = () => {
       // UI에서 메시지 삭제
       deleteMessage(messageId);
       console.log('Message deleted:', messageId);
+      setTimeout(restoreScrollPosition, 0);
     } catch (error) {
       console.error('Failed to delete message:', messageId, error);
     }
+    restoreScrollPosition(); // 삭제 후 스크롤 위치 복원
   };
+  useEffect(() => {
+    // 메시지 목록이 변경될 때 스크롤 복원
+    restoreScrollPosition();
+  }, [messages.length]);
+  // 스크롤 위치를 저장하고 복원하는 함수
+  const saveScrollPosition = () => {
+    if (messagesEndRef.current) {
+      lastScrollTop.current = messagesEndRef.current.scrollTop;
+    }
+  };
+
+  const restoreScrollPosition = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = lastScrollTop.current;
+    }
+  };
+
   useEffect(() => {
     // 비동기 작업을 실행하는 함수
     const connectStomp = async () => {
@@ -222,33 +252,35 @@ const Chat = () => {
         {isLoading && <p>Loading messages...</p>}
         <MessageContainer>
           <div style={{ flexGrow: 1 }}></div>
-          {messages.map((msg, index) => (
-            <div key={index}>
-              {msg.memberId == memberId ? (
-                <MessageFlexContainer>
-                  <MessageMine>
-                    <Timestamp>{formatKoreanTime(msg.createdAt)}</Timestamp>
-                    <MessageMinetext>{msg.message}</MessageMinetext>
-                    <MyMessageTrash onClick={() => handleDeleteMessage(msg.chatId)} src={MessageTrash} />
-                    <MyUserContainer>
-                      <UserIcon src={profileMine} />
-                    </MyUserContainer>
-                  </MessageMine>
-                </MessageFlexContainer>
-              ) : (
-                <MessageFlexContainer>
-                  <MessageOther>
-                    <UserContainer>
-                      <UserIcon src={profileOther} />
-                      <UserName>{msg.nickname}</UserName>
-                    </UserContainer>
-                    <MessageOthertext>{msg.message}</MessageOthertext>
-                    <Timestamp>{formatKoreanTime(msg.createdAt)}</Timestamp>
-                  </MessageOther>
-                </MessageFlexContainer>
-              )}
-            </div>
-          ))}
+          {messages
+            .filter(msg => !msg.isDeleted)
+            .map((msg, index) => (
+              <div key={index}>
+                {msg.memberId == memberId ? (
+                  <MessageFlexContainer>
+                    <MessageMine>
+                      <Timestamp>{formatKoreanTime(msg.createdAt)}</Timestamp>
+                      <MessageMinetext>{msg.message}</MessageMinetext>
+                      <MyMessageTrash onClick={() => handleDeleteMessage(msg.chatId)} src={MessageTrash} />
+                      <MyUserContainer>
+                        <UserIcon src={profileMine} />
+                      </MyUserContainer>
+                    </MessageMine>
+                  </MessageFlexContainer>
+                ) : (
+                  <MessageFlexContainer>
+                    <MessageOther>
+                      <UserContainer>
+                        <UserIcon src={profileOther} />
+                        <UserName>{msg.nickname}</UserName>
+                      </UserContainer>
+                      <MessageOthertext>{msg.message}</MessageOthertext>
+                      <Timestamp>{formatKoreanTime(msg.createdAt)}</Timestamp>
+                    </MessageOther>
+                  </MessageFlexContainer>
+                )}
+              </div>
+            ))}
           <div ref={messagesEndRef} /> {/* 스크롤을 아래로 이동하기 위한 빈 div */}
         </MessageContainer>
         <ChatContainer>

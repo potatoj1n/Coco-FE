@@ -105,6 +105,7 @@ const PjList: React.FC<PjListProps> = ({ onClose }) => {
   const handleDelete = (projectId: string, projectName: string) => {
     if (window.confirm(`'${projectName}'을(를) 삭제할건가요?`)) {
       removeProject(projectId);
+      console.log('Message deleted:', projectName);
     }
   };
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
