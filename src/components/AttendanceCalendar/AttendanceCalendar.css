@@ -1,8 +1,8 @@
 /* 기본 스타일 설정 */
 .calendar-container {
   width: 100%;
-  max-width: 90%; /* 최대 너비 설정 */
-  margin: 0 auto;
+  max-width: 90%;
+  margin: 20px auto;
 }
 
 .react-calendar-heatmap .color-empty {
@@ -26,13 +26,15 @@
 }
 
 .react-calendar-heatmap .color-today {
-  fill: #ff6347; /* 오늘 날짜 강조 */
-  stroke: #000; /* 테두리 색상 */
-  stroke-width: 2px; /* 테두리 두께 */
+  stroke: green;
+  stroke-width: 1px;
+}
+/* 월(month) 글씨 색상 변경 */
+.react-calendar-heatmap .react-calendar-heatmap-month-label {
+  fill: black; /* 원하는 글씨 색상 */
 }
 
-/* 특정 날짜 타일에 대한 추가 스타일 */
-.react-calendar-heatmap rect[data-date='2024-04-28'] {
-  stroke: blue;
-  stroke-width: 2px;
+/* 요일(weekday) 글씨 색상 변경 */
+.react-calendar-heatmap .react-calendar-heatmap-weekday-label {
+  fill: black; /* 원하는 글씨 색상 */
 }

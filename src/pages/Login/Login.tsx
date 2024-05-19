@@ -47,13 +47,13 @@ const Login = () => {
       // response.data에서 닉네임, 이메일 저장해서 main이랑 mypage에 사용
       // localStorage.setItem('accessToken', response.data.accessToken);
       // localStorage.setItem('refreshToken', response.data.refreshToken);
-      alert('로그인 성공');
+      // alert('로그인 성공');
       //유저정보에 없거나 비밀번호,아이디 틀리면 에러바로 뜨게
       //메인으로 가게 해야함
       navigate(`/mypage/${memberId}`);
     } catch (e) {
       //에러 캐치
-      alert('로그인 실패');
+      setError('아이디 또는 비밀번호를 잘못 입력했습니다.다시 확인해주세요.');
       console.log(e);
     } finally {
       setLoading(false);
@@ -70,13 +70,13 @@ const Login = () => {
             <Highlight>C</Highlight>ollaborative
           </span>
           <span>
-            <Highlight>O</Highlight>line
+            <Highlight>O</Highlight>nline
           </span>
           <span>
             <Highlight>C</Highlight>oding
           </span>
           <span>
-            <Highlight>O</Highlight>rganize
+            <Highlight>O</Highlight>rganizer
           </span>
           <div className="flex justify-center">
             <FontColor className="text-2xl mt-4">
@@ -137,7 +137,7 @@ const Login = () => {
           />
           <Input type="submit" value="로그인" />
         </Logindiv>
-        {error !== '' ? <Error>{error}</Error> : null}
+        {error !== '' ? <Error className="mt-2">{error}</Error> : null}
         <Switcher className="text-black mt-7">
           아직 회원이 아니라면?{' '}
           <Link to="/signup" className="underline">
