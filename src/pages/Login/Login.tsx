@@ -117,7 +117,7 @@ const Login = () => {
                 transition: background-color 5000s ease-in-out 0s;}`}
         </style>
         <Logindiv onSubmit={onSubmit}>
-          <span className="mb-5 text-lg text-black">이메일</span>
+          <span className="mb-5 text-lg">이메일</span>
           <Input
             onChange={onChange}
             name="email"
@@ -126,7 +126,7 @@ const Login = () => {
             required
             className="mb-14 text-black"
           />
-          <span className="mb-5 text-lg text-black">비밀번호</span>
+          <span className="mb-5 text-lg">비밀번호</span>
           <Input
             onChange={onChange}
             name="password"
@@ -138,7 +138,7 @@ const Login = () => {
           <Input type="submit" value="로그인" />
         </Logindiv>
         {error !== '' ? <Error className="mt-2">{error}</Error> : null}
-        <Switcher className="text-black mt-7">
+        <Switcher className="mt-7">
           아직 회원이 아니라면?{' '}
           <Link to="/signup" className="underline">
             회원가입 하러 가기 &rarr;

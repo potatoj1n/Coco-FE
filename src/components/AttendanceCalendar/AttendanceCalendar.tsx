@@ -45,9 +45,7 @@ const AttendanceCalendar = () => {
     // 서버에서 출석 정보를 가져와 병합
     const fetchAttendance = async () => {
       try {
-        const response = await address.get('/api/attend', {
-          memberId: memberId,
-        });
+        const response = await address.get(`/api/attend?memberId=${memberId}`);
         const serverData = response.data;
         console.log('Server Data:', serverData);
         // 서버 데이터를 기본 날짜 배열에 병합
@@ -60,8 +58,8 @@ const AttendanceCalendar = () => {
         });
 
         // 디버깅 로그
-        console.log('Initial Dates:', initialDates);
-        console.log('Merged Data:', mergedData);
+        // console.log('Initial Dates:', initialDates);
+        // console.log('Merged Data:', mergedData);
 
         setAttendance(mergedData);
       } catch (error) {
