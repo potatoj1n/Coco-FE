@@ -176,7 +176,6 @@ const FileTree: React.FC<Props> = ({
   const handleFetchFile = (fileId: string) => {
     console.log('Trying to fetch file with ID:', fileId);
     const file = projects.flatMap(p => p.files).find(file => file.id === fileId);
-    console.log('File search result:', file);
 
     const fileType = file?.type || 'file';
     if (file && fileType === 'file') {
