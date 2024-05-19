@@ -168,14 +168,54 @@ export const SearchInput = styled.input<SearchInputProps>`
   outline: none;
   padding: 10px 20px;
   font-size: 16px;
-  color: ${({ theme }) => theme.text};
+  color: #666666;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 15px;
   border: 1px solid ${({ theme }) => theme.borderColor};
   position: fixed;
   bottom: 150px;
   right: 30px;
-  width: 90%;
+  width: 80%;
   max-width: 500px;
+  height: 50px;
   display: ${({ show }) => (show ? 'block' : 'none')};
+`;
+export const SearchDown = styled.button`
+  cursor: pointer;
+  position: fixed;
+  bottom: 158px;
+  right: 65px;
+  width: 25px;
+  height: 35px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border: none;
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
+export const SearchUp = styled.button`
+  cursor: pointer;
+  position: fixed;
+  bottom: 158px;
+  right: 40px;
+  width: 25px;
+  height: 35px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  border: none;
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
+
+export const Pointerimg = styled.img`
+  max-width: 100%;
+  max-height: 100%;
 `;

@@ -8,7 +8,9 @@ import profileOther from '../../assets/profileOther.svg';
 import profileMine from '../../assets/profileMine.svg';
 import Chatsend from '../../assets/chatsend.svg';
 import Chatsearch from '../../assets/chatsearch.svg';
-import MessageTrash from '../../assets/messageTrash.svg';
+import messageTrash from '../../assets/messageTrash.svg';
+import pointerup from '../../assets/pointerup.svg';
+import searchDown from '../../assets/searchDown.svg';
 import { useTheTheme } from '../../components/Theme';
 import { Link } from 'react-router-dom';
 import { IconButton } from '@mui/material';
@@ -20,6 +22,8 @@ import useChatStore, { Message } from '../../state/Chat/ChatStore';
 
 import {
   lightTheme,
+  SearchUp,
+  SearchDown,
   darkTheme,
   Container,
   MessageContainer,
@@ -40,6 +44,7 @@ import {
   SearchButton,
   SearchInput,
   StyledDiv,
+  Pointerimg,
   Timestamp,
 } from './ChatStyles';
 import axios from 'axios';
@@ -94,20 +99,22 @@ const Chat = () => {
 
   //내 채팅 삭제하는 함수
   const handleDeleteMessage = async (messageId: any) => {
-    saveScrollPosition();
-    try {
-      // 서버에 삭제 요청을 보냄
-      await axios.delete(`http://43.201.76.117:8080/message?messageId=${messageId}`, {
-        headers: { Authorization: `Basic ${Token}` },
-      });
-      // UI에서 메시지 삭제
-      deleteMessage(messageId);
-      console.log('Message deleted:', messageId);
-      setTimeout(restoreScrollPosition, 0);
-    } catch (error) {
-      console.error('Failed to delete message:', messageId, error);
+    if (window.confirm(`메세지를 삭제할건가요?`)) {
+      saveScrollPosition();
+      try {
+        // 서버에 삭제 요청을 보냄
+        await axios.delete(`http://43.201.76.117:8080/message?messageId=${messageId}`, {
+          headers: { Authorization: `Basic ${Token}` },
+        });
+        // UI에서 메시지 삭제
+        deleteMessage(messageId);
+        console.log('Message deleted:', messageId);
+        setTimeout(restoreScrollPosition, 0);
+      } catch (error) {
+        console.error('Failed to delete message:', messageId, error);
+      }
+      restoreScrollPosition(); // 삭제 후 스크롤 위치 복원
     }
-    restoreScrollPosition(); // 삭제 후 스크롤 위치 복원
   };
   useEffect(() => {
     // 메시지 목록이 변경될 때 스크롤 복원
@@ -237,7 +244,12 @@ const Chat = () => {
       hour12: true,
     });
   }
-
+  const handleSearchUp = () => {
+    console.log('Search Up');
+  };
+  const handleSearchDown = () => {
+    console.log('Search Down');
+  };
   return (
     <ThemeProvider theme={currentTheme}>
       <Container>
@@ -261,7 +273,7 @@ const Chat = () => {
                     <MessageMine>
                       <Timestamp>{formatKoreanTime(msg.createdAt)}</Timestamp>
                       <MessageMinetext>{msg.message}</MessageMinetext>
-                      <MyMessageTrash onClick={() => handleDeleteMessage(msg.chatId)} src={MessageTrash} />
+                      <MyMessageTrash onClick={() => handleDeleteMessage(msg.chatId)} src={messageTrash} />
                       <MyUserContainer>
                         <UserIcon src={profileMine} />
                       </MyUserContainer>
@@ -296,20 +308,28 @@ const Chat = () => {
               <img src={Chatsend} />
             </SendButton>
           </ChatInputContainer>
-          <SearchButton onClick={toggleSearch}>
-            <img src={Chatsearch} />
-          </SearchButton>
-          {showSearch && (
+        </ChatContainer>
+        <SearchButton onClick={toggleSearch}>
+          <img src={Chatsearch} />
+        </SearchButton>
+        {showSearch && (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             <SearchInput
               show={showSearch}
               value={searchMessage}
               type="text"
-              onChange={e => setSearchMessage(e.target.value)}
-              onKeyPress={e => e.key === 'Enter' && handleSearch()}
+              onChange={(e: any) => setSearchMessage(e.target.value)}
+              onKeyPress={(e: any) => e.key === 'Enter' && handleSearch()}
               placeholder="검색"
             />
-          )}
-        </ChatContainer>
+            <SearchDown onClick={handleSearchDown}>
+              <Pointerimg src={searchDown} />
+            </SearchDown>
+            <SearchUp onClick={handleSearchUp}>
+              <Pointerimg src={pointerup} />
+            </SearchUp>
+          </div>
+        )}
       </Container>
     </ThemeProvider>
   );
