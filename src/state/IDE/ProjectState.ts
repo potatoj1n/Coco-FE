@@ -86,7 +86,17 @@ const useProjectStore = create<ProjectStore>(set => ({
       return newState;
     }),
 
-  removeProject: projectId => set(state => ({ projects: state.projects.filter(p => p.id !== projectId) })),
+  removeProject: async projectId => {
+    try {
+      await axios.delete(`${API_BASE_URL}/projects/${projectId}`, {
+        headers: { Authorization: `Basic ${Token}` },
+      });
+      set(state => ({ projects: state.projects.filter(p => p.id !== projectId) }));
+      console.log('프로젝트가 성공적으로 삭제되었습니다.');
+    } catch (error) {
+      console.error('프로젝트 삭제에 실패했습니다.', error);
+    }
+  },
   updateProject: (projectId, newData) =>
     set(state => ({
       projects: state.projects.map(p => (p.id === projectId ? { ...p, ...newData } : p)),
