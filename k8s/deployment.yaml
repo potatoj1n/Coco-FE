@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: kargocd
 spec:
-  replicas: 20
+  replicas: 2
   selector:
     matchLabels:
       app: frontend
@@ -15,15 +15,15 @@ spec:
         app: frontend
     spec:
       containers:
-      - name: frontend
-        image: krmp-d2hub-idock.9rum.cc/dev-test/repo_a2fa9fb9e38b
-        ports:
-        - containerPort: 3000
-        volumeMounts:
-        - name: nginx-config-volume
-          mountPath: /etc/nginx/nginx.conf
-          subPath: nginx.conf
+        - name: frontend
+          image: krmp-d2hub-idock.9rum.cc/dev-test/repo_a2fa9fb9e38b
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
       volumes:
-      - name: nginx-config-volume
-        configMap:
-          name: nginx-config
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config
