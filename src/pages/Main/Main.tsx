@@ -69,11 +69,13 @@ import mypageIcondark from '../../assets/mypageIcondark.svg';
 import { getCurrentDate } from '../../components/Date';
 import useChatStore from '../../state/Chat/ChatStore';
 import axios from 'axios';
+
 import useAuthStore from '../../state/AuthStore';
 interface Attendance {
   date: string;
   present: boolean;
 }
+
 const userName = 'coco';
 const userPassword = 'coco';
 const Token = btoa(`${userName}:${userPassword}`);
@@ -81,6 +83,8 @@ const Main = () => {
   const { memberId, nickname } = useAuthStore();
   const stompClient = useRef<Client | null>(null);
   const { messages, addMessage, deleteMessage, deleteAllMessages } = useChatStore();
+  const [attendance, setAttendance] = useState<Attendance[]>([]);
+  const todayInfo = getCurrentDate();
 
   const [newMessage, setNewMessage] = useState<string>('');
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
@@ -113,20 +117,17 @@ const Main = () => {
           webSocketFactory: () => socket,
           onConnect: () => {
             console.log('Connected', memberId);
-            deleteAllMessages(); // 이전 메시지 삭제
-            loadInitialMessages(); // 초기 데이터 로드를 여기로 옮깁니다
+            deleteAllMessages();
+            // 초기 메시지 로드
+            loadInitialMessages();
+
             // 실시간 채팅 구독 설정 및 초기 메시지 불러오기
             // 먼저 기존 데이터를 불러옵니다
             // 실시간 메시지를 받기 위한 구독 설정
             stompClient.current?.subscribe('/topic/chat', message => {
-              console.log('Received message:', message);
               const receivedMessage = JSON.parse(message.body);
-              if (receivedMessage.message && receivedMessage.memberId && receivedMessage.nickname) {
-                addMessage(receivedMessage);
-                console.log('Message added:', receivedMessage);
-              } else {
-                console.error('Invalid message format:', receivedMessage);
-              }
+              addMessage(receivedMessage);
+              console.log('Message added:', receivedMessage);
             });
           },
           onStompError: frame => {
@@ -168,7 +169,7 @@ const Main = () => {
         console.log('Disconnected'); // 비동기 작업 없이 STOMP 클라이언트 비활성화
       }
     };
-  }, [deleteAllMessages]); // 의존성 배열, 필요에 따라 변수 포함
+  }, [deleteAllMessages, addMessage, memberId]); // 의존성 배열, 필요에 따라 변수 포함
 
   // 메시지 배열이 변경될 때마다 실행되어 스크롤을 맨 아래로 이동
   useEffect(() => {
@@ -182,9 +183,6 @@ const Main = () => {
     }
   }, [messages]);
 
-  const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewMessage(e.target.value);
-  };
   const togglePJList = () => {
     setshowPjList(!showPjList);
     console.log('Current showPjList before toggle:', showPjList);
@@ -203,6 +201,31 @@ const Main = () => {
     setCurrentDate(date);
   }, []);
 
+  // 서버에서 출석 정보를 가져와 병합
+  useEffect(() => {
+    const todayString = `${todayInfo.year}-${todayInfo.month.toString().padStart(2, '0')}-${todayInfo.day.toString().padStart(2, '0')}`;
+
+    const fetchAttendance = async () => {
+      try {
+        const response = await address.get(`/api/attend?memberId=${memberId}`);
+        const serverData = response.data;
+        console.log('Server Data:', serverData);
+        // 서버에서 받은 attendDate를 확인하여 오늘 날짜가 포함되어 있는지 검사
+        const todayAttended = serverData[0].attendDate.includes(todayString);
+        if (todayAttended) {
+          console.log('출석 완료');
+          setClicked(true);
+          setShowImage(true);
+        } else {
+          console.log('출석하지 않음');
+        }
+      } catch (error) {
+        console.error('Error fetching attendance data:', error);
+      }
+    };
+
+    fetchAttendance();
+  }, [memberId]);
   const sendAttendance = async (memberId: any) => {
     try {
       const response = await axios.post(
