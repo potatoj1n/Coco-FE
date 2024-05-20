@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import LanguageSelector from '../../components/IDE/LanguageSelect';
 import PjList from '../../components/PjList';
+import SockJS from 'sockjs-client';
+import { formatKoreanTime } from '../../components/Timestamp';
+
+import { Client, IMessage } from '@stomp/stompjs';
+import address from '../../components/Address';
+
 import {
   lightTheme,
   darkTheme,
@@ -42,6 +48,9 @@ import {
   MessageMine,
   MessageMinetext,
   AttendCalender,
+  MyUserContainer,
+  Timestampmine,
+  Timestamp,
 } from './MainStyles';
 import { ThemeProvider } from 'styled-components';
 import useLanguageStore from '../../state/IDE/IdeStore';
@@ -60,15 +69,22 @@ import mypageIcondark from '../../assets/mypageIcondark.svg';
 import { getCurrentDate } from '../../components/Date';
 import useChatStore from '../../state/Chat/ChatStore';
 import axios from 'axios';
+
 import useAuthStore from '../../state/AuthStore';
+interface Attendance {
+  date: string;
+  present: boolean;
+}
 
 const userName = 'coco';
 const userPassword = 'coco';
 const Token = btoa(`${userName}:${userPassword}`);
 const Main = () => {
   const { memberId, nickname } = useAuthStore();
-
-  const messages = useChatStore(state => state.messages);
+  const stompClient = useRef<Client | null>(null);
+  const { messages, addMessage, deleteMessage, deleteAllMessages } = useChatStore();
+  const [attendance, setAttendance] = useState<Attendance[]>([]);
+  const todayInfo = getCurrentDate();
 
   const [newMessage, setNewMessage] = useState<string>('');
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
@@ -81,6 +97,7 @@ const Main = () => {
   const [clicked, setClicked] = useState(false); // 버튼 클릭 상태 추가
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [currentDate, setCurrentDate] = useState<{ day: number; month: number }>();
+  const [isLoading, setLoading] = useState(true);
 
   const handleButtonClick = () => {
     if (!clicked) {
@@ -91,6 +108,69 @@ const Main = () => {
       sendAttendance(memberId);
     }
   };
+  useEffect(() => {
+    // 비동기 작업을 실행하는 함수
+    const connectStomp = async () => {
+      try {
+        const socket = new SockJS('http://43.201.76.117:8080/ws');
+        stompClient.current = new Client({
+          webSocketFactory: () => socket,
+          onConnect: () => {
+            console.log('Connected', memberId);
+            deleteAllMessages();
+            // 초기 메시지 로드
+            loadInitialMessages();
+
+            // 실시간 채팅 구독 설정 및 초기 메시지 불러오기
+            // 먼저 기존 데이터를 불러옵니다
+            // 실시간 메시지를 받기 위한 구독 설정
+            stompClient.current?.subscribe('/topic/chat', message => {
+              const receivedMessage = JSON.parse(message.body);
+              addMessage(receivedMessage);
+              console.log('Message added:', receivedMessage);
+            });
+          },
+          onStompError: frame => {
+            console.error('Broker reported error: ' + frame.headers['message']);
+            console.error('Additional details: ' + frame.body);
+          },
+        });
+        stompClient.current.activate();
+      } catch (error) {
+        console.error('Connection error:', error);
+      }
+    };
+    // 채팅 데이터를 불러오는 함수
+    const loadInitialMessages = async () => {
+      try {
+        // 기존 채팅 데이터 요청 (토큰 없이)
+        const response = await axios.get(
+          `http://43.201.76.117:8080/messages`,
+          // 데이터를 성공적으로 받아왔다면 화면에 표시하는 로직
+          { headers: { Authorization: `Basic ${Token}` } },
+        );
+
+        response.data.forEach((msg: any) => {
+          addMessage(msg);
+        });
+        console.log('Get messages:', response.data);
+        setLoading(false); // 로딩 상태 업데이트
+      } catch (error) {
+        console.error('Failed to load initial messages:', error);
+      }
+    };
+    // 비동기 함수 호출
+    connectStomp();
+
+    // 클린업 함수에서는 비동기 로직을 포함하지 않고, 단지 필요한 자원 정리만 수행
+    return () => {
+      if (stompClient.current) {
+        stompClient.current.deactivate();
+        console.log('Disconnected'); // 비동기 작업 없이 STOMP 클라이언트 비활성화
+      }
+    };
+  }, [deleteAllMessages, addMessage, memberId]); // 의존성 배열, 필요에 따라 변수 포함
+
   // 메시지 배열이 변경될 때마다 실행되어 스크롤을 맨 아래로 이동
   useEffect(() => {
     const chatContainer = messagesEndRef.current?.parentElement; // Chatmain 컨테이너를 가져옴
@@ -103,9 +183,6 @@ const Main = () => {
     }
   }, [messages]);
 
-  const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewMessage(e.target.value);
-  };
   const togglePJList = () => {
     setshowPjList(!showPjList);
     console.log('Current showPjList before toggle:', showPjList);
@@ -124,6 +201,31 @@ const Main = () => {
     setCurrentDate(date);
   }, []);
 
+  // 서버에서 출석 정보를 가져와 병합
+  useEffect(() => {
+    const todayString = `${todayInfo.year}-${todayInfo.month.toString().padStart(2, '0')}-${todayInfo.day.toString().padStart(2, '0')}`;
+
+    const fetchAttendance = async () => {
+      try {
+        const response = await address.get(`/api/attend?memberId=${memberId}`);
+        const serverData = response.data;
+        console.log('Server Data:', serverData);
+        // 서버에서 받은 attendDate를 확인하여 오늘 날짜가 포함되어 있는지 검사
+        const todayAttended = serverData[0].attendDate.includes(todayString);
+        if (todayAttended) {
+          console.log('출석 완료');
+          setClicked(true);
+          setShowImage(true);
+        } else {
+          console.log('출석하지 않음');
+        }
+      } catch (error) {
+        console.error('Error fetching attendance data:', error);
+      }
+    };
+
+    fetchAttendance();
+  }, [memberId]);
   const sendAttendance = async (memberId: any) => {
     try {
       const response = await axios.post(
@@ -217,10 +319,14 @@ const Main = () => {
                 <div key={index}>
                   {msg.memberId == memberId ? (
                     <MessageMine>
+                      <Timestampmine>
+                        <div>{formatKoreanTime(msg.createdAt).date}</div>
+                        <div>{formatKoreanTime(msg.createdAt).time}</div>
+                      </Timestampmine>
                       <MessageMinetext>{msg.message}</MessageMinetext>
-                      <UserContainer>
+                      <MyUserContainer>
                         <UserIcon src={profileMine} />
-                      </UserContainer>
+                      </MyUserContainer>
                     </MessageMine>
                   ) : (
                     <MessageOther>
@@ -229,7 +335,10 @@ const Main = () => {
                         <UserName>{msg.nickname}</UserName>
                       </UserContainer>
                       <MessageOthertext>{msg.message}</MessageOthertext>
-                      <UserName>{msg.createdAt}</UserName>
+                      <Timestamp>
+                        <div>{formatKoreanTime(msg.createdAt).date}</div>
+                        <div>{formatKoreanTime(msg.createdAt).time}</div>
+                      </Timestamp>
                     </MessageOther>
                   )}
                 </div>

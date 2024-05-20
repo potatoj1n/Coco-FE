@@ -1,6 +1,8 @@
 /* eslint-disable prefer-const */
 import axios from 'axios';
 import { create } from 'zustand';
+import useAuthStore from '../AuthStore';
+
 const API_BASE_URL = 'http://43.201.76.117:8080/api';
 const userName = 'coco';
 const userPassword = 'coco';
@@ -32,7 +34,6 @@ interface File {
 interface ProjectData {
   projectId: string;
   projectName: string;
-  language: string;
 }
 interface FolderData {
   folderId: string;
@@ -124,23 +125,25 @@ const useProjectStore = create<ProjectStore>(set => ({
       ),
     })),
   loadProjects: async () => {
-    let memberId = 1;
+    const memberId = useAuthStore.getState().memberId;
+    console.log(memberId);
     try {
       const response = await axios.get<ProjectData[]>(`${API_BASE_URL}/projects?memberId=${memberId}`, {
-        headers: { Authorization: `Basic ${Token}` },
+        headers: { Authorization: `Basic ${Token}`, withCredentials: true },
       });
+      console.log('프로젝트 리스트 요청 성공', response.data);
       const projects = response.data.map(
         (project: ProjectData): Project => ({
           id: project.projectId,
           name: project.projectName,
-          language: project.language, // 언어 정보가 없으면 빈 문자열로 초기화
-          folders: [], // 초기 폴더는 비어있음
-          files: [], // 초기 파일도 비어있음
+          language: '',
+          folders: [],
+          files: [],
         }),
       );
       set({ projects });
     } catch (error) {
-      console.error('Failed to load projects:', error);
+      console.error('프로젝트 리스트 요청 실패:', error);
     }
   },
   selectProject: async (projectId: string) => {
