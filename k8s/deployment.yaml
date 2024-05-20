@@ -3,9 +3,9 @@ kind: Deployment
 metadata:
   name: frontend
   labels:
-    app: frontend
+    app.kubernetes.io/managed-by: kargocd
 spec:
-  replicas: 1
+  replicas: 20
   selector:
     matchLabels:
       app: frontend
@@ -18,10 +18,10 @@ spec:
       - name: frontend
         image: krmp-d2hub-idock.9rum.cc/dev-test/repo_a2fa9fb9e38b
         ports:
-        - containerPort: 80
+        - containerPort: 3000
         volumeMounts:
         - name: nginx-config-volume
-          mountPath: /etc/nginx/conf.d
+          mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
       volumes:
       - name: nginx-config-volume
