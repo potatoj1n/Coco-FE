@@ -473,16 +473,19 @@ export const UserContainer = styled.div`
   align-items: center;
   margin: 0px 10px 0px 10px;
 `;
+export const MyUserContainer = styled(UserContainer)`
+  margin: 0px 10px 20px 10px;
+`;
 
 export const UserName = styled.h1`
-  font-size: 8px;
-  margin-top: 5px;
+  font-size: 10px;
+  margin-top: 0.6rem;
   white-space: nowrap;
 `;
 
 export const UserIcon = styled.img`
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
 `;
 
@@ -496,12 +499,15 @@ export const MessageFlexContainer = styled.div`
 export const MessageOther = styled.div`
   align-self: flex-start;
   display: flex;
-  margin: 0px 5px 0px 0px;
-  padding: 0;
+  margin: 9px 0px;
+  align-items: flex-end;
+  width: 100%;
 `;
 
 export const MessageMine = styled(MessageOther)`
-  align-self: flex-end;
+  margin-right: 10px;
+  align-items: flex-end;
+  justify-content: flex-end;
 `;
 
 export const MessageMinetext = styled.div`
@@ -518,30 +524,43 @@ export const MessageMinetext = styled.div`
   color: black;
   max-width: 265px;
   @media (max-width: 1250px) {
-    max-width: 55vw;
-  }
-  @media (max-width: 1200px) {
-    max-width: 54.5vw;
-  }
-  @media (max-width: 1150px) {
-    max-width: 54vw;
-  }
-  @media (max-width: 1100px) {
-    max-width: 53.5vw;
-  }
-  @media (max-width: 1050px) {
-    max-width: 53vw;
-  }
-  @media (max-width: 1000px) {
-    max-width: 52.5vw;
-  }
-  @media (max-width: 950px) {
     max-width: 52vw;
   }
+  @media (max-width: 1200px) {
+    max-width: 51.5vw;
+  }
+  @media (max-width: 1150px) {
+    max-width: 51vw;
+  }
+  @media (max-width: 1100px) {
+    max-width: 50.5vw;
+  }
+  @media (max-width: 1050px) {
+    max-width: 50vw;
+  }
+  @media (max-width: 1000px) {
+    max-width: 49.5vw;
+  }
+  @media (max-width: 950px) {
+    max-width: 49vw;
+  }
   @media (max-width: 900px) {
-    max-width: 245px;
+    max-width: 220px;
   }
 `;
 export const MessageOthertext = styled(MessageMinetext)`
   background-color: #fff;
+`;
+export const Timestamp = styled.h1`
+  font-size: 12px;
+  margin-bottom: 10px;
+`;
+export const Timestampmine = styled.h1`
+  font-size: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  white-space: nowrap;
 `;

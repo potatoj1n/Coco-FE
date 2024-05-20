@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import LanguageSelector from '../../components/IDE/LanguageSelect';
 import PjList from '../../components/PjList';
 import SockJS from 'sockjs-client';
+import { formatKoreanTime } from '../../components/Timestamp';
+
 import { Client, IMessage } from '@stomp/stompjs';
 import address from '../../components/Address';
 
@@ -46,6 +48,9 @@ import {
   MessageMine,
   MessageMinetext,
   AttendCalender,
+  MyUserContainer,
+  Timestampmine,
+  Timestamp,
 } from './MainStyles';
 import { ThemeProvider } from 'styled-components';
 import useLanguageStore from '../../state/IDE/IdeStore';
@@ -291,10 +296,14 @@ const Main = () => {
                 <div key={index}>
                   {msg.memberId == memberId ? (
                     <MessageMine>
+                      <Timestampmine>
+                        <div>{formatKoreanTime(msg.createdAt).date}</div>
+                        <div>{formatKoreanTime(msg.createdAt).time}</div>
+                      </Timestampmine>
                       <MessageMinetext>{msg.message}</MessageMinetext>
-                      <UserContainer>
+                      <MyUserContainer>
                         <UserIcon src={profileMine} />
-                      </UserContainer>
+                      </MyUserContainer>
                     </MessageMine>
                   ) : (
                     <MessageOther>
@@ -303,7 +312,10 @@ const Main = () => {
                         <UserName>{msg.nickname}</UserName>
                       </UserContainer>
                       <MessageOthertext>{msg.message}</MessageOthertext>
-                      <UserName>{msg.createdAt}</UserName>
+                      <Timestamp>
+                        <div>{formatKoreanTime(msg.createdAt).date}</div>
+                        <div>{formatKoreanTime(msg.createdAt).time}</div>
+                      </Timestamp>
                     </MessageOther>
                   )}
                 </div>
