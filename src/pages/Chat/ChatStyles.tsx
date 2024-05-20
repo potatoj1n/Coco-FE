@@ -26,6 +26,7 @@ export const StyledDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 1;
 `;
 export const MessageContainer = styled.div`
   display: flex;
@@ -38,6 +39,7 @@ export const MessageContainer = styled.div`
   padding: 5px 7vw;
   overflow-y: scroll;
   height: calc(100% - 128px);
+  z-index: 100000;
 `;
 
 export const UserContainer = styled.div`
@@ -45,19 +47,23 @@ export const UserContainer = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 0px 10px 0px 10px;
+  z-index: 100000;
 `;
 export const MyUserContainer = styled(UserContainer)`
   margin: 0px 10px 20px 10px;
+  z-index: 100000;
 `;
 
 export const UserName = styled.h1`
   font-size: 12px;
   margin-top: 0.6rem;
   white-space: nowrap;
+  z-index: 100000;
 `;
 export const Timestamp = styled.h1`
   font-size: 12px;
   margin-bottom: 10px;
+  z-index: 100000;
 `;
 export const Timestampmine = styled.h1`
   font-size: 12px;
@@ -66,12 +72,14 @@ export const Timestampmine = styled.h1`
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-end;
+  z-index: 100000;
 `;
 
 export const UserIcon = styled.img`
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  z-index: 100000;
 `;
 
 export const MessageFlexContainer = styled.div`
@@ -79,12 +87,14 @@ export const MessageFlexContainer = styled.div`
   width: 100%;
   flex-direction: row;
   justify-content: flex-end;
+  z-index: 100000;
 `;
 export const MyMessageTrash = styled.img`
   width: 15px;
   height: 15px;
   margin: 0px -12px 0px 0;
   cursor: pointer;
+  z-index: 100000;
 `;
 
 export const MessageOther = styled.div`
@@ -93,12 +103,14 @@ export const MessageOther = styled.div`
   margin: 9px 0px;
   align-items: flex-end;
   width: 100%;
+  z-index: 100001;
 `;
 
 export const MessageMine = styled(MessageOther)`
   margin-right: 10px;
   align-items: flex-end;
   justify-content: flex-end;
+  z-index: 100001;
 `;
 
 export const MessageMinetext = styled.div`
@@ -114,9 +126,11 @@ export const MessageMinetext = styled.div`
   font-size: 16px;
   color: black;
   max-width: calc(100% - 200px);
+  z-index: 100001;
 `;
 export const MessageOthertext = styled(MessageMinetext)`
   background-color: #fff;
+  z-index: 100001;
 `;
 
 export const ChatContainer = styled.div`
@@ -131,6 +145,7 @@ export const ChatContainer = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 1;
 `;
 
 export const ChatInputContainer = styled.div`
@@ -170,6 +185,7 @@ export const SearchButton = styled.button`
   right: 4vw;
   width: 35px;
   height: 35px;
+  z-index: 100002;
 `;
 
 export const SearchInput = styled.input<SearchInputProps>`
@@ -188,6 +204,7 @@ export const SearchInput = styled.input<SearchInputProps>`
   max-width: 500px;
   height: 50px;
   display: ${({ show }) => (show ? 'block' : 'none')};
+  z-index: 100002;
 `;
 export const SearchDown = styled.button`
   cursor: pointer;
@@ -205,6 +222,7 @@ export const SearchDown = styled.button`
   &:hover {
     background-color: #f5f5f5;
   }
+  z-index: 100002;
 `;
 export const SearchUp = styled.button`
   cursor: pointer;
@@ -222,9 +240,11 @@ export const SearchUp = styled.button`
   &:hover {
     background-color: #f5f5f5;
   }
+  z-index: 100002;
 `;
 
 export const Pointerimg = styled.img`
   max-width: 100%;
   max-height: 100%;
+  z-index: 100002;
 `;

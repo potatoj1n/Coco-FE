@@ -178,7 +178,6 @@ const Main = () => {
       // 최하단으로 스크롤
       chatContainer.scrollTo({
         top: chatContainer.scrollHeight,
-        behavior: 'smooth',
       });
     }
   }, [messages]);
