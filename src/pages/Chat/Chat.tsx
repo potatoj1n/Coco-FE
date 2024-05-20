@@ -79,7 +79,15 @@ const Chat = () => {
   const [searchResults, setSearchResults] = useState<Message[]>([]);
 
   const [activeIndex, setActiveIndex] = useState(-1);
-
+  const getRandomColorClass = () => {
+    const colors = [
+      { backgroundColor: '#E1F9F0' },
+      { backgroundColor: '#23BE87' },
+      { backgroundColor: '#9BE9A8' },
+      { backgroundColor: 'rgba(118, 193, 175)' },
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
   //내 채팅 삭제하는 함수
   const handleDeleteMessage = async (messageId: any) => {
     if (window.confirm(`메세지를 삭제할건가요?`)) {

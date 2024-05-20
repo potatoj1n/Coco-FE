@@ -47,7 +47,6 @@ const router = createBrowserRouter([
           // <ProtectedRoute>
           <IDE />
           // </ProtectedRoute>
-
         ),
         children: [
           {
