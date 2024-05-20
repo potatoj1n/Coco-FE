@@ -1,6 +1,8 @@
 /* eslint-disable prefer-const */
 import axios from 'axios';
 import { create } from 'zustand';
+import useAuthStore from '../AuthStore';
+
 const API_BASE_URL = 'http://43.201.76.117:8080/api';
 const userName = 'coco';
 const userPassword = 'coco';
@@ -124,7 +126,7 @@ const useProjectStore = create<ProjectStore>(set => ({
       ),
     })),
   loadProjects: async () => {
-    let memberId = 1;
+    const memberId = useAuthStore.getState().memberId;
     try {
       const response = await axios.get<ProjectData[]>(`${API_BASE_URL}/projects?memberId=${memberId}`, {
         headers: { Authorization: `Basic ${Token}` },
