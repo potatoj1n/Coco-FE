@@ -102,8 +102,6 @@ export const FolderButton = styled.button`
   align-items: center;
   justify-content: space-between;
   height: 40px;
-  transition: background-color 0.6s ease;
-
   margin-top: 10px;
   &:hover {
     background-color: rgba(118, 193, 175, 0.3);
@@ -125,7 +123,6 @@ export const ChatButton = styled(Link)`
   display: flex;
   align-items: center;
   height: 40px;
-  transition: background-color 0.6s ease;
 
   &:hover {
     background-color: rgba(118, 193, 175, 0.3);
@@ -370,7 +367,7 @@ export const ModifyPj = styled.p`
   font-size: 18px;
 `;
 
-export const ModifyPjBtn = styled(Link)`
+export const ModifyPjBtn = styled.button`
 background-color: white;
 padding: 20px;
 border-radius: 5px;

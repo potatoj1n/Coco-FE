@@ -44,9 +44,9 @@ const router = createBrowserRouter([
       {
         path: '/ide/:memberId',
         element: (
-          <ProtectedRoute>
-            <IDE />
-          </ProtectedRoute>
+          // <ProtectedRoute>
+          <IDE />
+          // </ProtectedRoute>
         ),
         children: [
           {
