@@ -51,6 +51,8 @@ import {
 } from './ChatStyles';
 import axios from 'axios';
 import { AnyARecord } from 'dns';
+import useConsoleStore from '../../state/IDE/ConsoleStore';
+import { Loading } from '../../components/IDE/Loading';
 
 const userName = 'coco';
 const userPassword = 'coco';
@@ -60,7 +62,6 @@ const Chat = () => {
   const { messages, addMessage, deleteMessage, deleteAllMessages } = useChatStore();
 
   const [newMessage, setNewMessage] = useState<string>('');
-  const [isLoading, setLoading] = useState(true);
   const { themeColor } = useTheTheme();
   const { memberId } = useAuthStore();
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -76,6 +77,7 @@ const Chat = () => {
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [lastSearchHadResults, setLastSearchHadResults] = useState(true);
+  const { isLoading, setIsLoading } = useConsoleStore();
 
   //내 채팅 삭제하는 함수
   const handleDeleteMessage = async (messageId: any) => {
@@ -100,6 +102,7 @@ const Chat = () => {
   useEffect(() => {
     // 비동기 작업을 실행하는 함수
     const connectStomp = async () => {
+      setIsLoading(true);
       try {
         const socket = new SockJS('http://43.201.76.117:8080/ws');
         stompClient.current = new Client({
@@ -125,6 +128,7 @@ const Chat = () => {
                 console.error('Invalid message format:', receivedMessage);
               }
             });
+            setIsLoading(false);
           },
           onStompError: frame => {
             console.error('Broker reported error: ' + frame.headers['message']);
@@ -151,7 +155,6 @@ const Chat = () => {
           addMessage(msg);
         });
         console.log('Get messages:', response.data);
-        setLoading(false); // 로딩 상태 업데이트
       } catch (error) {
         console.error('Failed to load initial messages:', error);
       }
@@ -170,12 +173,6 @@ const Chat = () => {
 
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
 
-  // 데이터 로딩 완료 후 스크롤 이동
-  useEffect(() => {
-    if (!isLoading && chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    }
-  }, [isLoading]); // isLoading이 변경될 때 실행
   // 메시지 전송
   const handleSendMessage = () => {
     if (newMessage.trim() !== '') {
@@ -274,95 +271,98 @@ const Chat = () => {
 
   return (
     <ThemeProvider theme={currentTheme}>
-      <Container>
-        <StyledDiv>
-          <IconButton>
-            <Link to={`/ide/${memberId}`}>{themeColor === 'light' ? <FolderLightIcon /> : <FolderDarkIcon />}</Link>
-          </IconButton>
-          <IconButton>{themeColor === 'light' ? <ChatLightIcon /> : <ChatDarkIcon />}</IconButton>
-        </StyledDiv>
-        {isLoading && <p>Loading messages...</p>}
-        <MessageContainer ref={chatContainerRef}>
-          <div style={{ flexGrow: 1, height: '100%', overflowY: 'scroll' }}>
-            {messages
-              .filter(msg => !msg.isDeleted)
-              .map((msg, index) => (
-                <div
-                  key={msg.chatId}
-                  ref={el => (messageRefs.current[msg.chatId] = el)}
-                  style={{
-                    fontWeight: searchResults.includes(msg) ? 'bold' : 'normal',
-                    textDecoration: searchResults.includes(msg) ? 'underline' : 'none',
-                  }}
-                >
-                  {msg.memberId == memberId ? (
-                    <MessageMine>
-                      <Timestampmine>
-                        <div>{formatKoreanTime(msg.createdAt).date}</div>
-                        <div>{formatKoreanTime(msg.createdAt).time}</div>
-                      </Timestampmine>
-                      <MessageMinetext>{msg.message}</MessageMinetext>
-                      <MyMessageTrash onClick={() => handleDeleteMessage(msg.chatId)} src={messageTrash} />
-                      <MyUserContainer>
-                        <UserIcon src={profileMine} />
-                      </MyUserContainer>
-                    </MessageMine>
-                  ) : (
-                    <MessageFlexContainer>
-                      <MessageOther>
-                        <UserContainer>
-                          <UserIcon src={profileOther} />
-                          <UserName>{msg.nickname}</UserName>
-                        </UserContainer>
-                        <MessageOthertext>{msg.message}</MessageOthertext>
-                        <Timestamp>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <Container>
+          <StyledDiv>
+            <IconButton>
+              <Link to={`/ide/${memberId}`}>{themeColor === 'light' ? <FolderLightIcon /> : <FolderDarkIcon />}</Link>
+            </IconButton>
+            <IconButton>{themeColor === 'light' ? <ChatLightIcon /> : <ChatDarkIcon />}</IconButton>
+          </StyledDiv>
+          <MessageContainer ref={chatContainerRef}>
+            <div style={{ flexGrow: 1, height: '100%', overflowY: 'scroll' }}>
+              {messages
+                .filter(msg => !msg.isDeleted)
+                .map((msg, index) => (
+                  <div
+                    key={msg.chatId}
+                    ref={el => (messageRefs.current[msg.chatId] = el)}
+                    style={{
+                      fontWeight: searchResults.includes(msg) ? 'bold' : 'normal',
+                      textDecoration: searchResults.includes(msg) ? 'underline' : 'none',
+                    }}
+                  >
+                    {msg.memberId == memberId ? (
+                      <MessageMine>
+                        <Timestampmine>
                           <div>{formatKoreanTime(msg.createdAt).date}</div>
                           <div>{formatKoreanTime(msg.createdAt).time}</div>
-                        </Timestamp>
-                      </MessageOther>
-                    </MessageFlexContainer>
-                  )}
-                </div>
-              ))}
-          </div>
-          <div ref={messagesEndRef} /> {/* 스크롤을 아래로 이동하기 위한 빈 div */}
-        </MessageContainer>
-        <ChatContainer>
-          <ChatInputContainer>
-            <ChatInput
-              type="text"
-              value={newMessage}
-              onChange={(e: any) => setNewMessage(e.target.value)}
-              placeholder="메시지를 입력하세요"
-              onKeyPress={handleKeyPress}
-            />
-            <SendButton type="button" onClick={handleSendMessage}>
-              <img src={Chatsend} />
-            </SendButton>
-          </ChatInputContainer>
-        </ChatContainer>
-        <SearchButton onClick={toggleSearch}>
-          <img src={Chatsearch} />
-        </SearchButton>
-        {showSearch && (
-          <div>
-            <SearchInput
-              show={showSearch}
-              value={searchMessage}
-              type="text"
-              onChange={e => setSearchMessage(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSearch()}
-              placeholder="검색"
-            />
-            <SearchDown onClick={handleSearchDown}>
-              <Pointerimg src={searchDown} />
-            </SearchDown>
-            <SearchUp onClick={handleSearchUp}>
-              <Pointerimg src={pointerup} />
-            </SearchUp>
-          </div>
-        )}
-      </Container>
+                        </Timestampmine>
+                        <MessageMinetext>{msg.message}</MessageMinetext>
+                        <MyMessageTrash onClick={() => handleDeleteMessage(msg.chatId)} src={messageTrash} />
+                        <MyUserContainer>
+                          <UserIcon src={profileMine} />
+                        </MyUserContainer>
+                      </MessageMine>
+                    ) : (
+                      <MessageFlexContainer>
+                        <MessageOther>
+                          <UserContainer>
+                            <UserIcon src={profileOther} />
+                            <UserName>{msg.nickname}</UserName>
+                          </UserContainer>
+                          <MessageOthertext>{msg.message}</MessageOthertext>
+                          <Timestamp>
+                            <div>{formatKoreanTime(msg.createdAt).date}</div>
+                            <div>{formatKoreanTime(msg.createdAt).time}</div>
+                          </Timestamp>
+                        </MessageOther>
+                      </MessageFlexContainer>
+                    )}
+                  </div>
+                ))}
+            </div>
+            <div ref={messagesEndRef} /> {/* 스크롤을 아래로 이동하기 위한 빈 div */}
+          </MessageContainer>
+          <ChatContainer>
+            <ChatInputContainer>
+              <ChatInput
+                type="text"
+                value={newMessage}
+                onChange={(e: any) => setNewMessage(e.target.value)}
+                placeholder="메시지를 입력하세요"
+                onKeyPress={handleKeyPress}
+              />
+              <SendButton type="button" onClick={handleSendMessage}>
+                <img src={Chatsend} />
+              </SendButton>
+            </ChatInputContainer>
+          </ChatContainer>
+          <SearchButton onClick={toggleSearch}>
+            <img src={Chatsearch} />
+          </SearchButton>
+          {showSearch && (
+            <div>
+              <SearchInput
+                show={showSearch}
+                value={searchMessage}
+                type="text"
+                onChange={e => setSearchMessage(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSearch()}
+                placeholder="검색"
+              />
+              <SearchDown onClick={handleSearchDown}>
+                <Pointerimg src={searchDown} />
+              </SearchDown>
+              <SearchUp onClick={handleSearchUp}>
+                <Pointerimg src={pointerup} />
+              </SearchUp>
+            </div>
+          )}
+        </Container>
+      )}
     </ThemeProvider>
   );
 };

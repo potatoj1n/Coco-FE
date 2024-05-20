@@ -72,6 +72,8 @@ import useChatStore from '../../state/Chat/ChatStore';
 import axios from 'axios';
 
 import useAuthStore from '../../state/AuthStore';
+import useConsoleStore from '../../state/IDE/ConsoleStore';
+import { Loading } from '../../components/IDE/Loading';
 interface Attendance {
   date: string;
   present: boolean;
@@ -98,7 +100,7 @@ const Main = () => {
   const [clicked, setClicked] = useState(false); // 버튼 클릭 상태 추가
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [currentDate, setCurrentDate] = useState<{ day: number; month: number }>();
-  const [isLoading, setLoading] = useState(true);
+  const { isLoading, setIsLoading } = useConsoleStore();
 
   const handleButtonClick = () => {
     if (!clicked) {
@@ -112,6 +114,7 @@ const Main = () => {
   useEffect(() => {
     // 비동기 작업을 실행하는 함수
     const connectStomp = async () => {
+      setIsLoading(true);
       try {
         const socket = new SockJS('http://43.201.76.117:8080/ws');
         stompClient.current = new Client({
@@ -130,6 +133,7 @@ const Main = () => {
               addMessage(receivedMessage);
               console.log('Message added:', receivedMessage);
             });
+            setIsLoading(false);
           },
           onStompError: frame => {
             console.error('Broker reported error: ' + frame.headers['message']);
@@ -155,7 +159,6 @@ const Main = () => {
           addMessage(msg);
         });
         console.log('Get messages:', response.data);
-        setLoading(false); // 로딩 상태 업데이트
       } catch (error) {
         console.error('Failed to load initial messages:', error);
       }
@@ -256,106 +259,111 @@ const Main = () => {
   }, [messages]);
   return (
     <ThemeProvider theme={currentTheme}>
-      <Container>
-        <Sidecontainer>
-          <div>
-            <PjButton onClick={() => setLanguageSelector(!languageSelector)}>
-              <Plus>+</Plus> 프로젝트 생성
-            </PjButton>
-            {languageSelector && <LanguageSelector onSelectChange={onSelect} onClose={onClose} />}
-          </div>
-          <div>
-            <FolderButton onClick={togglePJList}>
-              <Icon src={themeColor === 'light' ? folderLight : folderDark} />
-              <Menuname>프로젝트</Menuname>
-            </FolderButton>
-            {showPjList && <PjList onClose={() => setshowPjList(false)} />}
-          </div>
-
-          <ChatButton to={`/chat/${memberId}`}>
-            <Iconchat src={themeColor === 'light' ? chatLight : chatDark} />
-            <Menuname>chat</Menuname>
-          </ChatButton>
-          <ChatButton to={`/mypage/${memberId}`}>
-            <Iconmypage src={themeColor === 'light' ? mypageIconlight : mypageIcondark} />
-            <Menuname>my page</Menuname>
-          </ChatButton>
-        </Sidecontainer>
-        <Maincontainer>
-          <Hicontainer>
-            <Hione>어서오세요 {nickname} 님,</Hione>
-            <Hitwo>오늘 하루도 힘내세요!</Hitwo>
-            <MainImg src={mainimg} />
-          </Hicontainer>
-          <Attendancecontainer>
-            <Date>
-              <Day>{currentDate?.day}</Day>
-              <Month>|DAY|</Month>
-            </Date>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <Container>
+          <Sidecontainer>
             <div>
-              <AttendButton onClick={handleButtonClick} disabled={clicked}>
-                {clicked ? '출석 완료' : '출석하기'}
-              </AttendButton>
-              <AttendanceImage $show={showImage} src={attend} />
+              <PjButton onClick={() => setLanguageSelector(!languageSelector)}>
+                <Plus>+</Plus> 프로젝트 생성
+              </PjButton>
+              {languageSelector && <LanguageSelector onSelectChange={onSelect} onClose={onClose} />}
             </div>
-            <AttendCalender to={`/mypage/${memberId}`}>출석현황</AttendCalender>
-          </Attendancecontainer>
-          <Pjcontainer>
-            <Icon src={themeColor === 'light' ? folderLight : folderDark} />
-            <ModifyPj>수정 중인 프로젝트</ModifyPj>
-            <ModifyPjBtn
-              onClick={() => {
-                if (selectedProjectId === null) {
-                  alert('수정 중인 프로젝트가 없습니다.');
-                } else {
-                  window.location.href = `/ide/${memberId}/${selectedProjectId}`;
-                }
-              }}
-            >
-              <ModifyIcon src={modifypj} />
-            </ModifyPjBtn>
-          </Pjcontainer>
-          <ChatContainer>
-            <Chatnav>
+            <div>
+              <FolderButton onClick={togglePJList}>
+                <Icon src={themeColor === 'light' ? folderLight : folderDark} />
+                <Menuname>프로젝트</Menuname>
+              </FolderButton>
+              {showPjList && <PjList onClose={() => setshowPjList(false)} />}
+            </div>
+
+            <ChatButton to={`/chat/${memberId}`}>
               <Iconchat src={themeColor === 'light' ? chatLight : chatDark} />
-              <Chatname> Chat </Chatname>
-              <Chatmore to={`/chat/${memberId}`}> 더보기... </Chatmore>
-            </Chatnav>
-            <Chatmain>
-              <div style={{ flexGrow: 1 }}></div>
-              {messages.map((msg, index) => (
-                <div key={index}>
-                  {msg.memberId == memberId ? (
-                    <MessageMine>
-                      <Timestampmine>
-                        <div>{formatKoreanTime(msg.createdAt).date}</div>
-                        <div>{formatKoreanTime(msg.createdAt).time}</div>
-                      </Timestampmine>
-                      <MessageMinetext>{msg.message}</MessageMinetext>
-                      <MyUserContainer>
-                        <UserIcon src={profileMine} />
-                      </MyUserContainer>
-                    </MessageMine>
-                  ) : (
-                    <MessageOther>
-                      <UserContainer>
-                        <UserIcon src={profileOther} />
-                        <UserName>{msg.nickname}</UserName>
-                      </UserContainer>
-                      <MessageOthertext>{msg.message}</MessageOthertext>
-                      <Timestamp>
-                        <div>{formatKoreanTime(msg.createdAt).date}</div>
-                        <div>{formatKoreanTime(msg.createdAt).time}</div>
-                      </Timestamp>
-                    </MessageOther>
-                  )}
-                </div>
-              ))}
-              <div ref={messagesEndRef} /> {/* 스크롤을 아래로 이동하기 위한 빈 div */}
-            </Chatmain>
-          </ChatContainer>
-        </Maincontainer>
-      </Container>
+              <Menuname>chat</Menuname>
+            </ChatButton>
+            <ChatButton to={`/mypage/${memberId}`}>
+              <Iconmypage src={themeColor === 'light' ? mypageIconlight : mypageIcondark} />
+              <Menuname>my page</Menuname>
+            </ChatButton>
+          </Sidecontainer>
+          <Maincontainer>
+            <Hicontainer>
+              <Hione>어서오세요 {nickname} 님,</Hione>
+              <Hitwo>오늘 하루도 힘내세요!</Hitwo>
+              <MainImg src={mainimg} />
+            </Hicontainer>
+            <Attendancecontainer>
+              <Date>
+                <Day>{currentDate?.day}</Day>
+                <Month>|DAY|</Month>
+              </Date>
+              <div>
+                <AttendButton onClick={handleButtonClick} disabled={clicked}>
+                  {clicked ? '출석 완료' : '출석하기'}
+                </AttendButton>
+                <AttendanceImage $show={showImage} src={attend} />
+              </div>
+              <AttendCalender to={`/mypage/${memberId}`}>출석현황</AttendCalender>
+            </Attendancecontainer>
+            <Pjcontainer>
+              <Icon src={themeColor === 'light' ? folderLight : folderDark} />
+              <ModifyPj>수정 중인 프로젝트</ModifyPj>
+              <ModifyPjBtn
+                onClick={() => {
+                  if (selectedProjectId === null) {
+                    alert('수정 중인 프로젝트가 없습니다.');
+                  } else {
+                    window.location.href = `/ide/${memberId}/${selectedProjectId}`;
+                  }
+                }}
+              >
+                <ModifyIcon src={modifypj} />
+              </ModifyPjBtn>
+            </Pjcontainer>
+
+            <ChatContainer>
+              <Chatnav>
+                <Iconchat src={themeColor === 'light' ? chatLight : chatDark} />
+                <Chatname> Chat </Chatname>
+                <Chatmore to={`/chat/${memberId}`}> 더보기... </Chatmore>
+              </Chatnav>
+              <Chatmain>
+                <div style={{ flexGrow: 1 }}></div>
+                {messages.map((msg, index) => (
+                  <div key={index}>
+                    {msg.memberId == memberId ? (
+                      <MessageMine>
+                        <Timestampmine>
+                          <div>{formatKoreanTime(msg.createdAt).date}</div>
+                          <div>{formatKoreanTime(msg.createdAt).time}</div>
+                        </Timestampmine>
+                        <MessageMinetext>{msg.message}</MessageMinetext>
+                        <MyUserContainer>
+                          <UserIcon src={profileMine} />
+                        </MyUserContainer>
+                      </MessageMine>
+                    ) : (
+                      <MessageOther>
+                        <UserContainer>
+                          <UserIcon src={profileOther} />
+                          <UserName>{msg.nickname}</UserName>
+                        </UserContainer>
+                        <MessageOthertext>{msg.message}</MessageOthertext>
+                        <Timestamp>
+                          <div>{formatKoreanTime(msg.createdAt).date}</div>
+                          <div>{formatKoreanTime(msg.createdAt).time}</div>
+                        </Timestamp>
+                      </MessageOther>
+                    )}
+                  </div>
+                ))}
+                <div ref={messagesEndRef} /> {/* 스크롤을 아래로 이동하기 위한 빈 div */}
+              </Chatmain>
+            </ChatContainer>
+          </Maincontainer>
+        </Container>
+      )}
     </ThemeProvider>
   );
 };
