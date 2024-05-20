@@ -20,7 +20,7 @@ import { ReactComponent as FolderDarkIcon } from '../../assets/folderdark.svg';
 import { ReactComponent as ChatDarkIcon } from '../../assets/chatdark.svg';
 import useChatStore, { Message } from '../../state/Chat/ChatStore';
 import useAuthStore from '../../state/AuthStore';
-
+import { formatKoreanTime } from '../../components/Timestamp';
 import {
   lightTheme,
   SearchUp,
@@ -56,13 +56,15 @@ const userPassword = 'coco';
 const Token = btoa(`${userName}:${userPassword}`);
 
 const Chat = () => {
-  const { messages, addMessage, deleteMessage } = useChatStore();
+  const { messages, addMessage, deleteMessage, deleteAllMessages } = useChatStore();
+
   const [newMessage, setNewMessage] = useState<string>('');
   const [isLoading, setLoading] = useState(true);
   const [searchMessage, setSearchMessage] = useState<string>('');
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const { themeColor } = useTheTheme();
   const { memberId } = useAuthStore();
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const location = useLocation();
   // 메시지 리스트의 끝을 가리킬 ref 생성
@@ -77,32 +79,6 @@ const Chat = () => {
   const [searchResults, setSearchResults] = useState<Message[]>([]);
 
   const [activeIndex, setActiveIndex] = useState(-1);
-
-  // 채팅 데이터를 불러오는 함수
-  const loadInitialMessages = async () => {
-    try {
-      // 기존 채팅 데이터 요청 (토큰 없이)
-      const response = await axios.get(
-        `http://43.201.76.117:8080/messages`,
-        // 데이터를 성공적으로 받아왔다면 화면에 표시하는 로직
-        { headers: { Authorization: `Basic ${Token}` } },
-      );
-      response.data.forEach((msg: any) => {
-        addMessage(msg);
-      });
-      console.log('Get messages:', response.data);
-      setLoading(false); // 로딩 상태 업데이트
-    } catch (error) {
-      console.error('Failed to load initial messages:', error);
-    }
-  };
-  useEffect(() => {
-    if (messageCount < messages.length) {
-      // 메시지 개수가 증가했을 때만 스크롤을 아래로 이동
-      scrollToBottom();
-    }
-    setMessageCount(messages.length); // 메시지 개수 업데이트
-  }, [messages.length]);
 
   //내 채팅 삭제하는 함수
   const handleDeleteMessage = async (messageId: any) => {
@@ -124,47 +100,94 @@ const Chat = () => {
     }
   };
 
-  //채팅 검색하는 함수
-  const handleSearch = async (searchMessage: string) => {
-    if (searchMessage.trim() === '') {
-      alert('검색어를 입력해주세요.');
-      return;
-    }
-    if (searchMessage.trim() !== '') {
-      try {
-        const response = await axios.get(`http://43.201.76.117:8080/message?search=${searchMessage}`, {
-          headers: { Authorization: `Basic ${Token}` },
-          params: { search: searchMessage }, // 서버에 검색어 전달
-        });
-        const searchResults: Message[] = response.data;
+  // 스크롤을 메시지 인덱스에 따라 중앙으로 이동시키는 함수
+  const scrollToMessage = useCallback(
+    (index: any) => {
+      const element = messageRefs.current[index];
+      const container = chatContainerRef.current;
 
-        if (searchResults.length === 0) {
-          searchResults.forEach(result => {
-            console.log(result); // 각 검색 결과의 상세 정보 확인
-          });
-          alert('해당 단어를 찾을 수 없습니다.');
-        } else {
-          setSearchResults(searchResults);
-          setActiveIndex(0); // 첫 번째 검색 결과로 초기 설정
-          scrollToMessage(0); // 첫 번째 검색 결과로 스크롤
-        }
-      } catch (error) {
-        console.error('Failed to search messages:', error);
+      if (element && container) {
+        const elementRect = element.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const centerPosition = containerRect.height / 2 - elementRect.height / 2;
+        const scrollPosition = element.offsetTop - container.offsetTop - centerPosition;
+
+        // 스크롤이 경계를 넘지 않도록 조정
+        const maxScroll = container.scrollHeight - container.clientHeight;
+        const newScrollPosition = Math.min(Math.max(0, scrollPosition), maxScroll);
+
+        container.scrollTo({ top: newScrollPosition, behavior: 'smooth' });
       }
+    },
+    [messageRefs, chatContainerRef],
+  );
+  // 다음 검색 결과로 이동
+  const handleSearchDown = useCallback(() => {
+    if (activeIndex > 0) {
+      setActiveIndex(prevIndex => prevIndex - 1);
+    } else {
+      alert('더 이상의 검색 결과가 없습니다.');
     }
-  };
+  }, [activeIndex]);
 
-  const scrollToMessage = (index: number) => {
-    const element = messageRefs.current[index];
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // 이전 검색 결과로 이동
+  const handleSearchUp = useCallback(() => {
+    if (activeIndex < searchResults.length - 1) {
+      setActiveIndex(prevIndex => prevIndex + 1);
+    } else {
+      alert('더 이상의 검색 결과가 없습니다.');
     }
-  };
+  }, [activeIndex, searchResults.length]);
 
   useEffect(() => {
-    // 메시지 목록이 변경될 때 스크롤 복원
-    restoreScrollPosition();
-  }, [messages.length]);
+    if (searchResults.length > 0) {
+      setActiveIndex(0);
+      setTimeout(() => scrollToMessage(0), 100); // DOM 업데이트 후 스크롤 조정
+    }
+  }, [searchResults]);
+
+  //채팅 검색하는 함수
+  const handleSearch = useCallback(
+    (searchTerm: any) => {
+      const filteredResults = messages
+        .filter(msg => msg.message.toLowerCase().includes(searchTerm.toLowerCase()))
+        .reverse();
+      setSearchResults(filteredResults);
+      setActiveIndex(0); // 검색 결과의 첫 번째 항목을 활성화
+
+      if (filteredResults.length > 0) {
+        setTimeout(() => scrollToMessage(0), 100); // 비동기적으로 스크롤 이동
+        console.log('search:', filteredResults);
+      } else {
+        alert('검색 결과가 없습니다.');
+      }
+    },
+    [messages, setSearchResults, setActiveIndex, scrollToMessage],
+  );
+
+  useEffect(() => {
+    if (activeIndex >= 0 && activeIndex < searchResults.length) {
+      console.log('Current active message:', searchResults[activeIndex]);
+      scrollToMessage(activeIndex);
+    }
+  }, [activeIndex, scrollToMessage]);
+
+  // 새 메시지 수신 시 스크롤을 아래로
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = useCallback(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
+
+  //useEffect(() => {
+  // 메시지 목록이 변경될 때 스크롤 복원
+  //  restoreScrollPosition();
+  //}, [messages.length]);
+
   // 스크롤 위치를 저장하고 복원하는 함수
   const saveScrollPosition = () => {
     if (messagesEndRef.current) {
@@ -187,20 +210,24 @@ const Chat = () => {
           webSocketFactory: () => socket,
           onConnect: () => {
             console.log('Connected', memberId);
+            if (chatContainerRef.current) {
+              const scrollPosition = chatContainerRef.current.scrollTop;
+              deleteAllMessages(); // 이전 메시지 삭제
+              chatContainerRef.current.scrollTop = scrollPosition;
+            }
+            loadInitialMessages(); // 초기 데이터 로드를 여기로 옮깁니다
             // 실시간 채팅 구독 설정 및 초기 메시지 불러오기
             // 먼저 기존 데이터를 불러옵니다
-            loadInitialMessages().then(() => {
-              // 실시간 메시지를 받기 위한 구독 설정
-              stompClient.current?.subscribe('/topic/chat', message => {
-                console.log('Received message:', message);
-                const receivedMessage = JSON.parse(message.body);
-                if (receivedMessage.message && receivedMessage.memberId && receivedMessage.nickname) {
-                  addMessage(receivedMessage);
-                  console.log('Message added:', receivedMessage);
-                } else {
-                  console.error('Invalid message format:', receivedMessage);
-                }
-              });
+            // 실시간 메시지를 받기 위한 구독 설정
+            stompClient.current?.subscribe('/topic/chat', message => {
+              console.log('Received message:', message);
+              const receivedMessage = JSON.parse(message.body);
+              if (receivedMessage.message && receivedMessage.memberId && receivedMessage.nickname) {
+                addMessage(receivedMessage);
+                console.log('Message added:', receivedMessage);
+              } else {
+                console.error('Invalid message format:', receivedMessage);
+              }
             });
           },
           onStompError: frame => {
@@ -213,7 +240,25 @@ const Chat = () => {
         console.error('Connection error:', error);
       }
     };
+    // 채팅 데이터를 불러오는 함수
+    const loadInitialMessages = async () => {
+      try {
+        // 기존 채팅 데이터 요청 (토큰 없이)
+        const response = await axios.get(
+          `http://43.201.76.117:8080/messages`,
+          // 데이터를 성공적으로 받아왔다면 화면에 표시하는 로직
+          { headers: { Authorization: `Basic ${Token}` } },
+        );
 
+        response.data.forEach((msg: any) => {
+          addMessage(msg);
+        });
+        console.log('Get messages:', response.data);
+        setLoading(false); // 로딩 상태 업데이트
+      } catch (error) {
+        console.error('Failed to load initial messages:', error);
+      }
+    };
     // 비동기 함수 호출
     connectStomp();
 
@@ -224,17 +269,18 @@ const Chat = () => {
         console.log('Disconnected'); // 비동기 작업 없이 STOMP 클라이언트 비활성화
       }
     };
-  }, []); // 의존성 배열, 필요에 따라 변수 포함
+  }, [deleteAllMessages]); // 의존성 배열, 필요에 따라 변수 포함
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, []);
 
-  const scrollToBottom = useCallback(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, []);
+  //const scrollToBottom = useCallback(() => {
+  //  if (messagesEndRef.current) {
+  //   messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  //  }
+  //}, []);
+
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
 
   // 메시지 전송
@@ -258,37 +304,7 @@ const Chat = () => {
     console.log('Toggle Search:', !showSearch); // Debugging
     setShowSearch(!showSearch);
   };
-  function formatKoreanTime(isoString: any) {
-    const date = new Date(isoString);
-    const koreanDate = new Date(date.getTime() + 9 * 60 * 60 * 1000); // 한국 시간대로 설정 (UTC+9)
-    return {
-      date: koreanDate.toLocaleDateString('en-CA'), // YYYY-MM-DD 형식
-      time: koreanDate.toLocaleTimeString('en-US', {
-        // 12시간 AM/PM 형식
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      }),
-    };
-  }
-  // 위/아래 버튼 클릭 핸들러
-  const handleSearchDown = () => {
-    if (activeIndex < searchResults.length - 1) {
-      setActiveIndex((prev: any) => prev + 1);
-      scrollToMessage(activeIndex + 1);
-    } else {
-      alert('더 이상 메시지가 없습니다.');
-    }
-  };
 
-  const handleSearchUp = () => {
-    if (activeIndex > 0) {
-      setActiveIndex((prev: any) => prev - 1);
-      scrollToMessage(activeIndex - 1);
-    } else {
-      alert('더 이상 메시지가 없습니다.');
-    }
-  };
   return (
     <ThemeProvider theme={currentTheme}>
       <Container>
@@ -308,8 +324,8 @@ const Chat = () => {
                 key={index}
                 ref={(el: any) => (messageRefs.current[index] = el)}
                 style={{
-                  fontWeight: searchResults.includes(msg) && index === activeIndex ? 'bold' : 'normal',
-                  textDecoration: searchResults.includes(msg) && index === activeIndex ? 'underline' : 'none',
+                  fontWeight: searchResults.includes(msg) ? 'bold' : 'normal', // 모든 검색 결과 강조
+                  textDecoration: searchResults.includes(msg) ? 'underline' : 'none',
                 }}
               >
                 {msg.memberId == memberId ? (

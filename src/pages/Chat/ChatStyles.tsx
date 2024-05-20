@@ -53,6 +53,7 @@ export const MyUserContainer = styled(UserContainer)`
 export const UserName = styled.h1`
   font-size: 12px;
   margin-top: 0.6rem;
+  white-space: nowrap;
 `;
 export const Timestamp = styled.h1`
   font-size: 12px;
