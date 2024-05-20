@@ -132,7 +132,7 @@ export const Background = styled.div`
   height: 100vh;
   top: 0;
   left: 0;
-  background: #ffffffb7;
+  background-color: ${({ theme }) => (theme.themeColor === 'light' ? '#ffffffb7' : '#1C2631b3')};
   z-index: 999;
   display: flex;
   flex-direction: column;
@@ -143,4 +143,5 @@ export const Background = styled.div`
 export const LoadingText = styled.div`
   font: 1rem 'Noto Sans KR';
   text-align: center;
+  font-size: 18px;
 `;
