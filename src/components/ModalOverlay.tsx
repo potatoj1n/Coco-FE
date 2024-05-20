@@ -59,7 +59,7 @@ export const CreateContainer = styled.div<{ closing: boolean }>`
   height: 400px;
   padding: 30px;
   animation: ${props => (props.closing ? fadeOut : fadeIn)} 0.3s ease-out forwards;
-  border: 1px solid ${({ theme }) => theme.text};
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -82,8 +82,8 @@ export const Container = styled.div<{ closing: boolean }>`
   width: 500px;
   height: 400px;
   padding: 30px;
+  border-radius: 5px;
   animation: ${props => (props.closing ? fadeOut : fadeIn)} 0.3s ease-out forwards;
-  border: 1px solid ${({ theme }) => theme.text};
 `;
 export const Overlay = styled.div<{ closing: boolean }>`
   position: fixed;
