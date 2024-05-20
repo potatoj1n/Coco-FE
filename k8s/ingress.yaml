@@ -7,8 +7,6 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
   labels:
     app.kubernetes.io/managed-by: kargocd
-  name: frontend
-  namespace: default
 spec:
   rules:
     - http:
@@ -16,7 +14,5 @@ spec:
           - path: /
             pathType: Prefix
             backend:
-                service:
-                  name: my-app-service
-                  port:
-                    number: 80
+              serviceName: my-app-service
+              servicePort: 80
