@@ -61,6 +61,7 @@ export const ConsoleButton = styled.div`
   padding: 8px;
   font-size: 16px;
   border: 0.5px solid black;
+  border-radius: 5px;
 `;
 
 export const ConsoleWrapper = styled.div`

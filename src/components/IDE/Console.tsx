@@ -75,11 +75,14 @@ const Console = forwardRef((props: Props, ref) => {
                 borderColor: isError ? 'error.main' : 'text.primary',
                 backgroundColor: themeColor === 'light' ? '#f4f4f4' : '#1C2631',
                 overflow: 'auto',
-                fontSize: '24px',
               }}
             >
               {output
-                ? output.map((line, i) => <Typography key={i}>{line}</Typography>)
+                ? output.map((line, i) => (
+                    <Typography sx={{ fontSize: '20px', color: '#41C464' }} key={i}>
+                      {line}
+                    </Typography>
+                  ))
                 : 'Click "Run Code" to see the output here'}
             </div>
           </ConsoleWrapper>
