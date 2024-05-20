@@ -63,6 +63,7 @@ const MenuContainer = styled.div`
       cursor: pointer;
     }
   }
+  z-index: 1000000;
 `;
 
 export default function Header() {
@@ -119,7 +120,7 @@ export default function Header() {
                 <UserIcon />
               </IconButton>
             )}
-            {menu === true ? (
+            {menu == true ? (
               <MenuContainer>
                 <p onClick={Logout}>Logout</p>
                 <hr></hr>
