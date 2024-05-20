@@ -15,7 +15,14 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { path: '/', element: <FirstMain /> },
-      { path: '/main/:memberId', element: <Main /> },
+      {
+        path: '/main/:memberId',
+        element: (
+          <ProtectedRoute>
+            <Main />
+          </ProtectedRoute>
+        ),
+      },
       { path: '/login', element: <Login /> },
       { path: '/signup', element: <SignUp /> },
       {
@@ -26,10 +33,21 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      { path: '/chat/:memberId', element: <Chat /> },
+      {
+        path: '/chat/:memberId',
+        element: (
+          <ProtectedRoute>
+            <Chat />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: '/ide/:memberId',
-        element: <IDE />,
+        element: (
+          <ProtectedRoute>
+            <IDE />
+          </ProtectedRoute>
+        ),
         children: [{ path: ':projectId', element: <IDE /> }],
       },
     ],
