@@ -1,6 +1,8 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
+  name: frontend
+  namespace: default
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
   labels:
@@ -14,5 +16,7 @@ spec:
           - path: /
             pathType: Prefix
             backend:
-              serviceName: frontend
-              servicePort: 80
+                service:
+                  name: my-app-service
+                  port:
+                    number: 80
