@@ -24,6 +24,7 @@ const FontColor = styled.h1`
 const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   const { themeColor } = useTheTheme();
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
+  const { memberId } = useAuthStore();
   const [newProjectName, setNewProjectName] = useState('');
 
   const navigate = useNavigate();
@@ -41,7 +42,6 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   };
   //생성하기 버튼 이벤트
   const handleCreateProject = async () => {
-    const memberId = useAuthStore.getState().memberId;
     if (newProjectName.trim() === '') {
       alert('프로젝트명을 입력하세요.');
       return;
@@ -54,21 +54,23 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
     try {
       console.log(newProject);
       const createdProject = await createProject(newProject);
-      console.log(createdProject);
+      console.log('생성', createdProject);
       // 백엔드에서 생성된 실제 프로젝트 ID 사용
       const projectToAdd = {
-        id: createdProject,
-        name: newProjectName,
-        language: language,
+        id: createdProject.projectId,
+        name: createdProject.name,
+        language: createdProject.language,
         folders: [],
         files: [],
       };
 
       // 새 프로젝트를 Zustand 스토어에 추가
-      useProjectStore.getState().addProject(projectToAdd);
+      const projectStore = useProjectStore.getState();
+      projectStore.addProject(projectToAdd);
+      projectStore.selectProject(createdProject.projectId);
       setNewProjectName('');
       onClose();
-      navigate(`/ide/${memberId}/${createdProject}`);
+      navigate(`/ide/${memberId}/${createdProject.projectId}`);
     } catch (error) {
       console.error('Error creating project:', error);
       alert('프로젝트 생성에 실패했습니다.');
