@@ -17,6 +17,8 @@ import useLanguageStore from '../../state/IDE/IdeStore';
 import { fetchRunCode, saveCode } from '../../components/IDE/ProjectApi';
 import useConsoleStore from '../../state/IDE/ConsoleStore';
 import useProjectStore from '../../state/IDE/ProjectState';
+import useAuthStore from '../../state/AuthStore';
+import PjList from '../../components/\bPjList';
 
 export default function IDE() {
   const consoleRef = useRef<any>(null);
@@ -37,7 +39,8 @@ export default function IDE() {
     selectedFileId: state.selectedFileId,
     selectedFileContent: state.selectedFileContent,
   }));
-
+  const [showPjList, setshowPjList] = useState(false);
+  const { memberId } = useAuthStore();
   const handleSave = async () => {
     const sourceCode = selectedFileContent;
     try {
@@ -79,7 +82,10 @@ export default function IDE() {
       useConsoleStore.setState({ isLoading: false });
     }
   };
-
+  const togglePJList = () => {
+    setshowPjList(!showPjList);
+    console.log('Current showPjList before toggle:', showPjList);
+  };
   return (
     <ThemeProvider theme={themeObject}>
       <Container>
@@ -118,9 +124,12 @@ export default function IDE() {
         </ButtonContainer>
         <div className="flex ">
           <IconContainer>
-            <IconButton>{themeColor === 'light' ? <FolderlightIcon /> : <FolderDarkIcon />}</IconButton>
+            <IconButton onClick={togglePJList}>
+              {themeColor === 'light' ? <FolderlightIcon /> : <FolderDarkIcon />}
+            </IconButton>
+            {showPjList && <PjList onClose={() => setshowPjList(false)} />}
             <IconButton>
-              <Link to="/chat">{themeColor === 'light' ? <ChatlightIcon /> : <ChatDarkIcon />}</Link>
+              <Link to={`/chat/${memberId}`}>{themeColor === 'light' ? <ChatlightIcon /> : <ChatDarkIcon />}</Link>
             </IconButton>
           </IconContainer>
           <FileListContainer>
