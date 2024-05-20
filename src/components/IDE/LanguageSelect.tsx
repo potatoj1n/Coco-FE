@@ -124,7 +124,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
             '& .MuiOutlinedInput-root': {
               borderColor: '#28b381',
             },
-            maxWidth: '70px',
+            maxWidth: '100px',
           }}
         >
           {LanguageOptions.map(option => (

@@ -77,17 +77,21 @@ const Console = forwardRef((props: Props, ref) => {
                 overflow: 'auto',
               }}
             >
-              {props.isLoading ? (
-                <div>로딩 중...</div>
-              ) : output ? (
-                output.map((line, i) => (
-                  <Typography sx={{ fontSize: '20px', color: '#41C464' }} key={i}>
-                    {line}
-                  </Typography>
-                ))
-              ) : (
-                'Click "Run Code" to see the output here'
-              )}
+              {output
+                ? output.map((line, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div
+                        className=" rounded-r-3xl px-4 pr-5 py-1 text-black text-base"
+                        style={{
+                          backgroundColor: themeColor === 'light' ? '#41C464' : '#E1F9F0',
+                        }}
+                      >
+                        Execution result
+                      </div>
+                      <Typography sx={{ fontSize: '20px', color: '#41C464' }}>{line}</Typography>
+                    </div>
+                  ))
+                : 'Click "Run Code" to see the output here'}
             </div>
           </ConsoleWrapper>
 
