@@ -2,8 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
+  labels:
+    app.kubernetes.io/managed-by: kargocd
 spec:
-  replicas: 20
+  replicas: 2
   selector:
     matchLabels:
       app: frontend
@@ -14,5 +16,23 @@ spec:
     spec:
       containers:
         - name: frontend
-          # 여러분의 image 주소를 입력해주세요.
-          image: krmp-d2hub-idock.9rum.cc/dev-test/repo_8802d589c078
+          image: krmp-d2hub-idock.9rum.cc/dev-test/repo_a2fa9fb9e38b
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            - name: nginx-main-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config
+        - name: nginx-main-config
+          configMap:
+            name: nginx-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf

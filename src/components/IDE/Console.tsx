@@ -75,7 +75,7 @@ const Console = forwardRef((props: Props, ref) => {
                 borderColor: isError ? 'error.main' : 'text.primary',
                 backgroundColor: themeColor === 'light' ? '#f4f4f4' : '#1C2631',
                 overflow: 'auto',
-                fontSize: '20px',
+                fontSize: '24px',
               }}
             >
               {output

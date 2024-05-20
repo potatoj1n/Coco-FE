@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 const username = 'coco';
 const password = 'coco';
 const token = btoa(`${username}:${password}`);

@@ -1,12 +1,12 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  name: frontend
+  namespace: default
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: 'false'
   labels:
     app.kubernetes.io/managed-by: kargocd
-  name: frontend
-  namespace: default
 spec:
   rules:
     - http:
@@ -14,5 +14,7 @@ spec:
           - path: /
             pathType: Prefix
             backend:
-              serviceName: frontend
-              servicePort: 80
+              service:
+                name: my-app-service
+                port:
+                  number: 80

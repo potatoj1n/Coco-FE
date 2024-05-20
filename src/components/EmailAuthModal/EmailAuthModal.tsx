@@ -125,6 +125,7 @@ const EmailAuthModal: React.FC<ModalProps> = ({ isOpen, onClose, onVerifySuccess
           onVerifySuccess(); // 부모 컴포넌트에서 전달받은 콜백 함수 호출
         }
         enhancedOnClose();
+        alert('이메일 인증 성공');
       } else {
         throw new Error('인증 실패');
       }

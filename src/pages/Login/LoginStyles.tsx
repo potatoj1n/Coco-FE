@@ -33,7 +33,7 @@ export const LoginPart = styled.div`
   @media (max-width: 800px) {
     width: 100%;
     background-color: ${({ theme }) => (theme.themeColor === 'dark' ? theme.darkColor : 'transparent')};
-    color: white;
+    color: ${({ theme }) => (theme.themeColor === 'dark' ? 'white' : 'black')};
   }
   background-color: ${({ theme }) => (theme.themeColor === 'dark' ? theme.lightColor : 'transparent')};
 `;
