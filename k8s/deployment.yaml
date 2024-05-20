@@ -17,6 +17,25 @@ spec:
       containers:
         - name: frontend
           # 여러분의 image 주소를 입력해주세요.
+          image: apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app.kubernetes.io/managed-by: kargocd
+spec:
+  replicas: 20
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          # 여러분의 image 주소를 입력해주세요.
           image: krmp-d2hub-idock.9rum.cc/dev-test/repo_8802d589c078
           ports:
             - containerPort: 3000
@@ -28,3 +47,4 @@ spec:
             - name: nginx-config-volume
               configMap:
                 name: nginx-config
+
