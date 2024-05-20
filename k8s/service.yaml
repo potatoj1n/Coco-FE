@@ -2,9 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: my-app-service
+   namespace: default
+  annotations:
+    kargo.9rum.cc/app-name: app_ae1f80e60240
+    kargo.9rum.cc/phase: dev
+  labels:
+    app.kubernetes.io/managed-by: kargocd
 spec:
   selector:
-    app: my-app
+    app: frontend
   ports:
     - protocol: TCP
       port: 80
