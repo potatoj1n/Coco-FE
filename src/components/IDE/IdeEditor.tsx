@@ -174,7 +174,7 @@ export const IdeEditor: React.FC = () => {
             <div key={file.id} style={{ flex: 1 }}>
               <Editor
                 height="80vh"
-                theme="vs-dark"
+                theme={themeColor === 'light' ? 'tomorrow' : 'nightOwl'}
                 path={file.id}
                 defaultLanguage={file.language}
                 defaultValue={file.content}

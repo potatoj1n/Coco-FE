@@ -67,8 +67,7 @@ export const ConsoleWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 2/5;
-  color: #23be87;
+  color: #41c464;
   background-color: '#243B56';
 `;
 export const ButtonWrapper = styled.div`
