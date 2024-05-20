@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { CreateContainer, Overlay, modalRoot } from '../ModalOverlay';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
+import useAuthStore from '../../state/AuthStore';
 
 interface Props {
   onSelectChange: (language: string) => void;
@@ -40,6 +41,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
   };
   //생성하기 버튼 이벤트
   const handleCreateProject = async () => {
+    const memberId = useAuthStore.getState().memberId;
     if (newProjectName.trim() === '') {
       alert('프로젝트명을 입력하세요.');
       return;
@@ -47,7 +49,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
     const newProject = {
       name: newProjectName,
       language: language,
-      memberId: 1,
+      memberId: memberId,
     };
     try {
       console.log(newProject);
@@ -66,7 +68,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
       useProjectStore.getState().addProject(projectToAdd);
       setNewProjectName('');
       onClose();
-      navigate(`/ide/${createdProject}`);
+      navigate(`/ide/${memberId}/${createdProject}`);
     } catch (error) {
       console.error('Error creating project:', error);
       alert('프로젝트 생성에 실패했습니다.');
@@ -104,6 +106,14 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
           onChange={handleChange}
           placeholder={`Filter By Category`}
           size="small"
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxHeight: 200,
+                overflowY: 'auto',
+              },
+            },
+          }}
           sx={{
             '& .MuiSelect-select': {
               backgroundColor: themeColor === 'light' ? '#ffffff' : '#ffffff',
@@ -112,7 +122,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
             '& .MuiOutlinedInput-root': {
               borderColor: '#28b381',
             },
-            maxWidth: 'max-content',
+            maxWidth: '70px',
           }}
         >
           {LanguageOptions.map(option => (
