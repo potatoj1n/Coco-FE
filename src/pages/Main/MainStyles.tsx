@@ -367,7 +367,7 @@ export const ModifyPj = styled.p`
   font-size: 18px;
 `;
 
-export const ModifyPjBtn = styled(Link)`
+export const ModifyPjBtn = styled.button`
 background-color: white;
 padding: 20px;
 border-radius: 5px;

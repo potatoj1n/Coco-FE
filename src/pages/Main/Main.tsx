@@ -3,6 +3,7 @@ import LanguageSelector from '../../components/IDE/LanguageSelect';
 import PjList from '../../components/PjList';
 import SockJS from 'sockjs-client';
 import { formatKoreanTime } from '../../components/Timestamp';
+import useProjectStore from '../../state/IDE/ProjectState';
 
 import { Client, IMessage } from '@stomp/stompjs';
 import address from '../../components/Address';
@@ -85,7 +86,7 @@ const Main = () => {
   const { messages, addMessage, deleteMessage, deleteAllMessages } = useChatStore();
   const [attendance, setAttendance] = useState<Attendance[]>([]);
   const todayInfo = getCurrentDate();
-
+  const { selectedProjectId } = useProjectStore();
   const [newMessage, setNewMessage] = useState<string>('');
   const [language, setLanguage] = useLanguageStore(state => [state.language, state.setLanguage]);
   const [languageSelector, setLanguageSelector] = useState(false);
@@ -302,7 +303,15 @@ const Main = () => {
           <Pjcontainer>
             <Icon src={themeColor === 'light' ? folderLight : folderDark} />
             <ModifyPj>수정 중인 프로젝트</ModifyPj>
-            <ModifyPjBtn to="/ide">
+            <ModifyPjBtn
+              onClick={() => {
+                if (selectedProjectId === null) {
+                  alert('수정 중인 프로젝트가 없습니다.');
+                } else {
+                  window.location.href = `/ide/${memberId}/${selectedProjectId}`;
+                }
+              }}
+            >
               <ModifyIcon src={modifypj} />
             </ModifyPjBtn>
           </Pjcontainer>
