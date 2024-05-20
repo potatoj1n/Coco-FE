@@ -124,7 +124,7 @@ export default function Header() {
                 <p onClick={Logout}>Logout</p>
                 <hr></hr>
                 <Link to={`/mypage/${memberId}`} onClick={OnClick}>
-                  my Page
+                  My Page
                 </Link>
               </MenuContainer>
             ) : null}
