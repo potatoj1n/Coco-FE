@@ -75,6 +75,7 @@ const Chat = () => {
   const [searchMessage, setSearchMessage] = useState<string>('');
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [lastSearchHadResults, setLastSearchHadResults] = useState(true);
 
   //내 채팅 삭제하는 함수
   const handleDeleteMessage = async (messageId: any) => {
@@ -169,6 +170,12 @@ const Chat = () => {
 
   const currentTheme = themeColor === 'light' ? lightTheme : darkTheme;
 
+  // 데이터 로딩 완료 후 스크롤 이동
+  useEffect(() => {
+    if (!isLoading && chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [isLoading]); // isLoading이 변경될 때 실행
   // 메시지 전송
   const handleSendMessage = () => {
     if (newMessage.trim() !== '') {
@@ -189,6 +196,14 @@ const Chat = () => {
   const toggleSearch = () => {
     console.log('Toggle Search:', !showSearch); // Debugging
     setShowSearch(!showSearch);
+    // 검색창을 닫는 경우, 검색 결과와 입력된 검색어를 초기화
+    if (showSearch) {
+      setSearchResults([]);
+      setSearchMessage('');
+      setActiveIndex(-1); // 활성화된 인덱스를 초기화
+    }
+
+    console.log('Toggle Search:', !showSearch); // Debugging
   };
 
   // 다음 검색 결과로 이동
@@ -211,9 +226,23 @@ const Chat = () => {
 
   // 메시지 검색 기능
   const handleSearch = useCallback(() => {
-    const filtered = messages.filter(m => m.message.toLowerCase().includes(searchMessage.toLowerCase()));
+    const filtered = messages.filter(
+      m => !m.isDeleted && m.message.toLowerCase().includes(searchMessage.toLowerCase()),
+    );
     setSearchResults(filtered.reverse());
-    if (filtered.length) setActiveIndex(0);
+    if (filtered.length > 0) {
+      setActiveIndex(0);
+      if (!lastSearchHadResults) {
+        setLastSearchHadResults(true);
+      }
+    } else {
+      setActiveIndex(-1);
+      // 검색 결과가 없고, 이전 검색에 결과가 있었을 경우에만 알림을 표시
+      if (lastSearchHadResults) {
+        alert('검색 결과가 없습니다.');
+        setLastSearchHadResults(false);
+      }
+    }
   }, [messages, searchMessage]);
 
   useEffect(() => {
