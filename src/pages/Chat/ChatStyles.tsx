@@ -183,7 +183,7 @@ export const SendButton = styled.button`
 export const SearchButton = styled.button`
   cursor: pointer;
   position: fixed;
-  bottom: 100px;
+  bottom: 110px;
   right: 4vw;
   width: 35px;
   height: 35px;
@@ -245,6 +245,20 @@ export const SearchUp = styled.button`
   z-index: 100002;
 `;
 
+export const DownButton = styled.button`
+  cursor: pointer;
+  position: fixed;
+  bottom: 70px;
+  right: 4vw;
+  width: 35px;
+  height: 35px;
+  z-index: 100002;
+`;
+export const Downimg = styled.img`
+  width: 35px;
+  height: 35px;
+  z-index: 100002;
+`;
 export const Pointerimg = styled.img`
   max-width: 100%;
   max-height: 100%;

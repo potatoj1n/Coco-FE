@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import SockJS from 'sockjs-client';
 import { Client, IMessage } from '@stomp/stompjs';
 import { useLocation } from 'react-router-dom';
+import downimg from '../../assets/Downimg.svg';
 
 import { ThemeProvider } from 'styled-components';
 import profileOther from '../../assets/profileOther.svg';
@@ -30,6 +31,7 @@ import {
   MessageContainer,
   MessageFlexContainer,
   UserContainer,
+  DownButton,
   MyUserContainer,
   MessageOther,
   UserIcon,
@@ -38,6 +40,7 @@ import {
   MessageOthertext,
   MessageMinetext,
   ChatContainer,
+  Downimg,
   ChatInputContainer,
   MyMessageTrash,
   ChatInput,
@@ -182,6 +185,7 @@ const Chat = () => {
       });
       setNewMessage('');
       console.log('send');
+      scrollToBottom();
     }
   };
 
@@ -268,6 +272,21 @@ const Chat = () => {
       messagesEndRef.current.scrollTop = lastScrollTop.current;
     }
   };
+  const scrollToBottom = () => {
+    // 가장 최근의 isDeleted가 false인 메시지 찾기
+    const latestMessage = [...messages].reverse().find(msg => !msg.isDeleted);
+
+    if (latestMessage && messageRefs.current[latestMessage.chatId]) {
+      // 해당 메시지의 DOM 요소로 스크롤 이동
+      const element = messageRefs.current[latestMessage.chatId];
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    }
+  };
+
+  //버튼 없이 항상아래로
+  //삭제시 버튼 클릭시만 아래로
 
   return (
     <ThemeProvider theme={currentTheme}>
@@ -324,7 +343,9 @@ const Chat = () => {
                   </div>
                 ))}
             </div>
-            <div ref={messagesEndRef} /> {/* 스크롤을 아래로 이동하기 위한 빈 div */}
+            <DownButton onClick={scrollToBottom}>
+              <Downimg src={downimg} />
+            </DownButton>
           </MessageContainer>
           <ChatContainer>
             <ChatInputContainer>
