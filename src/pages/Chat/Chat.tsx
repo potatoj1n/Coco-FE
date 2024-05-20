@@ -189,6 +189,14 @@ const Chat = () => {
   const toggleSearch = () => {
     console.log('Toggle Search:', !showSearch); // Debugging
     setShowSearch(!showSearch);
+    // 검색창을 닫는 경우, 검색 결과와 입력된 검색어를 초기화
+    if (showSearch) {
+      setSearchResults([]);
+      setSearchMessage('');
+      setActiveIndex(-1); // 활성화된 인덱스를 초기화
+    }
+
+    console.log('Toggle Search:', !showSearch); // Debugging
   };
 
   // 다음 검색 결과로 이동

@@ -9,12 +9,14 @@ export const lightTheme = {
   text: '#666666', // 라이트 모드 폰트 색상
   borderColor: '#dedede', // 라이트 모드 보더 색상
   background: '#fff',
+  filter: 'none',
 };
 
 export const darkTheme = {
   text: '#fff', // 다크 모드 폰트 색상
   borderColor: '#444', // 다크 모드 보더 색상
   background: '#243B56',
+  filter: 'invert(100%)', // 다크 모드에서는 색상 반전
 };
 export const Container = styled.div``;
 export const StyledDiv = styled.div`
@@ -94,6 +96,7 @@ export const MyMessageTrash = styled.img`
   margin: 0px -12px 0px 0;
   cursor: pointer;
   z-index: 100000;
+  filter: ${({ theme }) => theme.filter};
 `;
 
 export const MessageOther = styled.div`
