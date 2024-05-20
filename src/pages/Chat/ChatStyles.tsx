@@ -37,7 +37,6 @@ export const MessageContainer = styled.div`
   right: 0;
   flex-direction: column;
   padding: 5px 7vw;
-  overflow-y: scroll;
   height: calc(100% - 128px);
   z-index: 100000;
 `;

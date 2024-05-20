@@ -51,7 +51,6 @@ import {
 } from './ChatStyles';
 import axios from 'axios';
 import { AnyARecord } from 'dns';
-import { scroller, Element } from 'react-scroll';
 
 const userName = 'coco';
 const userPassword = 'coco';
@@ -62,24 +61,19 @@ const Chat = () => {
 
   const [newMessage, setNewMessage] = useState<string>('');
   const [isLoading, setLoading] = useState(true);
-  const [searchMessage, setSearchMessage] = useState<string>('');
-  const [showSearch, setShowSearch] = useState<boolean>(false);
   const { themeColor } = useTheTheme();
   const { memberId } = useAuthStore();
   const chatContainerRef = useRef<HTMLDivElement>(null);
-
-  const location = useLocation();
-  // 메시지 리스트의 끝을 가리킬 ref 생성
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const lastScrollTop = useRef(0); // 스크롤 위치 저장을 위한 ref
   const [messageCount, setMessageCount] = useState(messages.length); // 메시지 개수 상태 추가
-  const messageRefs = useRef<(HTMLElement | null)[]>([]); // 각 메시지에 대한 참조를 저장할 배열
-
+  const messageRefs = useRef<{ [key: string]: HTMLElement | null }>({});
   const stompClient = useRef<Client | null>(null);
   // 검색 결과와 현재 선택된 인덱스 상태
   // 상태 변수 선언 부분
   const [searchResults, setSearchResults] = useState<Message[]>([]);
-
+  const [searchMessage, setSearchMessage] = useState<string>('');
+  const [showSearch, setShowSearch] = useState<boolean>(false);
   const [activeIndex, setActiveIndex] = useState(-1);
 
   //내 채팅 삭제하는 함수
@@ -215,68 +209,26 @@ const Chat = () => {
     }
   }, [activeIndex, searchResults.length]);
 
-  //채팅 검색하는 함수
-  const handleSearch = useCallback(
-    (searchTerm: any) => {
-      const filteredResults = messages
-        .filter(msg => msg.message.toLowerCase().includes(searchTerm.toLowerCase()))
-        .reverse();
-      setSearchResults(filteredResults);
+  // 메시지 검색 기능
+  const handleSearch = useCallback(() => {
+    const filtered = messages.filter(m => m.message.toLowerCase().includes(searchMessage.toLowerCase()));
+    setSearchResults(filtered.reverse());
+    if (filtered.length) setActiveIndex(0);
+  }, [messages, searchMessage]);
 
-      if (filteredResults.length > 0) {
-        setActiveIndex(0); // 검색 결과의 첫 번째 항목을 활성화
-        const chatIds = filteredResults.map(msg => msg.chatId);
-        console.log('Filtered Chat IDs:', chatIds);
-      } else {
-        alert('검색 결과가 없습니다.');
-      }
-    },
-    [messages, setSearchResults],
-  );
-
-  const scrollToMessage = useCallback(
-    (index: any) => {
-      const element = messageRefs.current[index];
-      const container = chatContainerRef.current;
-      if (element && container) {
-        requestAnimationFrame(() => {
-          // 기존 스크롤 위치
-          console.log('Initial scrollTop:', container.scrollTop);
-
-          const elementTop = element.offsetTop; // 메시지 요소의 상단 위치
-          const elementHeight = element.offsetHeight; // 메시지 요소의 높이
-          const containerHeight = container.clientHeight; // 스크롤 컨테이너의 높이
-
-          // 새로 계산된 스크롤 위치
-          const newScrollTop = elementTop + elementHeight / 2 - containerHeight / 2;
-
-          // 새 스크롤 위치 적용
-          container.scrollTop = newScrollTop;
-
-          // 스크롤 조정 후 위치
-          console.log('New scrollTop:', container.scrollTop);
-          console.log('Calculated newScrollTop:', newScrollTop);
-        });
-      } else {
-        console.log('Element or Container not found for index', index);
-      }
-    },
-    [messageRefs, chatContainerRef],
-  );
-  const scrollToChatId = useCallback(
-    (chatId: any) => {
-      const index = messages.findIndex(msg => msg.chatId === chatId);
-      if (index !== -1) {
-        scrollToMessage(index);
-      } else {
-        console.log('Message with chatId', chatId, 'not found');
-      }
-    },
-    [messages, scrollToMessage],
-  );
   useEffect(() => {
-    scrollToChatId(133);
-  }, [scrollToChatId]);
+    if (searchResults.length > 0 && activeIndex !== -1) {
+      const element = messageRefs.current[searchResults[activeIndex].chatId];
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [searchResults, activeIndex]);
+
+  // 입력 핸들러
+  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchMessage(event.target.value);
+  }, []);
 
   // 스크롤 위치를 저장하고 복원하는 함수
   const saveScrollPosition = () => {
@@ -301,17 +253,16 @@ const Chat = () => {
           <IconButton>{themeColor === 'light' ? <ChatLightIcon /> : <ChatDarkIcon />}</IconButton>
         </StyledDiv>
         {isLoading && <p>Loading messages...</p>}
-        <MessageContainer>
-          <div style={{ flexGrow: 1, height: '100%', overflowY: 'scroll' }}></div>
-          {messages
-            .filter(msg => !msg.isDeleted)
-            .map((msg, index) => (
-              <Element key={index} name={`message-${msg.chatId}`}>
+        <MessageContainer ref={chatContainerRef}>
+          <div style={{ flexGrow: 1, height: '100%', overflowY: 'scroll' }}>
+            {messages
+              .filter(msg => !msg.isDeleted)
+              .map((msg, index) => (
                 <div
-                  key={index}
-                  ref={(el: any) => (messageRefs.current[index] = el)}
+                  key={msg.chatId}
+                  ref={el => (messageRefs.current[msg.chatId] = el)}
                   style={{
-                    fontWeight: searchResults.includes(msg) ? 'bold' : 'normal', // 모든 검색 결과 강조
+                    fontWeight: searchResults.includes(msg) ? 'bold' : 'normal',
                     textDecoration: searchResults.includes(msg) ? 'underline' : 'none',
                   }}
                 >
@@ -343,8 +294,8 @@ const Chat = () => {
                     </MessageFlexContainer>
                   )}
                 </div>
-              </Element>
-            ))}
+              ))}
+          </div>
           <div ref={messagesEndRef} /> {/* 스크롤을 아래로 이동하기 위한 빈 div */}
         </MessageContainer>
         <ChatContainer>
@@ -365,13 +316,13 @@ const Chat = () => {
           <img src={Chatsearch} />
         </SearchButton>
         {showSearch && (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div>
             <SearchInput
               show={showSearch}
               value={searchMessage}
               type="text"
-              onChange={(e: any) => setSearchMessage(e.target.value)}
-              onKeyPress={(e: any) => e.key === 'Enter' && handleSearch(searchMessage)}
+              onChange={e => setSearchMessage(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSearch()}
               placeholder="검색"
             />
             <SearchDown onClick={handleSearchDown}>
