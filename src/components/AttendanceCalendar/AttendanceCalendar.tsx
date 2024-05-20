@@ -10,6 +10,24 @@ interface Attendance {
   present: boolean;
 }
 
+const hashCode = (str: string) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return hash;
+};
+
+const getRandomColorClass = (date: string) => {
+  const colors = ['color-gitlab-1', 'color-gitlab-2', 'color-gitlab-3', 'color-gitlab-4'];
+  const hash = hashCode(date);
+  const index = Math.abs(hash) % colors.length;
+  return colors[index];
+  // return colors[Math.floor(Math.random() * colors.length)];
+};
+
 // 날짜를 ISO 문자열로 변환하는 함수
 const formatDate = (date: Date) => {
   return date.toISOString().split('T')[0];
@@ -47,7 +65,7 @@ const AttendanceCalendar = () => {
       try {
         const response = await address.get(`/api/attend?memberId=${memberId}`);
         const serverData = response.data;
-        console.log('Server Data:', serverData);
+        // console.log('Server Data:', serverData);
         // 서버 데이터를 기본 날짜 배열에 병합
         const attendDates = serverData[0].attendDate;
         const mergedData = initialDates.map(dateItem => {
@@ -68,17 +86,12 @@ const AttendanceCalendar = () => {
     };
 
     fetchAttendance();
-  }, []);
+  }, [memberId]);
 
   const today = new Date();
   const todayString = formatDate(today);
   const startDate = new Date('2024-01-01');
   const endDate = new Date('2024-12-31');
-
-  const getRandomColorClass = () => {
-    const colors = ['color-gitlab-1', 'color-gitlab-2', 'color-gitlab-3', 'color-gitlab-4'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
 
   return (
     <div className="calendar-container">
@@ -93,7 +106,8 @@ const AttendanceCalendar = () => {
           if (!value) {
             return 'color-empty';
           }
-          const baseClass = value.count === 0 ? 'color-empty' : getRandomColorClass();
+          const dateStr = typeof value.date === 'string' ? value.date : formatDate(new Date(value.date));
+          const baseClass = value.count === 0 ? 'color-empty' : getRandomColorClass(dateStr);
           return value.date === todayString ? `${baseClass} color-today` : baseClass;
         }}
         tooltipDataAttrs={value => {
