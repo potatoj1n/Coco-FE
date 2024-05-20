@@ -50,7 +50,7 @@ const Login = () => {
       // alert('로그인 성공');
       //유저정보에 없거나 비밀번호,아이디 틀리면 에러바로 뜨게
       //메인으로 가게 해야함
-      navigate(`/mypage/${memberId}`);
+      navigate(`/main/${memberId}`);
     } catch (e) {
       //에러 캐치
       setError('아이디 또는 비밀번호를 잘못 입력했습니다.다시 확인해주세요.');
