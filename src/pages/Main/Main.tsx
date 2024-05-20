@@ -330,34 +330,36 @@ const Main = () => {
               </Chatnav>
               <Chatmain>
                 <div style={{ flexGrow: 1 }}></div>
-                {messages.map((msg, index) => (
-                  <div key={index}>
-                    {msg.memberId == memberId ? (
-                      <MessageMine>
-                        <Timestampmine>
-                          <div>{formatKoreanTime(msg.createdAt).date}</div>
-                          <div>{formatKoreanTime(msg.createdAt).time}</div>
-                        </Timestampmine>
-                        <MessageMinetext>{msg.message}</MessageMinetext>
-                        <MyUserContainer>
-                          <UserIcon src={profileMine} />
-                        </MyUserContainer>
-                      </MessageMine>
-                    ) : (
-                      <MessageOther>
-                        <UserContainer>
-                          <UserIcon src={profileOther} />
-                          <UserName>{msg.nickname}</UserName>
-                        </UserContainer>
-                        <MessageOthertext>{msg.message}</MessageOthertext>
-                        <Timestamp>
-                          <div>{formatKoreanTime(msg.createdAt).date}</div>
-                          <div>{formatKoreanTime(msg.createdAt).time}</div>
-                        </Timestamp>
-                      </MessageOther>
-                    )}
-                  </div>
-                ))}
+                {messages
+                  .filter(msg => !msg.isDeleted) // 삭제되지 않은 메시지만 필터링
+                  .map((msg, index) => (
+                    <div key={index}>
+                      {msg.memberId == memberId ? (
+                        <MessageMine>
+                          <Timestampmine>
+                            <div>{formatKoreanTime(msg.createdAt).date}</div>
+                            <div>{formatKoreanTime(msg.createdAt).time}</div>
+                          </Timestampmine>
+                          <MessageMinetext>{msg.message}</MessageMinetext>
+                          <MyUserContainer>
+                            <UserIcon src={profileMine} />
+                          </MyUserContainer>
+                        </MessageMine>
+                      ) : (
+                        <MessageOther>
+                          <UserContainer>
+                            <UserIcon src={profileOther} />
+                            <UserName>{msg.nickname}</UserName>
+                          </UserContainer>
+                          <MessageOthertext>{msg.message}</MessageOthertext>
+                          <Timestamp>
+                            <div>{formatKoreanTime(msg.createdAt).date}</div>
+                            <div>{formatKoreanTime(msg.createdAt).time}</div>
+                          </Timestamp>
+                        </MessageOther>
+                      )}
+                    </div>
+                  ))}
                 <div ref={messagesEndRef} /> {/* 스크롤을 아래로 이동하기 위한 빈 div */}
               </Chatmain>
             </ChatContainer>
