@@ -148,8 +148,24 @@
 - Main 페이지 (로그인 전) <img width="1512" alt="첫페이지 라이트" src="https://github.com/potatoj1n/Coco-FE/assets/155697505/5acf8ef5-83c4-4346-be26-389cc66963d1"> <img width="1512" alt="첫페이지 다크" src="https://github.com/potatoj1n/Coco-FE/assets/155697505/753324b8-5c20-42b9-8136-0c627f6378bf">
 
 - Login 페이지
+  <img width="1512" alt="로그인 라이트" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/e352849b-bf0c-4db3-88d8-2a658a3d7d36">
+<img width="1512" alt="로그인 다크" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/4cccb50f-6019-4226-a84e-43487af4069e">
+
 - Register 페이지
+  <img width="1508" alt="회원가입 라이트" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/63043a09-7c16-422d-b887-699b755d3866"><img width="1512" alt="회원가입 다크" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/2788d1ff-0b12-4551-82fd-0925feef14f1">
+  
 - Main 페이지 (로그인 한 유저)
+  <img width="1512" alt="메인페이지 라이트" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/7f034767-e0e9-4f16-bc6f-9f035227487d">
+  <img width="1512" alt="메인페이지 다크" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/f050da88-5833-47c7-bba7-1a168ea2aa8f">
+
 - IDE 페이지
+  <img width="1511" alt="스크린샷 2024-05-20 오후 7 21 30" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/27b428a4-e382-4782-b60b-cc7347ae6d9d">
+<img width="1511" alt="스크린샷 2024-05-20 오후 7 15 58" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/3fd22965-d69d-4618-9eb3-8b3b5681689b">
+
 - Chat 페이지
+- <img width="1512" alt="채팅 라이트" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/d2d058c2-d83f-4186-8e8c-ba012d828447">
+<img width="1512" alt="채팅 다크" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/3cb82798-f127-41d4-97f8-77eaea99fae9">
+
 - My 페이지
+<img width="1512" alt="마이페이지 라이트" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/8b396778-4226-4b32-be88-852a836ab8d5">
+<img width="1512" alt="마이페이지 다크" src="https://github.com/Coco-Das/Coco-FE/assets/155697505/80bde756-9561-4d4b-b85c-1dfefd2db006">
