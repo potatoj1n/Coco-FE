@@ -306,8 +306,8 @@ export const Day = styled.p`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: -30px;
-  margin-top: 40px;
+  margin-bottom: 0px;
+  margin-top: 55px;
 `;
 const Stamp = keyframes`
   0% {
