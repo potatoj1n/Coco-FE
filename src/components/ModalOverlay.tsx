@@ -93,5 +93,5 @@ export const Overlay = styled.div<{ closing: boolean }>`
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5); // 반투명 검은색 배경
-  z-index: 10000000000;
+  z-index: 1000;
 `;

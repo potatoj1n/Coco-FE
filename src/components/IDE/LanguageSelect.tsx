@@ -125,7 +125,7 @@ const LanguageSelector: React.FC<Props> = ({ onSelectChange, onClose }) => {
               borderColor: '#28b381',
             },
             maxWidth: '100px',
-            zIndex: '1000',
+            zIndex: '100000',
           }}
         >
           {LanguageOptions.map(option => (
