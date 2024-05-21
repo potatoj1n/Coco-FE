@@ -40,7 +40,7 @@ export const MessageContainer = styled.div`
   flex-direction: column;
   padding: 5px 7vw;
   height: calc(100% - 128px);
-  z-index: 100000;
+  z-index: 10;
 `;
 
 export const UserContainer = styled.div`
@@ -187,7 +187,7 @@ export const SearchButton = styled.button`
   right: 4vw;
   width: 35px;
   height: 35px;
-  z-index: 100002;
+  z-index: 10;
 `;
 
 export const SearchInput = styled.input<SearchInputProps>`
@@ -206,7 +206,7 @@ export const SearchInput = styled.input<SearchInputProps>`
   max-width: 500px;
   height: 50px;
   display: ${({ show }) => (show ? 'block' : 'none')};
-  z-index: 100002;
+  z-index: 11;
 `;
 export const SearchDown = styled.button`
   cursor: pointer;
