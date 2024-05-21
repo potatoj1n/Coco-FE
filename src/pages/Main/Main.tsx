@@ -295,8 +295,9 @@ const Main = () => {
             </Hicontainer>
             <Attendancecontainer>
               <Date>
-                <Day>{currentDate?.day}</Day>
-                <Month>|DAY|</Month>
+                <Day>
+                  {currentDate?.month}/{currentDate?.day}
+                </Day>
               </Date>
               <div>
                 <AttendButton onClick={handleButtonClick} disabled={clicked}>
