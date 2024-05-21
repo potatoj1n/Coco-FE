@@ -3,6 +3,7 @@ import SockJS from 'sockjs-client';
 import { Client, IMessage } from '@stomp/stompjs';
 import { useLocation } from 'react-router-dom';
 import downimg from '../../assets/Downimg.svg';
+import useProjectStore from '../../state/IDE/ProjectState';
 
 import { ThemeProvider } from 'styled-components';
 import profileOther from '../../assets/profileOther.svg';
@@ -56,6 +57,7 @@ import axios from 'axios';
 import { AnyARecord } from 'dns';
 import useConsoleStore from '../../state/IDE/ConsoleStore';
 import { Loading } from '../../components/IDE/Loading';
+import PjList from '../../components/\bPjList';
 
 const userName = 'coco';
 const userPassword = 'coco';
@@ -63,7 +65,7 @@ const Token = btoa(`${userName}:${userPassword}`);
 
 const Chat = () => {
   const { messages, addMessage, deleteMessage, deleteAllMessages } = useChatStore();
-
+  const [showPjList, setShowPjList] = useState(false);
   const [newMessage, setNewMessage] = useState<string>('');
   const { themeColor } = useTheTheme();
   const { memberId } = useAuthStore();
@@ -185,7 +187,14 @@ const Chat = () => {
       });
       setNewMessage('');
       console.log('send');
-      scrollToBottom();
+      const latestMessage = [...messages].reverse().find(msg => !msg.isDeleted);
+      if (latestMessage && messageRefs.current[latestMessage.chatId]) {
+        // 해당 메시지의 DOM 요소로 스크롤 이동
+        const element = messageRefs.current[latestMessage.chatId];
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+      }
     }
   };
 
@@ -285,9 +294,13 @@ const Chat = () => {
     }
   };
 
-  //버튼 없이 항상아래로
-  //삭제시 버튼 클릭시만 아래로
-
+  const togglePJList = () => {
+    setShowPjList(!showPjList);
+    console.log('Current showPjList before toggle:', showPjList);
+  };
+  useEffect(() => {
+    console.log('모달 창 상태: ', showPjList);
+  }, [showPjList]);
   return (
     <ThemeProvider theme={currentTheme}>
       {isLoading ? (
@@ -295,11 +308,12 @@ const Chat = () => {
       ) : (
         <Container>
           <StyledDiv>
-            <IconButton>
-              <Link to={`/ide/${memberId}`}>{themeColor === 'light' ? <FolderLightIcon /> : <FolderDarkIcon />}</Link>
+            <IconButton onClick={togglePJList}>
+              {themeColor === 'light' ? <FolderLightIcon /> : <FolderDarkIcon />}
             </IconButton>
             <IconButton>{themeColor === 'light' ? <ChatLightIcon /> : <ChatDarkIcon />}</IconButton>
           </StyledDiv>
+          {showPjList && <PjList onClose={() => setShowPjList(false)} />}
           <MessageContainer ref={chatContainerRef}>
             <div style={{ flexGrow: 1, height: '100%', overflowY: 'scroll' }}>
               {messages

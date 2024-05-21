@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { useTheTheme } from '../components/Theme';
 import styled from 'styled-components';
 import useAuthStore from '../state/AuthStore';
+import useProjectStore from '../state/IDE/ProjectState';
 
 const Container = styled.nav`
   height: 64px; // 16px * 4
@@ -63,6 +64,7 @@ const MenuContainer = styled.div`
       cursor: pointer;
     }
   }
+  z-index: 1000000;
 `;
 
 export default function Header() {
@@ -74,10 +76,11 @@ export default function Header() {
     clearAuthInfo: state.clearAuthInfo,
     memberId: state.memberId,
   }));
+  const { selectedProjectId } = useProjectStore();
   const showIcons = location.pathname !== '/' && location.pathname !== '/signup';
   const isSpecialPage =
     location.pathname === `/chat/${memberId}` ||
-    location.pathname === `/ide//${memberId}` ||
+    location.pathname === `/ide/${memberId}/${selectedProjectId}` ||
     location.pathname === `/main/${memberId}` ||
     location.pathname === `/mypage/${memberId}`;
 
@@ -119,7 +122,7 @@ export default function Header() {
                 <UserIcon />
               </IconButton>
             )}
-            {menu === true ? (
+            {menu == true ? (
               <MenuContainer>
                 <p onClick={Logout}>Logout</p>
                 <hr></hr>
