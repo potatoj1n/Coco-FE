@@ -53,7 +53,7 @@ export const CreateContainer = styled.div<{ closing: boolean }>`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 100000001;
+  z-index: 10001;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 500px;
   height: 400px;
@@ -76,7 +76,7 @@ export const Container = styled.div<{ closing: boolean }>`
   transform: translate(-50%, -50%);
   height: 300px;
   width: 50vw;
-  z-index: 1000000000001;
+  z-index: 10001;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border: 0.5px solid;
   width: 500px;
@@ -93,5 +93,5 @@ export const Overlay = styled.div<{ closing: boolean }>`
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5); // 반투명 검은색 배경
-  z-index: 10000000000;
+  z-index: 100;
 `;
