@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { useTheTheme } from '../components/Theme';
 import styled from 'styled-components';
 import useAuthStore from '../state/AuthStore';
+import useProjectStore from '../state/IDE/ProjectState';
 
 const Container = styled.nav`
   height: 64px; // 16px * 4
@@ -74,10 +75,11 @@ export default function Header() {
     clearAuthInfo: state.clearAuthInfo,
     memberId: state.memberId,
   }));
+  const { selectedProjectId } = useProjectStore();
   const showIcons = location.pathname !== '/' && location.pathname !== '/signup';
   const isSpecialPage =
     location.pathname === `/chat/${memberId}` ||
-    location.pathname === `/ide//${memberId}` ||
+    location.pathname === `/ide/${memberId}/${selectedProjectId}` ||
     location.pathname === `/main/${memberId}` ||
     location.pathname === `/mypage/${memberId}`;
 
