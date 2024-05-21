@@ -118,12 +118,12 @@ export default function IDE() {
             <PlayArrowOutlinedIcon />
             RUN
           </Button>
-          <CustomButton>{language}</CustomButton>
           <Button
             color="success"
             variant="contained"
             sx={{
               backgroundColor: '#23BE87',
+              marginRight: '42px',
               '&:hover': {
                 backgroundColor: '#5BC48E',
                 color: '#11724F',
