@@ -40,6 +40,9 @@
 ### 🙋‍♀️ 팀원 소개
 
 ---
+|**문규리(FE)** | **박은진(FE)** | **이인지(FE)**| 
+|:-----------:|:-----------:|:-----------:|
+|[<img src="" height=120 width=120> <br/> @rbfl1260](https://github.com/rbfl1260)  |[<img src="" height=120 width=120> <br/> @potatoj1n](https://github.com/potatoj1n) | [<img src="" height=120 width=120> <br/> @inji0212](https://github.com/inji0212) |
 
 ### 🛠️ Skills
 
